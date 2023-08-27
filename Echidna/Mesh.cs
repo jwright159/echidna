@@ -7,29 +7,36 @@ public class Mesh : IDisposable
 {
 	private const int Dims = 3;
 	
-	private static readonly string[] attributes = { "aPosition", "aColor" };
-	private static readonly float[][] datasets = { positions, colors };
+	private readonly string[] attributes = { "aPosition", "aColor" };
 	
-	private static readonly float[] positions =
+	public int NumVertices => positions.Length / Dims;
+	
+	private float[] positions;
+	public float[] Positions
 	{
-		0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		0.0f, 0.5f, 0.0f,
-	};
+		get => positions;
+		set
+		{
+			positions = value;
+			RegenerateData();
+			if (initialized) BindData();
+		}
+	}
 	
-	private static readonly float[] colors =
+	private readonly float[] colors;
+	
+	private uint[] indices;
+	public uint[] Indices
 	{
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f,
-	};
+		get => indices;
+		set
+		{
+			indices = value;
+			if (initialized) BindIndices();
+		}
+	}
 	
-	private static readonly uint[] indices =
-	{
-		0, 1, 2,
-	};
-	
-	private readonly float[] data;
+	private float[] data;
 	
 	private readonly Shader shader;
 	
@@ -44,17 +51,30 @@ public class Mesh : IDisposable
 	{
 		this.shader = shader;
 		
-		int numVertices = positions.Length / Dims;
-		for (int i = 0; i < numVertices; i++)
+		positions = new[]
+		{
+			0.5f, -0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f,
+			0.0f, 0.5f, 0.0f,
+		};
+		for (int i = 0; i < NumVertices; i++)
 		for (int x = 0; x < Dims; x++)
 			positions[i * Dims + x] += position[x];
 		
-		data = new float[datasets.Sum(data => data.Length)];
+		colors = new[]
+		{
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
+		};
 		
-		for (int i = 0; i < numVertices; i++)
-		for (int dataset = 0; dataset < datasets.Length; dataset++)
-		for (int x = 0; x < Dims; x++)
-			data[i * datasets.Length * Dims + dataset * Dims + x] = datasets[dataset][i * Dims + x];
+		data = Array.Empty<float>();
+		RegenerateData();
+		
+		indices = new uint[]
+		{
+			0, 1, 2,
+		};
 	}
 	
 	public void Initialize()
@@ -63,8 +83,7 @@ public class Mesh : IDisposable
 		initialized = true;
 		
 		vertexBufferObject = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
-		GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
+		BindData();
 		
 		vertexArrayObject = GL.GenVertexArray();
 		GL.BindVertexArray(vertexArrayObject);
@@ -76,6 +95,28 @@ public class Mesh : IDisposable
 		}
 		
 		elementBufferObject = GL.GenBuffer();
+		BindIndices();
+	}
+	
+	private void RegenerateData()
+	{
+		float[][] datasets = { positions, colors };
+		data = new float[datasets.Sum(data => data.Length)];
+		
+		for (int i = 0; i < NumVertices; i++)
+		for (int dataset = 0; dataset < datasets.Length; dataset++)
+		for (int x = 0; x < Dims; x++)
+			data[i * datasets.Length * Dims + dataset * Dims + x] = datasets[dataset][i * Dims + x];
+	}
+	
+	private void BindData()
+	{
+		GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
+		GL.BufferData(BufferTarget.ArrayBuffer, data.Length * sizeof(float), data, BufferUsageHint.StaticDraw);
+	}
+	
+	private void BindIndices()
+	{
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
 		GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 	}
