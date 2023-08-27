@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
-using OpenTK.Graphics.ES30;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -15,54 +15,42 @@ public class Program : GameWindow
 		window.Run();
 	}
 	
-	private int vertexBufferObject;
-	private int elementBufferObject;
-	private int vertexArrayObject;
-	
+	private Mesh? mesh1;
+	private Mesh? mesh2;
 	private Shader? shader;
 	
-	private Stopwatch time;
+	private Stopwatch time = new();
 	
-	private readonly float[] vertices =
-	{
-		// positions        // colors
-		 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-		 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
-	};
-	
-	private readonly uint[] indices = {  // note that we start from 0!
-		0, 1, 2,   // first triangle
-	};
-	
-	private Program() : base(GameWindowSettings.Default, new NativeWindowSettings { Size = (1080, 720), Title = "bepis" }) { }
+	private Program() : base(
+		GameWindowSettings.Default,
+		new NativeWindowSettings
+		{
+			Size = (1080, 720),
+			Title = "bepis",
+		}) { }
 	
 	protected override void OnLoad()
 	{
 		base.OnLoad();
 		
-		GL.ClearColor(0, 0, 0, 1);
+		GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		
-		time = new Stopwatch();
 		time.Start();
 		
 		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
 		shader.Bind();
 		
-		vertexBufferObject = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
-		GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
-		
-		elementBufferObject = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.ElementArrayBuffer, elementBufferObject);
-		GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
-		
-		vertexArrayObject = GL.GenVertexArray();
-		GL.BindVertexArray(vertexArrayObject);
-		GL.VertexAttribPointer(shader.GetAttribLocation("aPosition"), 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
-		GL.EnableVertexAttribArray(0);
-		GL.VertexAttribPointer(shader.GetAttribLocation("aColor"), 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
-		GL.EnableVertexAttribArray(1);
+		try
+		{
+			mesh1 = new Mesh(shader, (0f, 0f, 0f));
+			mesh2 = new Mesh(shader, (0.5f, 0.5f, 0f));
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine("Initialization crash!");
+			Console.WriteLine(e);
+			throw;
+		}
 	}
 	
 	protected override void OnUpdateFrame(FrameEventArgs args)
@@ -77,10 +65,20 @@ public class Program : GameWindow
 	{
 		base.OnRenderFrame(args);
 		
-		shader!.Bind();
-		GL.Uniform3(shader!.GetUniformLocation("someColor"), 0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f);
-		GL.BindVertexArray(vertexArrayObject);
-		GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, indices);
+		try
+		{
+			shader!.Bind();
+			GL.Uniform3(shader!.GetUniformLocation("someColor"), 0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f);
+			mesh1!.Draw();
+			mesh2!.Draw();
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine("Rendering crash!");
+			Console.WriteLine(e);
+			throw;
+		}
+		
 		SwapBuffers();
 	}
 	
@@ -95,6 +93,8 @@ public class Program : GameWindow
 	{
 		base.OnUnload();
 		
+		//mesh1!.Dispose();
+		//mesh2!.Dispose();
 		shader!.Dispose();
 	}
 }
