@@ -18,6 +18,7 @@ public class Program : GameWindow
 	private Mesh? mesh1;
 	private Mesh? mesh2;
 	private Shader? shader;
+	private Camera? camera;
 	
 	private Stopwatch time = new();
 	
@@ -39,6 +40,8 @@ public class Program : GameWindow
 		
 		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
 		shader.Bind();
+		
+		camera = new Camera();
 		
 		try
 		{
@@ -68,7 +71,11 @@ public class Program : GameWindow
 		try
 		{
 			shader!.Bind();
+			shader.SetMatrix4("view", camera!.ViewMatrix);
+			shader.SetMatrix4("projection", camera.ProjectionMatrix);
+			
 			GL.Uniform3(shader!.GetUniformLocation("someColor"), 0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f);
+			
 			mesh1!.Draw();
 			mesh2!.Draw();
 		}
@@ -87,6 +94,7 @@ public class Program : GameWindow
 		base.OnResize(args);
 		
 		GL.Viewport((Size)Size);
+		camera!.AspectRatio = (float)Size.X / Size.Y;
 	}
 	
 	protected override void OnUnload()

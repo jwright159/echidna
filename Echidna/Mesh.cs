@@ -73,6 +73,8 @@ public class Mesh
 	
 	public void Draw()
 	{
+		shader.SetMatrix4("model", Matrix4.Identity);
+		
 		GL.BindVertexArray(vertexArrayObject);
 		GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
 	}

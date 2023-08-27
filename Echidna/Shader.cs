@@ -1,4 +1,5 @@
 ﻿using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace Echidna;
 
@@ -6,6 +7,8 @@ public class Shader : IDisposable
 {
 	private readonly int handle;
 	private bool disposed;
+
+	private Dictionary<string, int> uniforms = new();
 	
 	public Shader(string vertexPath, string fragmentPath)
 	{
@@ -22,6 +25,19 @@ public class Shader : IDisposable
 		{
 			string infoLog = GL.GetProgramInfoLog(handle);
 			Console.WriteLine(infoLog);
+		}
+		
+		GL.DetachShader(handle, vertexShader);
+		GL.DeleteShader(vertexShader);
+		GL.DetachShader(handle, fragmentShader);
+		GL.DeleteShader(fragmentShader);
+		
+		GL.GetProgram(handle, GetProgramParameterName.ActiveUniforms, out int numberOfUniforms);
+		for (int i = 0; i < numberOfUniforms; i++)
+		{
+			string key = GL.GetActiveUniform(handle, i, out _, out _);
+			int location = GL.GetUniformLocation(handle, key);
+			uniforms.Add(key, location);
 		}
 	}
 	
@@ -56,7 +72,31 @@ public class Shader : IDisposable
 	
 	public int GetUniformLocation(string uniformName)
 	{
-		return GL.GetUniformLocation(handle, uniformName);
+		return uniforms[uniformName];
+	}
+	
+	public void SetInt(string name, int data)
+	{
+		Bind();
+		GL.Uniform1(GetUniformLocation(name), data);
+	}
+	
+	public void SetFloat(string name, float data)
+	{
+		Bind();
+		GL.Uniform1(GetUniformLocation(name), data);
+	}
+	
+	public void SetMatrix4(string name, Matrix4 data)
+	{
+		Bind();
+		GL.UniformMatrix4(GetUniformLocation(name), true, ref data);
+	}
+	
+	public void SetVector3(string name, Vector3 data)
+	{
+		Bind();
+		GL.Uniform3(GetUniformLocation(name), data);
 	}
 	
 	public void Bind()
@@ -71,6 +111,5 @@ public class Shader : IDisposable
 			GL.DeleteProgram(handle);
 			disposed = true;
 		}
-		GC.SuppressFinalize(this);
 	}
 }
