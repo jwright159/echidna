@@ -5,15 +5,29 @@ namespace Echidna;
 
 public class Shader : IDisposable
 {
-	private readonly int handle;
+	private int handle;
+	
+	private bool initialized;
 	private bool disposed;
-
+	
+	private string vertexSource;
+	private string fragmentSource;
+	
 	private Dictionary<string, int> uniforms = new();
 	
 	public Shader(string vertexPath, string fragmentPath)
 	{
-		int vertexShader = CompileShader(vertexPath, ShaderType.VertexShader);
-		int fragmentShader = CompileShader(fragmentPath, ShaderType.FragmentShader);
+		vertexSource = File.ReadAllText(vertexPath);
+		fragmentSource = File.ReadAllText(fragmentPath);
+	}
+	
+	public void Initialize()
+	{
+		if (initialized) return;
+		initialized = true;
+		
+		int vertexShader = CompileShader(vertexSource, ShaderType.VertexShader);
+		int fragmentShader = CompileShader(fragmentSource, ShaderType.FragmentShader);
 		
 		handle = GL.CreateProgram();
 		GL.AttachShader(handle, vertexShader);
@@ -41,16 +55,8 @@ public class Shader : IDisposable
 		}
 	}
 	
-	~Shader()
+	private static int CompileShader(string source, ShaderType type)
 	{
-		if (!disposed)
-			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
-	}
-	
-	private static int CompileShader(string path, ShaderType type)
-	{
-		string source = File.ReadAllText(path);
-		
 		int shader = GL.CreateShader(type);
 		GL.ShaderSource(shader, source);
 		GL.CompileShader(shader);
@@ -101,15 +107,23 @@ public class Shader : IDisposable
 	
 	public void Bind()
 	{
+		if (!initialized) throw new InvalidOperationException("Object wasn't initialized");
+		
 		GL.UseProgram(handle);
 	}
 	
 	public void Dispose()
 	{
+		if (disposed) return;
+		disposed = true;
+		if (!initialized) return;
+		
+		GL.DeleteProgram(handle);
+	}
+	
+	~Shader()
+	{
 		if (!disposed)
-		{
-			GL.DeleteProgram(handle);
-			disposed = true;
-		}
+			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

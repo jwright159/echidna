@@ -3,25 +3,28 @@ using OpenTK.Mathematics;
 
 namespace Echidna;
 
-public class Mesh
+public class Mesh : IDisposable
 {
 	private const int Dims = 3;
 	
-	private readonly float[] positions =
+	private static readonly string[] attributes = { "aPosition", "aColor" };
+	private static readonly float[][] datasets = { positions, colors };
+	
+	private static readonly float[] positions =
 	{
 		0.5f, -0.5f, 0.0f,
 		-0.5f, -0.5f, 0.0f,
 		0.0f, 0.5f, 0.0f,
 	};
 	
-	private readonly float[] colors =
+	private static readonly float[] colors =
 	{
 		1.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
 		0.0f, 0.0f, 1.0f,
 	};
 	
-	private readonly uint[] indices =
+	private static readonly uint[] indices =
 	{
 		0, 1, 2,
 	};
@@ -34,6 +37,9 @@ public class Mesh
 	private int elementBufferObject;
 	private int vertexArrayObject;
 	
+	private bool initialized;
+	private bool disposed;
+	
 	public Mesh(Shader shader, Vector3 position)
 	{
 		this.shader = shader;
@@ -43,15 +49,18 @@ public class Mesh
 		for (int x = 0; x < Dims; x++)
 			positions[i * Dims + x] += position[x];
 		
-		float[][] datasets = { positions, colors };
-		string[] attributes = { "aPosition", "aColor" };
-		
 		data = new float[datasets.Sum(data => data.Length)];
 		
 		for (int i = 0; i < numVertices; i++)
 		for (int dataset = 0; dataset < datasets.Length; dataset++)
 		for (int x = 0; x < Dims; x++)
 			data[i * datasets.Length * Dims + dataset * Dims + x] = datasets[dataset][i * Dims + x];
+	}
+	
+	public void Initialize()
+	{
+		if (initialized) return;
+		initialized = true;
 		
 		vertexBufferObject = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferObject);
@@ -73,9 +82,28 @@ public class Mesh
 	
 	public void Draw()
 	{
+		if (!initialized) throw new InvalidOperationException("Object wasn't initialized");
+		
 		shader.SetMatrix4("model", Matrix4.Identity);
 		
 		GL.BindVertexArray(vertexArrayObject);
 		GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
+	}
+	
+	public void Dispose()
+	{
+		if (disposed) return;
+		disposed = true;
+		if (!initialized) return;
+		
+		GL.DeleteBuffer(vertexBufferObject);
+		GL.DeleteVertexArray(vertexArrayObject);
+		GL.DeleteBuffer(elementBufferObject);
+	}
+	
+	~Mesh()
+	{
+		if (!disposed)
+			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

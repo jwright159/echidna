@@ -15,10 +15,10 @@ public class Program : GameWindow
 		window.Run();
 	}
 	
-	private Mesh? mesh1;
-	private Mesh? mesh2;
-	private Shader? shader;
-	private Camera? camera;
+	private Camera camera;
+	private Mesh mesh1;
+	private Mesh mesh2;
+	private Shader shader;
 	
 	private Stopwatch time = new();
 	
@@ -28,25 +28,30 @@ public class Program : GameWindow
 		{
 			Size = (1080, 720),
 			Title = "bepis",
-		}) { }
+		})
+	{
+		camera = new Camera();
+		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+		mesh1 = new Mesh(shader, (0f, 0f, 0f));
+		mesh2 = new Mesh(shader, (0.5f, 0.5f, 0f));
+	}
 	
 	protected override void OnLoad()
 	{
 		base.OnLoad();
 		
 		GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		GL.Clear(ClearBufferMask.ColorBufferBit);
+		SwapBuffers();
+		GL.Clear(ClearBufferMask.ColorBufferBit);
 		
 		time.Start();
 		
-		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
-		shader.Bind();
-		
-		camera = new Camera();
-		
 		try
 		{
-			mesh1 = new Mesh(shader, (0f, 0f, 0f));
-			mesh2 = new Mesh(shader, (0.5f, 0.5f, 0f));
+			shader.Initialize();
+			mesh1.Initialize();
+			mesh2.Initialize();
 		}
 		catch (Exception e)
 		{
@@ -70,14 +75,13 @@ public class Program : GameWindow
 		
 		try
 		{
-			shader!.Bind();
 			shader.SetMatrix4("view", camera!.ViewMatrix);
 			shader.SetMatrix4("projection", camera.ProjectionMatrix);
 			
-			GL.Uniform3(shader!.GetUniformLocation("someColor"), 0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f);
+			shader.SetVector3("someColor", (0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f));
 			
-			mesh1!.Draw();
-			mesh2!.Draw();
+			mesh1.Draw();
+			mesh2.Draw();
 		}
 		catch (Exception e)
 		{
@@ -101,8 +105,8 @@ public class Program : GameWindow
 	{
 		base.OnUnload();
 		
-		//mesh1!.Dispose();
-		//mesh2!.Dispose();
-		shader!.Dispose();
+		mesh1.Dispose();
+		mesh2.Dispose();
+		shader.Dispose();
 	}
 }
