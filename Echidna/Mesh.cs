@@ -51,8 +51,7 @@ public class Mesh : Component
 	internal int elementBufferObject;
 	internal int vertexArrayObject;
 	
-	internal bool initialized;
-	internal bool disposed;
+	internal bool hasBeenDisposed;
 	
 	public Mesh(Shader shader)
 	{
@@ -82,7 +81,7 @@ public class Mesh : Component
 	
 	~Mesh()
 	{
-		if (!disposed)
+		if (!hasBeenDisposed)
 			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

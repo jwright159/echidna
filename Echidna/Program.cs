@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -19,9 +18,6 @@ public class Program : GameWindow
 	private World world;
 	
 	private Projection camera;
-	private Shader shader;
-	
-	private Stopwatch time = new();
 	
 	private Program() : base(
 		GameWindowSettings.Default,
@@ -32,21 +28,26 @@ public class Program : GameWindow
 		})
 	{
 		world = new World(
+			new ShaderSystem(),
+			new LifetimeSystem(),
+			new PulsatingShaderSystem(),
 			new CameraShaderProjectionSystem(),
 			new MeshRenderSystem());
 		
-		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
+		Shader shader = new("Shaders/shader.vert", "Shaders/shader.frag");
 		
-		AddMesh((0, 0, 0));
-		AddMesh((0.5f, 0.5f, 0));
+		AddMesh((0, 0, 0), shader);
+		AddMesh((0.5f, 0.5f, 0), shader);
 		
 		Entity cameraEntity = new();
 		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, 0, -5) });
 		world.AddComponent(cameraEntity, camera = new Projection());
+		world.AddComponent(cameraEntity, new Lifetime());
 		world.AddComponent(cameraEntity, shader);
+		world.AddComponent(cameraEntity, new PulsatingShader());
 	}
 	
-	private void AddMesh(Vector3 position)
+	private void AddMesh(Vector3 position, Shader shader)
 	{
 		Entity entity = new();
 		world.AddComponent(entity, new Mesh(shader));
@@ -62,11 +63,8 @@ public class Program : GameWindow
 		SwapBuffers();
 		GL.Clear(ClearBufferMask.ColorBufferBit);
 		
-		time.Start();
-		
 		try
 		{
-			shader.Initialize();
 			world.Initialize();
 		}
 		catch (Exception e)
@@ -90,8 +88,6 @@ public class Program : GameWindow
 		
 		try
 		{
-			shader.SetVector3("someColor", (0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f));
-			
 			world.Draw();
 		}
 		catch (Exception e)
@@ -106,7 +102,6 @@ public class Program : GameWindow
 	protected override void OnResize(ResizeEventArgs args)
 	{
 		base.OnResize(args);
-		
 		GL.Viewport((Size)Size);
 		camera.AspectRatio = (float)Size.X / Size.Y;
 	}
@@ -114,8 +109,6 @@ public class Program : GameWindow
 	protected override void OnUnload()
 	{
 		base.OnUnload();
-		
 		world.Dispose();
-		shader.Dispose();
 	}
 }

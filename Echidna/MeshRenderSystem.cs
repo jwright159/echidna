@@ -14,9 +14,6 @@ public class MeshRenderSystem : System
 	
 	private static void Initialize(Mesh mesh)
 	{
-		if (mesh.initialized) return;
-		mesh.initialized = true;
-		
 		mesh.vertexBufferObject = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.vertexBufferObject);
 		
@@ -41,12 +38,11 @@ public class MeshRenderSystem : System
 	
 	private static void Draw(Transform transform, Mesh mesh)
 	{
-		if (!mesh.initialized) throw new InvalidOperationException("Object wasn't initialized");
-		
 		if (mesh.isDirty)
 			CleanMesh(mesh);
 		
 		mesh.shader.SetMatrix4("model", transform.Transformation);
+		mesh.shader.Bind();
 		
 		GL.BindVertexArray(mesh.vertexArrayObject);
 		GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
@@ -91,10 +87,7 @@ public class MeshRenderSystem : System
 	
 	private static void Dispose(Mesh mesh)
 	{
-		if (mesh.disposed) return;
-		mesh.disposed = true;
-		if (!mesh.initialized) return;
-			
+		mesh.hasBeenDisposed = true;
 		GL.DeleteBuffer(mesh.vertexBufferObject);
 		GL.DeleteVertexArray(mesh.vertexArrayObject);
 		GL.DeleteBuffer(mesh.elementBufferObject);
