@@ -2,10 +2,8 @@
 
 namespace Echidna;
 
-public class Camera
+public class Projection : Component
 {
-	private Matrix4 transform = Matrix4.LookAt((0, 0, -10), (0, 0, 0), Vector3.UnitY);
-	
 	private float fov = MathHelper.PiOver2;
 	private float Fov
 	{
@@ -15,7 +13,5 @@ public class Camera
 	
 	public float AspectRatio { get; set; } = 16f / 9f;
 	
-	//public Matrix4 ViewMatrix => Matrix4.LookAt(Position, Position + _front, _up);
-	public Matrix4 ViewMatrix => transform;
 	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView(fov, AspectRatio, 0.01f, 100f);
 }

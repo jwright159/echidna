@@ -15,7 +15,9 @@ public class Program : GameWindow
 		window.Run();
 	}
 	
-	private Camera camera;
+	private World world;
+	
+	private Projection camera;
 	private Mesh mesh1;
 	private Mesh mesh2;
 	private Shader shader;
@@ -30,10 +32,13 @@ public class Program : GameWindow
 			Title = "bepis",
 		})
 	{
-		camera = new Camera();
+		world = new World(
+			new MeshRenderSystem());
+		
+		camera = new Projection();
 		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
-		mesh1 = new Mesh(shader, (0f, 0f, 0f));
-		mesh2 = new Mesh(shader, (0.5f, 0.5f, 0f));
+		mesh1 = new Mesh(shader);
+		mesh2 = new Mesh(shader);
 	}
 	
 	protected override void OnLoad()
@@ -75,7 +80,7 @@ public class Program : GameWindow
 		
 		try
 		{
-			shader.SetMatrix4("view", camera!.ViewMatrix);
+			shader.SetMatrix4("view", camera.ViewMatrix);
 			shader.SetMatrix4("projection", camera.ProjectionMatrix);
 			
 			shader.SetVector3("someColor", (0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f));
@@ -98,7 +103,7 @@ public class Program : GameWindow
 		base.OnResize(args);
 		
 		GL.Viewport((Size)Size);
-		camera!.AspectRatio = (float)Size.X / Size.Y;
+		camera.AspectRatio = (float)Size.X / Size.Y;
 	}
 	
 	protected override void OnUnload()
