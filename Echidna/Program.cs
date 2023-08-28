@@ -18,7 +18,6 @@ public class Program : GameWindow
 	
 	private World world;
 	
-	private Transform cameraTransform;
 	private Projection camera;
 	private Shader shader;
 	
@@ -33,14 +32,18 @@ public class Program : GameWindow
 		})
 	{
 		world = new World(
+			new CameraShaderProjectionSystem(),
 			new MeshRenderSystem());
 		
-		camera = new Projection();
 		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
 		
 		AddMesh((0, 0, 0));
 		AddMesh((0.5f, 0.5f, 0));
-		world.AddComponent(new Entity(), cameraTransform = new Transform{ LocalPosition = (0, 0, -5) });
+		
+		Entity cameraEntity = new();
+		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, 0, -5) });
+		world.AddComponent(cameraEntity, camera = new Projection());
+		world.AddComponent(cameraEntity, shader);
 	}
 	
 	private void AddMesh(Vector3 position)
@@ -69,7 +72,6 @@ public class Program : GameWindow
 		catch (Exception e)
 		{
 			Console.WriteLine("Initialization crash!");
-			Console.WriteLine(e);
 			throw;
 		}
 	}
@@ -88,9 +90,6 @@ public class Program : GameWindow
 		
 		try
 		{
-			shader.SetMatrix4("view", cameraTransform.Transformation);
-			shader.SetMatrix4("projection", camera.ProjectionMatrix);
-			
 			shader.SetVector3("someColor", (0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f));
 			
 			world.Draw();
@@ -98,7 +97,6 @@ public class Program : GameWindow
 		catch (Exception e)
 		{
 			Console.WriteLine("Rendering crash!");
-			Console.WriteLine(e);
 			throw;
 		}
 		
