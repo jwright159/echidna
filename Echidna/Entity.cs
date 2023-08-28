@@ -8,7 +8,7 @@ public class Entity
 	
 	public T GetComponent<T>() where T : Component => (T)components[typeof(T)];
 	
-	public void AddComponent(Component component) => components.Add(component.GetType(), component);
+	internal void AddComponent(Component component) => components.Add(component.GetType(), component);
 	
 	public bool HasComponentType(Type componentType) => components.ContainsKey(componentType);
 }

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -17,9 +18,8 @@ public class Program : GameWindow
 	
 	private World world;
 	
+	private Transform cameraTransform;
 	private Projection camera;
-	private Mesh mesh1;
-	private Mesh mesh2;
 	private Shader shader;
 	
 	private Stopwatch time = new();
@@ -37,8 +37,17 @@ public class Program : GameWindow
 		
 		camera = new Projection();
 		shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
-		mesh1 = new Mesh(shader);
-		mesh2 = new Mesh(shader);
+		
+		AddMesh((0, 0, 0));
+		AddMesh((0.5f, 0.5f, 0));
+		world.AddComponent(new Entity(), cameraTransform = new Transform{ LocalPosition = (0, 0, -5) });
+	}
+	
+	private void AddMesh(Vector3 position)
+	{
+		Entity entity = new();
+		world.AddComponent(entity, new Mesh(shader));
+		world.AddComponent(entity, new Transform{ LocalPosition = position });
 	}
 	
 	protected override void OnLoad()
@@ -55,8 +64,7 @@ public class Program : GameWindow
 		try
 		{
 			shader.Initialize();
-			mesh1.Initialize();
-			mesh2.Initialize();
+			world.Initialize();
 		}
 		catch (Exception e)
 		{
@@ -80,13 +88,12 @@ public class Program : GameWindow
 		
 		try
 		{
-			shader.SetMatrix4("view", camera.ViewMatrix);
+			shader.SetMatrix4("view", cameraTransform.Transformation);
 			shader.SetMatrix4("projection", camera.ProjectionMatrix);
 			
 			shader.SetVector3("someColor", (0f, MathF.Sin((float)time.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f));
 			
-			mesh1.Draw();
-			mesh2.Draw();
+			world.Draw();
 		}
 		catch (Exception e)
 		{
@@ -110,8 +117,7 @@ public class Program : GameWindow
 	{
 		base.OnUnload();
 		
-		mesh1.Dispose();
-		mesh2.Dispose();
+		world.Dispose();
 		shader.Dispose();
 	}
 }
