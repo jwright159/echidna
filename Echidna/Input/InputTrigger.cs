@@ -1,11 +1,14 @@
 ﻿namespace Echidna.Input;
 
-public class InputTrigger
+public interface InputTrigger
 {
-	internal readonly object inputType;
+	public bool IsTriggeredBy(object type);
+	public object FactorIn(object type, float value);
+}
+
+public interface InputTrigger<out T> : InputTrigger where T : notnull
+{
+	public new T FactorIn(object type, float value);
 	
-	public InputTrigger(object inputType)
-	{
-		this.inputType = inputType;
-	}
+	object InputTrigger.FactorIn(object type, float value) => FactorIn(type, value);
 }

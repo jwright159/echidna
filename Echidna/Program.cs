@@ -48,21 +48,26 @@ public static class Program
 		world.AddComponent(cameraEntity, new PulsatingShader());
 		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
 		
-		FirstPersonCamera firstPerson = new();
+		FirstPersonCamera firstPerson = new(){ mouseSensitivity = 0.5f };
 		world.AddComponent(cameraEntity, firstPerson);
 		world.AddComponent(cameraEntity, new InputGroup(
-			new InputAction<float>(value => firstPerson.movement.Z = value,
-				new InputTrigger(Keys.W),
-				new InputTrigger(Keys.Up)),
-			new InputAction<float>(value => firstPerson.movement.Z = -value,
-				new InputTrigger(Keys.S),
-				new InputTrigger(Keys.Down)),
+			new InputAction<Vector3>(value => firstPerson.movement = value,
+				new Axis3InputTrigger(
+					new AxisInputTrigger(
+						new SingleInputTrigger(Keys.D),
+						new SingleInputTrigger(Keys.A)),
+					new AxisInputTrigger(
+						new SingleInputTrigger(Keys.E),
+						new SingleInputTrigger(Keys.Q)),
+					new AxisInputTrigger(
+						new SingleInputTrigger(Keys.W),
+						new SingleInputTrigger(Keys.S)))),
 			new InputAction<float>(value => firstPerson.Pitch += value * firstPerson.mouseSensitivity,
-				new InputTrigger(MouseAxis.DeltaY)),
+				new SingleInputTrigger(MouseAxis.DeltaY)),
 			new InputAction<float>(value => firstPerson.Yaw += value * firstPerson.mouseSensitivity,
-				new InputTrigger(MouseAxis.DeltaX)),
+				new SingleInputTrigger(MouseAxis.DeltaX)),
 			new InputAction<float>(value => Console.WriteLine($"Space {value}"),
-				new InputTrigger(Keys.Space))));
+				new SingleInputTrigger(Keys.Space))));
 		
 		AddMesh(world, (0, 0, 0), shader);
 		AddMesh(world, (0.5f, 0.5f, 0), shader);

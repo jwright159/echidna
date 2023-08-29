@@ -12,11 +12,11 @@ public class FirstPersonCamera : Component
 	}
 	
 	public float Yaw { get; set; }
-
+	
 	public float movementSpeed = 1f;
 	public float mouseSensitivity = 1f;
 	
 	public Vector3 movement = Vector3.Zero;
 	
-	public Quaternion Rotation => Quaternion.FromEulerAngles(Pitch, Yaw, 0);
+	public Quaternion Rotation => Quaternion.FromEulerAngles(MathHelper.DegreesToRadians(Pitch), MathHelper.DegreesToRadians(Yaw), 0);
 }

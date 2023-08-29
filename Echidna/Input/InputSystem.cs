@@ -9,8 +9,8 @@ public class InputSystem : System
 	
 	private static void Handle(InputAction action, object type, float value)
 	{
-		if (action.triggers.Any(trigger => trigger.inputType.Equals(type)))
-			action.Action(value);
+		foreach (InputTrigger trigger in action.triggers.Where(trigger => trigger.IsTriggeredBy(type)))
+			action.Action(trigger.FactorIn(type, value));
 	}
 	
 	public override void OnMouseMove(Vector2 position, Vector2 delta)

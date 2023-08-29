@@ -13,7 +13,7 @@ public class InputAction
 	}
 }
 
-public class InputAction<T> : InputAction
+public class InputAction<T> : InputAction where T : notnull
 {
-	public InputAction(Action<T> action, params InputTrigger[] triggers) : base(value => action((T)value), triggers) { }
+	public InputAction(Action<T> action, params InputTrigger<T>[] triggers) : base(value => action((T)value), triggers.Cast<InputTrigger>().ToArray()) { }
 }
