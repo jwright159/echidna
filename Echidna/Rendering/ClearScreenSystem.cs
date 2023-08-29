@@ -6,7 +6,7 @@ public class ClearScreenSystem : System
 {
 	public ClearScreenSystem() : base(typeof(Window)) { }
 	
-	public override void OnInitialize()
+	public override void OnDraw(float deltaTime)
 	{
 		foreach (Entity entity in Entities)
 			Clear(entity.GetComponent<Window>());
@@ -15,8 +15,6 @@ public class ClearScreenSystem : System
 	private static void Clear(Window window)
 	{
 		GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		GL.Clear(ClearBufferMask.ColorBufferBit);
-		window.window.SwapBuffers();
 		GL.Clear(ClearBufferMask.ColorBufferBit);
 	}
 }

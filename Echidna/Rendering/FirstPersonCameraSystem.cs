@@ -16,5 +16,6 @@ public class FirstPersonCameraSystem : System
 	private static void Update(float deltaTime, Transform transform, FirstPersonCamera firstPerson)
 	{
 		transform.LocalPosition += firstPerson.movement * firstPerson.movementSpeed * deltaTime;
+		transform.LocalRotation = Quaternion.FromEulerAngles(MathHelper.DegreesToRadians(firstPerson.Pitch), MathHelper.DegreesToRadians(firstPerson.Yaw), 0);
 	}
 }

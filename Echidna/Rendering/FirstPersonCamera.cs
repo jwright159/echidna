@@ -8,7 +8,7 @@ public class FirstPersonCamera : Component
 	public float Pitch
 	{
 		get => pitch;
-		set => pitch = MathHelper.Clamp(value, 0f, 180f);
+		set => pitch = MathHelper.Clamp(value, -90f, 90f);
 	}
 	
 	public float Yaw { get; set; }

@@ -59,6 +59,8 @@ public static class Program
 				new InputTrigger(Keys.Down)),
 			new InputAction<float>(value => firstPerson.Pitch += value * firstPerson.mouseSensitivity,
 				new InputTrigger(MouseAxis.DeltaY)),
+			new InputAction<float>(value => firstPerson.Yaw += value * firstPerson.mouseSensitivity,
+				new InputTrigger(MouseAxis.DeltaX)),
 			new InputAction<float>(value => Console.WriteLine($"Space {value}"),
 				new InputTrigger(Keys.Space))));
 		
