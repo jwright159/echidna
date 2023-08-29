@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-namespace Echidna;
+namespace Echidna.Rendering;
 
 public class Shader : Component
 {

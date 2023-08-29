@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Echidna;
+namespace Echidna.Hierarchy;
 
 public class Lifetime : Component
 {

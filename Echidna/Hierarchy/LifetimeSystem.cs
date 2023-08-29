@@ -1,4 +1,4 @@
-﻿namespace Echidna;
+﻿namespace Echidna.Hierarchy;
 
 public class LifetimeSystem : System
 {

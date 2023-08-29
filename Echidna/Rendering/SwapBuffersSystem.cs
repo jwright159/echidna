@@ -1,4 +1,4 @@
-﻿namespace Echidna;
+﻿namespace Echidna.Rendering;
 
 public class SwapBuffersSystem : System
 {

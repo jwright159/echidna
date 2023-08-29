@@ -1,4 +1,6 @@
-﻿namespace Echidna;
+﻿using Echidna.Hierarchy;
+
+namespace Echidna.Rendering;
 
 public class PulsatingShaderSystem : System
 {

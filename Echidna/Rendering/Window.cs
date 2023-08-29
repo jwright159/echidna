@@ -1,6 +1,6 @@
 ﻿using OpenTK.Windowing.Desktop;
 
-namespace Echidna;
+namespace Echidna.Rendering;
 
 public class Window : Component
 {

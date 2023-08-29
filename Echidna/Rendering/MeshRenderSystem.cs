@@ -1,6 +1,7 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Echidna.Hierarchy;
+using OpenTK.Graphics.OpenGL4;
 
-namespace Echidna;
+namespace Echidna.Rendering;
 
 public class MeshRenderSystem : System
 {

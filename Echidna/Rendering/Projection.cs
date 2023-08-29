@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Echidna;
+namespace Echidna.Rendering;
 
 public class Projection : Component
 {

@@ -1,6 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 
-namespace Echidna;
+namespace Echidna.Rendering;
 
 public class ShaderSystem : System
 {

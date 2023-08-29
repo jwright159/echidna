@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace Echidna;
+namespace Echidna.Hierarchy;
 
 public class Transform : Component
 {
