@@ -7,7 +7,7 @@ public class ResizeWindowSystem : System
 {
 	public ResizeWindowSystem() : base(typeof(CameraResizer)) { }
 	
-	public override void OnDraw()
+	public override void OnDraw(float deltaTime)
 	{
 		foreach (Entity entity in Entities)
 			Resize(entity.GetComponent<CameraResizer>());

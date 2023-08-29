@@ -4,7 +4,6 @@ using Echidna.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using InputAction = Echidna.Input.InputAction;
 using Window = Echidna.Rendering.Window;
 
 namespace Echidna;
@@ -27,6 +26,7 @@ public static class Program
 			new ClearScreenSystem(),
 			new ShaderSystem(),
 			new LifetimeSystem(),
+			new InputSystem(),
 			new FirstPersonCameraSystem(),
 			new PulsatingShaderSystem(),
 			new CameraShaderProjectionSystem(),
@@ -50,20 +50,28 @@ public static class Program
 		
 		FirstPersonCamera firstPerson = new();
 		world.AddComponent(cameraEntity, firstPerson);
-		world.AddComponent(cameraEntity, new InputSystem(
-			new InputAction(value => firstPerson.movement.Y = value,
-				new InputTrigger(Keys.W)),
-			new InputAction(value => firstPerson.movement.Y = -value,
-				new InputTrigger(Keys.S)),
-			new InputAction(value => firstPerson.Pitch += value * firstPerson.mouseSensitivity,
-				new InputTrigger(MouseAxis.Y))));
+		world.AddComponent(cameraEntity, new InputGroup(
+			new InputAction<float>(value => firstPerson.movement.Z = value,
+				new InputTrigger(Keys.W),
+				new InputTrigger(Keys.Up)),
+			new InputAction<float>(value => firstPerson.movement.Z = -value,
+				new InputTrigger(Keys.S),
+				new InputTrigger(Keys.Down)),
+			new InputAction<float>(value => firstPerson.Pitch += value * firstPerson.mouseSensitivity,
+				new InputTrigger(MouseAxis.DeltaY)),
+			new InputAction<float>(value => Console.WriteLine($"Space {value}"),
+				new InputTrigger(Keys.Space))));
 		
 		AddMesh(world, (0, 0, 0), shader);
 		AddMesh(world, (0.5f, 0.5f, 0), shader);
 		
 		gameWindow.Load += world.Initialize;
 		gameWindow.Unload += world.Dispose;
-		gameWindow.RenderFrame += _ => world.Draw();
+		gameWindow.UpdateFrame += args => world.Update((float)args.Time);
+		gameWindow.RenderFrame += args => world.Draw((float)args.Time);
+		gameWindow.MouseMove += args => world.MouseMove(args.Position, args.Delta);
+		gameWindow.KeyDown += args => world.KeyDown(args.Key);
+		gameWindow.KeyUp += args => world.KeyUp(args.Key);
 		gameWindow.Run();
 	}
 	

@@ -4,10 +4,16 @@ public class InputAction
 {
 	public readonly List<InputTrigger> triggers = new();
 	
-	public readonly Action onTrigger;
+	public Action<object> Action { get; }
 	
-	public InputAction(Action onTrigger)
+	public InputAction(Action<object> action, params InputTrigger[] triggers)
 	{
-		this.onTrigger = onTrigger;
+		Action = action;
+		this.triggers.AddRange(triggers);
 	}
+}
+
+public class InputAction<T> : InputAction
+{
+	public InputAction(Action<T> action, params InputTrigger[] triggers) : base(value => action((T)value), triggers) { }
 }

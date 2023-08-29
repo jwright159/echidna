@@ -1,4 +1,7 @@
-﻿namespace Echidna;
+﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
+namespace Echidna;
 
 public abstract class System
 {
@@ -20,5 +23,10 @@ public abstract class System
 	public virtual void OnInitialize() { }
 	public virtual void OnDispose() { }
 	
-	public virtual void OnDraw() { }
+	public virtual void OnUpdate(float deltaTime) { }
+	public virtual void OnDraw(float deltaTime) { }
+	
+	public virtual void OnMouseMove(Vector2 position, Vector2 delta) { }
+	public virtual void OnKeyDown(Keys key) { }
+	public virtual void OnKeyUp(Keys key) { }
 }

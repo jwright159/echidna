@@ -1,4 +1,7 @@
-﻿namespace Echidna;
+﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+
+namespace Echidna;
 
 public class World
 {
@@ -29,10 +32,11 @@ public class World
 	{
 		if (entity.HasComponentType(component.GetType()))
 			throw new InvalidOperationException($"Entity {entity} already has a component of type {component}");
-		entity.AddComponent(component);
-		
 		Type addedComponentType = component.GetType();
+		if (!systemsDependingOn.ContainsKey(addedComponentType))
+			throw new InvalidOperationException($"World {this} does not have a system depending on component type {addedComponentType}");
 		
+		entity.AddComponent(component);
 		foreach (System system in systemsDependingOn[addedComponentType])
 		{
 			if (system.IsApplicableTo(entity))
@@ -54,9 +58,33 @@ public class World
 			system.OnDispose();
 	}
 	
-	public void Draw()
+	public void Update(float deltaTime)
 	{
 		foreach (System system in systems)
-			system.OnDraw();
+			system.OnUpdate(deltaTime);
+	}
+	
+	public void Draw(float deltaTime)
+	{
+		foreach (System system in systems)
+			system.OnDraw(deltaTime);
+	}
+	
+	public void MouseMove(Vector2 position, Vector2 delta)
+	{
+		foreach (System system in systems)
+			system.OnMouseMove(position, delta);
+	}
+	
+	public void KeyDown(Keys key)
+	{
+		foreach (System system in systems)
+			system.OnKeyDown(key);
+	}
+	
+	public void KeyUp(Keys key)
+	{
+		foreach (System system in systems)
+			system.OnKeyUp(key);
 	}
 }

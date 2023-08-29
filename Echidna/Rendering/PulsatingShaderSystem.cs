@@ -6,7 +6,7 @@ public class PulsatingShaderSystem : System
 {
 	public PulsatingShaderSystem() : base(typeof(Shader), typeof(PulsatingShader), typeof(Lifetime)) { }
 	
-	public override void OnDraw()
+	public override void OnDraw(float deltaTime)
 	{
 		foreach (Entity entity in Entities)
 			UpdatePulse(entity.GetComponent<Shader>(), entity.GetComponent<Lifetime>());

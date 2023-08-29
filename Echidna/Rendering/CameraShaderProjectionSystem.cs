@@ -6,7 +6,7 @@ public class CameraShaderProjectionSystem : System
 {
 	public CameraShaderProjectionSystem() : base(typeof(Transform), typeof(Projection), typeof(Shader)) { }
 	
-	public override void OnDraw()
+	public override void OnDraw(float deltaTime)
 	{
 		foreach (Entity entity in Entities)
 			SetProjectionMatrices(entity.GetComponent<Transform>(), entity.GetComponent<Projection>(), entity.GetComponent<Shader>());

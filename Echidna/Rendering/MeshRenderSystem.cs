@@ -31,7 +31,7 @@ public class MeshRenderSystem : System
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.elementBufferObject);
 	}
 	
-	public override void OnDraw()
+	public override void OnDraw(float deltaTime)
 	{
 		foreach (Entity entity in Entities)
 			Draw(entity.GetComponent<Transform>(), entity.GetComponent<Mesh>());

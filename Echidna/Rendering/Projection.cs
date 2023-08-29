@@ -4,7 +4,7 @@ namespace Echidna.Rendering;
 
 public class Projection : Component
 {
-	private float fov = MathHelper.PiOver2;
+	private float fov = 90f;
 	public float Fov
 	{
 		get => fov;
