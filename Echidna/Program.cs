@@ -1,7 +1,11 @@
 ﻿using Echidna.Hierarchy;
+using Echidna.Input;
 using Echidna.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using InputAction = Echidna.Input.InputAction;
+using Window = Echidna.Rendering.Window;
 
 namespace Echidna;
 
@@ -23,6 +27,7 @@ public static class Program
 			new ClearScreenSystem(),
 			new ShaderSystem(),
 			new LifetimeSystem(),
+			new FirstPersonCameraSystem(),
 			new PulsatingShaderSystem(),
 			new CameraShaderProjectionSystem(),
 			new MeshRenderSystem(),
@@ -30,25 +35,35 @@ public static class Program
 		
 		Shader shader = new("Shaders/shader.vert", "Shaders/shader.frag");
 		
-		Entity windowEntity = new();
 		Window window = new(gameWindow);
-		world.AddComponent(windowEntity, window);
+		world.AddSingletonComponent(window);
 		
 		Entity cameraEntity = new();
 		Projection projection = new();
 		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, 0, -5) });
 		world.AddComponent(cameraEntity, projection);
+		
 		world.AddComponent(cameraEntity, new Lifetime());
 		world.AddComponent(cameraEntity, shader);
 		world.AddComponent(cameraEntity, new PulsatingShader());
 		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
 		
+		FirstPersonCamera firstPerson = new();
+		world.AddComponent(cameraEntity, firstPerson);
+		world.AddComponent(cameraEntity, new InputSystem(
+			new InputAction(value => firstPerson.movement.Y = value,
+				new InputTrigger(Keys.W)),
+			new InputAction(value => firstPerson.movement.Y = -value,
+				new InputTrigger(Keys.S)),
+			new InputAction(value => firstPerson.Pitch += value * firstPerson.mouseSensitivity,
+				new InputTrigger(MouseAxis.Y))));
+		
 		AddMesh(world, (0, 0, 0), shader);
 		AddMesh(world, (0.5f, 0.5f, 0), shader);
 		
 		gameWindow.Load += world.Initialize;
-		gameWindow.RenderFrame += _ => world.Draw();
 		gameWindow.Unload += world.Dispose;
+		gameWindow.RenderFrame += _ => world.Draw();
 		gameWindow.Run();
 	}
 	

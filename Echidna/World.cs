@@ -6,6 +6,8 @@ public class World
 	
 	private Dictionary<Type, System[]> systemsDependingOn;
 	
+	private Entity globalEntity = new();
+	
 	public World(params System[] systems)
 	{
 		this.systems = systems;
@@ -37,6 +39,8 @@ public class World
 				system.AddEntity(entity);
 		}
 	}
+	
+	public void AddSingletonComponent(Component component) => AddComponent(globalEntity, component);
 	
 	public void Initialize()
 	{
