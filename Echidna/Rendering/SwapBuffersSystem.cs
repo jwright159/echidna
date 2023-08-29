@@ -15,6 +15,12 @@ public class SwapBuffersSystem : System
 	private static void SwapBuffers(Window window)
 	{
 		window.window.SwapBuffers();
+		//CopyBuffer(window);
+	}
+	
+	/** Important if you're not clearing the screen */
+	private static void CopyBuffer(Window window)
+	{
 		GL.ReadBuffer(ReadBufferMode.Front);
 		GL.DrawBuffer(DrawBufferMode.Back);
 		GL.BlitFramebuffer(

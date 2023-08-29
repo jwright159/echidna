@@ -46,7 +46,7 @@ public static class Program
 		
 		Entity cameraEntity = new();
 		Projection projection = new();
-		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, 0, 0) });
+		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, -5, 0) });
 		world.AddComponent(cameraEntity, projection);
 		world.AddComponent(cameraEntity, new Mesh(pulseShader));
 		
