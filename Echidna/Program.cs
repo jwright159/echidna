@@ -1,114 +1,59 @@
-﻿using System.Drawing;
-using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
+﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Desktop;
-using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Echidna;
 
-public class Program : GameWindow
+public static class Program
 {
 	private static void Main()
 	{
-		using Program window = new();
-		window.Run();
-	}
-	
-	private World world;
-	
-	private Projection camera;
-	
-	private Program() : base(
-		GameWindowSettings.Default,
-		new NativeWindowSettings
-		{
-			Size = (1080, 720),
-			Title = "bepis",
-		})
-	{
-		world = new World(
+		Vector2i size = (1080, 720);
+		using GameWindow gameWindow = new(
+			GameWindowSettings.Default,
+			new NativeWindowSettings
+			{
+				Size = size,
+				Title = "bepis",
+			});
+		
+		World world = new(
+			new ResizeWindowSystem(),
+			new ClearScreenSystem(),
 			new ShaderSystem(),
 			new LifetimeSystem(),
 			new PulsatingShaderSystem(),
 			new CameraShaderProjectionSystem(),
-			new MeshRenderSystem());
+			new MeshRenderSystem(),
+			new SwapBuffersSystem());
 		
 		Shader shader = new("Shaders/shader.vert", "Shaders/shader.frag");
 		
-		AddMesh((0, 0, 0), shader);
-		AddMesh((0.5f, 0.5f, 0), shader);
+		Entity windowEntity = new();
+		Window window = new(gameWindow);
+		world.AddComponent(windowEntity, window);
 		
 		Entity cameraEntity = new();
+		Projection projection = new();
 		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, 0, -5) });
-		world.AddComponent(cameraEntity, camera = new Projection());
+		world.AddComponent(cameraEntity, projection);
 		world.AddComponent(cameraEntity, new Lifetime());
 		world.AddComponent(cameraEntity, shader);
 		world.AddComponent(cameraEntity, new PulsatingShader());
+		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
+		
+		AddMesh(world, (0, 0, 0), shader);
+		AddMesh(world, (0.5f, 0.5f, 0), shader);
+		
+		gameWindow.Load += world.Initialize;
+		gameWindow.RenderFrame += _ => world.Draw();
+		gameWindow.Unload += world.Dispose;
+		gameWindow.Run();
 	}
 	
-	private void AddMesh(Vector3 position, Shader shader)
+	private static void AddMesh(World world, Vector3 position, Shader shader)
 	{
 		Entity entity = new();
 		world.AddComponent(entity, new Mesh(shader));
 		world.AddComponent(entity, new Transform{ LocalPosition = position });
-	}
-	
-	protected override void OnLoad()
-	{
-		base.OnLoad();
-		
-		GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		GL.Clear(ClearBufferMask.ColorBufferBit);
-		SwapBuffers();
-		GL.Clear(ClearBufferMask.ColorBufferBit);
-		
-		try
-		{
-			world.Initialize();
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine("Initialization crash!");
-			throw;
-		}
-	}
-	
-	protected override void OnUpdateFrame(FrameEventArgs args)
-	{
-		base.OnUpdateFrame(args);
-		
-		if (KeyboardState.IsKeyDown(Keys.Escape))
-			Close();
-	}
-	
-	protected override void OnRenderFrame(FrameEventArgs args)
-	{
-		base.OnRenderFrame(args);
-		
-		try
-		{
-			world.Draw();
-		}
-		catch (Exception e)
-		{
-			Console.WriteLine("Rendering crash!");
-			throw;
-		}
-		
-		SwapBuffers();
-	}
-	
-	protected override void OnResize(ResizeEventArgs args)
-	{
-		base.OnResize(args);
-		GL.Viewport((Size)Size);
-		camera.AspectRatio = (float)Size.X / Size.Y;
-	}
-	
-	protected override void OnUnload()
-	{
-		base.OnUnload();
-		world.Dispose();
 	}
 }
