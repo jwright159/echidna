@@ -8,6 +8,5 @@ uniform vec3 someColor;
 
 void main()
 {
-    vec3 finalColor = vertexColor + someColor;
-    FragColor = vec4(finalColor, 1.0f);
+    FragColor = vec4(vertexColor + someColor, 1.0f);
 }

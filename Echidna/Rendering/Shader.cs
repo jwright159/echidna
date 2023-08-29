@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering;
 
-public class Shader : Component
+public class Shader
 {
 	internal int handle;
 	

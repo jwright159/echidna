@@ -59,9 +59,9 @@ public class Mesh : Component
 		
 		positions = new[]
 		{
-			0.5f, -0.5f, 0.0f,
-			-0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f,
+			+0.5f, +0.0f, -0.5f,
+			-0.5f, +0.0f, -0.5f,
+			+0.0f, +0.0f, +0.5f,
 		};
 		
 		colors = new[]

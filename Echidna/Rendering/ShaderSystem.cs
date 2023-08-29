@@ -4,12 +4,13 @@ namespace Echidna.Rendering;
 
 public class ShaderSystem : System
 {
-	public ShaderSystem() : base(typeof(Shader)) { }
+	public ShaderSystem() : base(typeof(Shaders)) { }
 	
 	public override void OnInitialize()
 	{
 		foreach (Entity entity in Entities)
-			Initialize(entity.GetComponent<Shader>());
+		foreach (Shader shader in entity.GetComponent<Shaders>().shaders)
+			Initialize(shader);
 	}
 	
 	private static void Initialize(Shader shader)
@@ -62,7 +63,8 @@ public class ShaderSystem : System
 	public override void OnDispose()
 	{
 		foreach (Entity entity in Entities)
-			Dispose(entity.GetComponent<Shader>());
+		foreach (Shader shader in entity.GetComponent<Shaders>().shaders)
+			Dispose(shader);
 	}
 	
 	private static void Dispose(Shader shader)
