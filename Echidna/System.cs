@@ -48,10 +48,24 @@ public abstract class System
 	{
 		if (methodSets[typeof(T)].Length == 0) return;
 		
-		IEnumerable<object[]> parameterSets = otherParameters.Length > 0 ? componentSets.Select(components => otherParameters.Concat(components).ToArray()) : componentSets;
+		IEnumerable<object[]> parameterSets = componentSets;
+		if (otherParameters.Length > 0)
+			parameterSets = BuildNewParameters(componentSets, otherParameters);
+		
 		foreach (object[] parameters in parameterSets)
 		foreach (MethodInfo method in methodSets[typeof(T)])
 			method.Invoke(this, parameters);
+	}
+	
+	private static IEnumerable<object[]> BuildNewParameters(List<object[]> componentSets, object[] otherParameters)
+	{
+		foreach (object[] components in componentSets)
+		{
+			object[] parameters = new object[otherParameters.Length + components.Length];
+			Array.Copy(otherParameters, 0, parameters, 0, otherParameters.Length);
+			Array.Copy(components, 0, parameters, otherParameters.Length, components.Length);
+			yield return parameters;
+		}
 	}
 	
 	public bool IsApplicableTo(Entity entity) => componentTypes.All(entity.HasComponentType);
