@@ -6,10 +6,10 @@ public class ShaderSystem : System
 {
 	public ShaderSystem() : base(typeof(Shaders)) { }
 	
-	public override void OnInitialize()
+	[InitializeEach]
+	private static void Initialize(Shaders shaders)
 	{
-		foreach (Entity entity in Entities)
-		foreach (Shader shader in entity.GetComponent<Shaders>().shaders)
+		foreach (Shader shader in shaders.shaders)
 			Initialize(shader);
 	}
 	
@@ -60,10 +60,10 @@ public class ShaderSystem : System
 		return shader;
 	}
 	
-	public override void OnDispose()
+	[DisposeEach]
+	private static void Dispose(Shaders shaders)
 	{
-		foreach (Entity entity in Entities)
-		foreach (Shader shader in entity.GetComponent<Shaders>().shaders)
+		foreach (Shader shader in shaders.shaders)
 			Dispose(shader);
 	}
 	

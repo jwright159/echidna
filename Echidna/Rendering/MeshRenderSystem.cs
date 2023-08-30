@@ -7,13 +7,8 @@ public class MeshRenderSystem : System
 {
 	public MeshRenderSystem() : base(typeof(Transform), typeof(Mesh)) { }
 	
-	public override void OnInitialize()
-	{
-		foreach (Entity entity in Entities)
-			Initialize(entity.GetComponent<Mesh>());
-	}
-	
-	private static void Initialize(Mesh mesh)
+	[InitializeEach]
+	private static void Initialize(Transform transform, Mesh mesh)
 	{
 		mesh.vertexBufferObject = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.vertexBufferObject);
@@ -31,13 +26,8 @@ public class MeshRenderSystem : System
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.elementBufferObject);
 	}
 	
-	public override void OnDraw(float deltaTime)
-	{
-		foreach (Entity entity in Entities)
-			Draw(entity.GetComponent<Transform>(), entity.GetComponent<Mesh>());
-	}
-	
-	private static void Draw(Transform transform, Mesh mesh)
+	[DrawEach]
+	private static void Draw(float deltaTime, Transform transform, Mesh mesh)
 	{
 		if (mesh.isDirty)
 			CleanMesh(mesh);
@@ -80,13 +70,8 @@ public class MeshRenderSystem : System
 		GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 	}
 	
-	public override void OnDispose()
-	{
-		foreach (Entity entity in Entities)
-			Dispose(entity.GetComponent<Mesh>());
-	}
-	
-	private static void Dispose(Mesh mesh)
+	[DisposeEach]
+	private static void Dispose(Transform transform, Mesh mesh)
 	{
 		mesh.hasBeenDisposed = true;
 		GL.DeleteBuffer(mesh.vertexBufferObject);

@@ -6,13 +6,8 @@ public class SwapBuffersSystem : System
 {
 	public SwapBuffersSystem() : base(typeof(Window)) { }
 	
-	public override void OnDraw(float deltaTime)
-	{
-		foreach (Entity entity in Entities)
-			SwapBuffers(entity.GetComponent<Window>());
-	}
-	
-	private static void SwapBuffers(Window window)
+	[DrawEach]
+	private static void SwapBuffers(float deltaTime, Window window)
 	{
 		window.window.SwapBuffers();
 		//CopyBuffer(window);

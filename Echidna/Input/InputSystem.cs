@@ -13,12 +13,7 @@ public class InputSystem : System
 			action.Action(trigger.FactorIn(type, value));
 	}
 	
-	public override void OnMouseMove(Vector2 position, Vector2 delta)
-	{
-		foreach (Entity entity in Entities)
-			OnMouseMove(position, delta, entity.GetComponent<InputGroup>());
-	}
-	
+	[MouseMoveEach]
 	private static void OnMouseMove(Vector2 position, Vector2 delta, InputGroup input)
 	{
 		foreach (InputAction action in input.actions)
@@ -30,17 +25,11 @@ public class InputSystem : System
 		}
 	}
 	
-	public override void OnKeyDown(Keys key)
-	{
-		foreach (Entity entity in Entities)
-			OnKey(key, 1, entity.GetComponent<InputGroup>());
-	}
+	[KeyDownEach]
+	private static void OnKeyDown(Keys key, InputGroup input) => OnKey(key, 1, input);
 	
-	public override void OnKeyUp(Keys key)
-	{
-		foreach (Entity entity in Entities)
-			OnKey(key, 0, entity.GetComponent<InputGroup>());
-	}
+	[KeyUpEach]
+	private static void OnKeyUp(Keys key, InputGroup input) => OnKey(key, 0, input);
 	
 	private static void OnKey(Keys key, float value, InputGroup input)
 	{

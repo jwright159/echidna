@@ -7,13 +7,8 @@ public class ResizeWindowSystem : System
 {
 	public ResizeWindowSystem() : base(typeof(CameraResizer)) { }
 	
-	public override void OnDraw(float deltaTime)
-	{
-		foreach (Entity entity in Entities)
-			Resize(entity.GetComponent<CameraResizer>());
-	}
-	
-	private static void Resize(CameraResizer resizer)
+	[DrawEach]
+	private static void Resize(float deltaTime, CameraResizer resizer)
 	{
 		Vector2i size = resizer.window.window.Size;
 		if (size == resizer.size) return;
