@@ -11,7 +11,7 @@ public abstract class System
 	public IEnumerable<Type> ComponentTypes => componentTypes;
 	
 	private List<object[]> componentSets = new();
-	private Dictionary<Type, MethodInfo[]> methodSets = new();
+	private Dictionary<Type, MethodSet> methodSets = new();
 	
 	protected System(params Type[] componentTypes)
 	{
@@ -30,12 +30,13 @@ public abstract class System
 	
 	private void AddAnnotatedMethods<T>(params Type[] otherParameterTypes) where T : Attribute
 	{
-		methodSets[typeof(T)] = GetAnnotatedMethods<T>(otherParameterTypes.Length > 0 ? otherParameterTypes.Concat(componentTypes).ToArray() : componentTypes);
+		Type[] parameterTypes = otherParameterTypes.Length > 0 ? otherParameterTypes.Concat(componentTypes).ToArray() : componentTypes;
+		methodSets[typeof(T)] = new MethodSet(otherParameterTypes.Length, componentTypes.Length, GetAnnotatedMethods<T>(parameterTypes));
 	}
 	
 	private MethodInfo[] GetAnnotatedMethods<T>(Type[] parameterSignature) where T : Attribute
 	{
-		MethodInfo[] methods = GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+		MethodInfo[] methods = GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)
 			.Where(method => method.GetCustomAttribute<T>() != null)
 			.ToArray();
 		foreach (MethodInfo method in methods)
@@ -44,59 +45,71 @@ public abstract class System
 		return methods;
 	}
 	
-	private void InvokeAnnotatedMethods<T>(params object[] otherParameters) where T : Attribute
-	{
-		if (methodSets[typeof(T)].Length == 0) return;
-		
-		IEnumerable<object[]> parameterSets = componentSets;
-		if (otherParameters.Length > 0)
-			parameterSets = BuildNewParameters(componentSets, otherParameters);
-		
-		foreach (object[] parameters in parameterSets)
-		foreach (MethodInfo method in methodSets[typeof(T)])
-			method.Invoke(this, parameters);
-	}
+	[Pure]
+	private MethodSet GetMethodSet<T>() where T : Attribute => methodSets[typeof(T)];
 	
-	private static IEnumerable<object[]> BuildNewParameters(List<object[]> componentSets, object[] otherParameters)
-	{
-		foreach (object[] components in componentSets)
-		{
-			object[] parameters = new object[otherParameters.Length + components.Length];
-			Array.Copy(otherParameters, 0, parameters, 0, otherParameters.Length);
-			Array.Copy(components, 0, parameters, otherParameters.Length, components.Length);
-			yield return parameters;
-		}
-	}
-	
+	[Pure]
 	public bool IsApplicableTo(Entity entity) => componentTypes.All(entity.HasComponentType);
 	
 	public void AddEntity(Entity entity) => componentSets.Add(componentTypes.Select(entity.GetComponent).Cast<object>().ToArray());
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class InitializeEachAttribute : Attribute { }
-	public void OnInitialize() => InvokeAnnotatedMethods<InitializeEachAttribute>();
+	public void OnInitialize() => GetMethodSet<InitializeEachAttribute>().Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DisposeEachAttribute : Attribute { }
-	public void OnDispose() => InvokeAnnotatedMethods<DisposeEachAttribute>();
+	public void OnDispose() => GetMethodSet<DisposeEachAttribute>().Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class UpdateEachAttribute : Attribute { }
-	public void OnUpdate(float deltaTime) => InvokeAnnotatedMethods<UpdateEachAttribute>(deltaTime);
+	public void OnUpdate(float deltaTime) => GetMethodSet<UpdateEachAttribute>().With(0, deltaTime).Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DrawEachAttribute : Attribute { }
-	public void OnDraw(float deltaTime) => InvokeAnnotatedMethods<DrawEachAttribute>(deltaTime);
+	public void OnDraw(float deltaTime) => GetMethodSet<DrawEachAttribute>().With(0, deltaTime).Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class MouseMoveEachAttribute : Attribute { }
-	public void OnMouseMove(Vector2 position, Vector2 delta) => InvokeAnnotatedMethods<MouseMoveEachAttribute>(position, delta);
+	public void OnMouseMove(Vector2 position, Vector2 delta) => GetMethodSet<MouseMoveEachAttribute>().With(0, position).With(1, delta).Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class KeyDownEachAttribute : Attribute { }
-	public void OnKeyDown(Keys key) => InvokeAnnotatedMethods<KeyDownEachAttribute>(key);
+	public void OnKeyDown(Keys key) => GetMethodSet<KeyDownEachAttribute>().With(0, key).Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class KeyUpEachAttribute : Attribute { }
-	public void OnKeyUp(Keys key) => InvokeAnnotatedMethods<KeyUpEachAttribute>(key);
+	public void OnKeyUp(Keys key) => GetMethodSet<KeyUpEachAttribute>().With(0, key).Invoke(componentSets);
+	
+	private class MethodSet
+	{
+		private readonly int numOtherParameters;
+		private readonly object[] parameters;
+		private readonly MethodInfo[] methods;
+		
+		public MethodSet(int numOtherParameters, int numComponents, MethodInfo[] methods)
+		{
+			this.numOtherParameters = numOtherParameters;
+			parameters = new object[numOtherParameters + numComponents];
+			this.methods = methods;
+		}
+		
+		public MethodSet With(int index, object parameter)
+		{
+			parameters[index] = parameter;
+			return this;
+		}
+		
+		public void Invoke(List<object[]> componentSets)
+		{
+			if (methods.Length == 0) return;
+		
+			foreach (object[] components in componentSets)
+			{
+				Array.Copy(components, 0, parameters, numOtherParameters, components.Length);
+				foreach (MethodInfo method in methods)
+					method.Invoke(null, parameters);
+			}
+		}
+	}
 }
