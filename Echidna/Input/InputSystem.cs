@@ -7,22 +7,21 @@ public class InputSystem : System
 {
 	public InputSystem() : base(typeof(InputGroup)) { }
 	
-	private static void Handle(InputAction action, object type, float value)
+	private static void Handle(InputGroup input, object type, float value)
 	{
-		foreach (InputTrigger trigger in action.triggers.Where(trigger => trigger.IsTriggeredBy(type)))
-			action.Action(trigger.FactorIn(type, value));
+		if (input.HasActionFor(type))
+			foreach (InputAction action in input[type])
+			foreach (InputTrigger trigger in action[type])
+				action.Action(trigger.FactorIn(type, value));
 	}
 	
 	[MouseMoveEach]
 	private static void OnMouseMove(Vector2 position, Vector2 delta, InputGroup input)
 	{
-		foreach (InputAction action in input.actions)
-		{
-			Handle(action, MouseAxis.X, position.X);
-			Handle(action, MouseAxis.Y, position.Y);
-			Handle(action, MouseAxis.DeltaX, delta.X);
-			Handle(action, MouseAxis.DeltaY, delta.Y);
-		}
+		Handle(input, MouseAxis.X, position.X);
+		Handle(input, MouseAxis.Y, position.Y);
+		Handle(input, MouseAxis.DeltaX, delta.X);
+		Handle(input, MouseAxis.DeltaY, delta.Y);
 	}
 	
 	[KeyDownEach]
@@ -33,7 +32,6 @@ public class InputSystem : System
 	
 	private static void OnKey(Keys key, float value, InputGroup input)
 	{
-		foreach (InputAction action in input.actions)
-			Handle(action, key, value);
+		Handle(input, key, value);
 	}
 }

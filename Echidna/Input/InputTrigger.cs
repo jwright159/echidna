@@ -2,6 +2,7 @@
 
 public interface InputTrigger
 {
+	public IEnumerable<object> InputTypes { get; }
 	public bool IsTriggeredBy(object type);
 	public object FactorIn(object type, float value);
 }

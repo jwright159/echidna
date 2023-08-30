@@ -2,6 +2,8 @@
 
 public class AxisInputTrigger : InputTrigger<float>
 {
+	private HashSet<object> inputTypes;
+	
 	private SingleInputTrigger positive;
 	private SingleInputTrigger negative;
 	
@@ -12,9 +14,13 @@ public class AxisInputTrigger : InputTrigger<float>
 	{
 		this.positive = positive;
 		this.negative = negative;
+		
+		inputTypes = positive.InputTypes.Concat(negative.InputTypes).ToHashSet();
 	}
 	
-	public bool IsTriggeredBy(object type) => positive.IsTriggeredBy(type) || negative.IsTriggeredBy(type);
+	public IEnumerable<object> InputTypes => inputTypes;
+	
+	public bool IsTriggeredBy(object type) => inputTypes.Contains(type);
 	
 	public float FactorIn(object type, float value)
 	{

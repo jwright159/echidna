@@ -9,6 +9,14 @@ public class SingleInputTrigger : InputTrigger<float>
 		this.inputType = inputType;
 	}
 	
+	public IEnumerable<object> InputTypes
+	{
+		get
+		{
+			yield return inputType;
+		}
+	}
+	
 	public bool IsTriggeredBy(object type) => type.Equals(inputType);
 	
 	public float FactorIn(object type, float value) => value;

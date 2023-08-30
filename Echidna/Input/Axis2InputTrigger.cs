@@ -4,6 +4,8 @@ namespace Echidna.Input;
 
 public class Axis2InputTrigger : InputTrigger<Vector2>
 {
+	private HashSet<object> inputTypes;
+	
 	private AxisInputTrigger x;
 	private AxisInputTrigger y;
 	
@@ -17,9 +19,13 @@ public class Axis2InputTrigger : InputTrigger<Vector2>
 		this.x = x;
 		this.y = y;
 		this.normalize = normalize;
+		
+		inputTypes = x.InputTypes.Concat(y.InputTypes).ToHashSet();
 	}
 	
-	public bool IsTriggeredBy(object type) => x.IsTriggeredBy(type) || y.IsTriggeredBy(type);
+	public IEnumerable<object> InputTypes => inputTypes;
+	
+	public bool IsTriggeredBy(object type) => inputTypes.Contains(type);
 	
 	public Vector2 FactorIn(object type, float value)
 	{
