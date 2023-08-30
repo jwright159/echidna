@@ -8,4 +8,6 @@ public class Transform : Component
 	public Quaternion LocalRotation { get; set; } = Quaternion.Identity;
 	
 	public Matrix4 Transformation => Matrix4.CreateFromQuaternion(LocalRotation) * Matrix4.CreateTranslation(LocalPosition);
+	
+	public Vector3 TransformDirection(Vector3 direction) => LocalRotation * direction;
 }

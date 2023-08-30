@@ -9,7 +9,7 @@ public class FirstPersonCameraSystem : System
 	[UpdateEach]
 	private static void Update(float deltaTime, Transform transform, FirstPersonCamera firstPerson)
 	{
-		transform.LocalPosition += firstPerson.movement * firstPerson.movementSpeed * deltaTime;
+		transform.LocalPosition += transform.TransformDirection(firstPerson.movement) * firstPerson.movementSpeed * deltaTime;
 		transform.LocalRotation = firstPerson.Rotation;
 	}
 }

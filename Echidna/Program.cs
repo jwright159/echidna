@@ -53,7 +53,7 @@ public static class Program
 		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
 		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
 		
-		FirstPersonCamera firstPerson = new(){ mouseSensitivity = 0.5f };
+		FirstPersonCamera firstPerson = new(){ mouseSensitivity = 0.5f, movementSpeed = 1.5f };
 		world.AddComponent(cameraEntity, firstPerson);
 		world.AddComponent(cameraEntity, new InputGroup(
 			new InputAction<Vector3>(value => firstPerson.movement = value,

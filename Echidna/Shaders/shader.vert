@@ -11,9 +11,9 @@ uniform mat4 view;
 uniform mat4 projection;
 
 const mat4 flip = mat4(
-    -1, 0, 0, 0,
+    1, 0, 0, 0,
     0, 0, 1, 0,
-    0, 1, 0, 0,
+    0, -1, 0, 0,
     0, 0, 0, 1
 );
 
