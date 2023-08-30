@@ -6,12 +6,7 @@ public class SpinnerSystem : System
 {
 	public SpinnerSystem() : base(typeof(Transform), typeof(Spinner)) { }
 	
-	public override void OnUpdate(float deltaTime)
-	{
-		foreach (Entity entity in Entities)
-			Spin(deltaTime, entity.GetComponent<Transform>(), entity.GetComponent<Spinner>());
-	}
-	
+	[UpdateEach]
 	private static void Spin(float deltaTime, Transform transform, Spinner spinner)
 	{
 		spinner.currentAngle += deltaTime * spinner.speed;

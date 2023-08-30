@@ -6,7 +6,8 @@ public class Entity
 	
 	private Dictionary<Type, Component> components = new();
 	
-	public T GetComponent<T>() where T : Component => (T)components[typeof(T)];
+	public T GetComponent<T>() where T : Component => (T)GetComponent(typeof(T));
+	public Component GetComponent(Type type) => components[type];
 	
 	internal void AddComponent(Component component) => components.Add(component.GetType(), component);
 	

@@ -15,9 +15,7 @@ public static class Program
 	{
 		Vector2i size = (1080, 720);
 		using GameWindow gameWindow = new(
-			new GameWindowSettings
-			{
-			},
+			new GameWindowSettings(),
 			new NativeWindowSettings
 			{
 				Size = size,
