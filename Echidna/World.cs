@@ -18,11 +18,13 @@ public class World
 		Dictionary<Type, List<System>> systemsDepending = new();
 		
 		foreach (System system in systems)
-		foreach (Type componentType in system.ComponentTypes)
 		{
-			if (!systemsDepending.ContainsKey(componentType))
-				systemsDepending.Add(componentType, new List<System>());
-			systemsDepending[componentType].Add(system);
+			foreach (Type componentType in system.ComponentTypes)
+			{
+				if (!systemsDepending.ContainsKey(componentType))
+					systemsDepending.Add(componentType, new List<System>());
+				systemsDepending[componentType].Add(system);
+			}
 		}
 		
 		systemsDependingOn = systemsDepending.ToDictionary(pair => pair.Key, pair => pair.Value.ToArray());
@@ -58,16 +60,16 @@ public class World
 			system.OnDispose();
 	}
 	
-	public void Update(float deltaTime)
+	public void Update()
 	{
 		foreach (System system in systems)
-			system.OnUpdate(deltaTime);
+			system.OnUpdate();
 	}
 	
-	public void Draw(float deltaTime)
+	public void Draw()
 	{
 		foreach (System system in systems)
-			system.OnDraw(deltaTime);
+			system.OnDraw();
 	}
 	
 	public void MouseMove(Vector2 position, Vector2 delta)

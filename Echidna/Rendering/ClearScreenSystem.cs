@@ -14,7 +14,7 @@ public class ClearScreenSystem : System
 	}
 	
 	[DrawEach]
-	private static void Clear(float deltaTime, Window window)
+	private static void Clear(Window window)
 	{
 		GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
 	}

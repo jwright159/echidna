@@ -27,7 +27,7 @@ public class MeshRenderSystem : System
 	}
 	
 	[DrawEach]
-	private static void Draw(float deltaTime, Transform transform, Mesh mesh)
+	private static void Draw(Transform transform, Mesh mesh)
 	{
 		if (mesh.isDirty)
 			CleanMesh(mesh);

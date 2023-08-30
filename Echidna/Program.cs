@@ -19,7 +19,6 @@ public static class Program
 			new NativeWindowSettings
 			{
 				Size = size,
-				Title = "bepis",
 			});
 		gameWindow.CursorState = CursorState.Grabbed;
 		
@@ -83,8 +82,8 @@ public static class Program
 		
 		gameWindow.Load += world.Initialize;
 		gameWindow.Unload += world.Dispose;
-		gameWindow.UpdateFrame += args => world.Update((float)args.Time);
-		gameWindow.RenderFrame += args => world.Draw((float)args.Time);
+		gameWindow.UpdateFrame += _ => world.Update();
+		gameWindow.RenderFrame += _ => world.Draw();
 		gameWindow.MouseMove += args => world.MouseMove(args.Position, args.Delta);
 		gameWindow.KeyDown += args => world.KeyDown(args.Key);
 		gameWindow.KeyUp += args => world.KeyUp(args.Key);
@@ -97,5 +96,6 @@ public static class Program
 		world.AddComponent(entity, new Mesh(shader));
 		world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 		world.AddComponent(entity, new Spinner(rotation, rotation.Length));
+		world.AddComponent(entity, new Lifetime());
 	}
 }

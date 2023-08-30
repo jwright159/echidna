@@ -7,7 +7,7 @@ public class SwapBuffersSystem : System
 	public SwapBuffersSystem() : base(typeof(Window)) { }
 	
 	[DrawEach]
-	private static void SwapBuffers(float deltaTime, Window window)
+	private static void SwapBuffers(Window window)
 	{
 		window.window.SwapBuffers();
 		//CopyBuffer(window);

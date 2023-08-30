@@ -21,8 +21,8 @@ public abstract class System
 		
 		AddAnnotatedMethods<InitializeEachAttribute>();
 		AddAnnotatedMethods<DisposeEachAttribute>();
-		AddAnnotatedMethods<UpdateEachAttribute>(typeof(float));
-		AddAnnotatedMethods<DrawEachAttribute>(typeof(float));
+		AddAnnotatedMethods<UpdateEachAttribute>();
+		AddAnnotatedMethods<DrawEachAttribute>();
 		AddAnnotatedMethods<MouseMoveEachAttribute>(typeof(Vector2), typeof(Vector2));
 		AddAnnotatedMethods<KeyDownEachAttribute>(typeof(Keys));
 		AddAnnotatedMethods<KeyUpEachAttribute>(typeof(Keys));
@@ -63,11 +63,11 @@ public abstract class System
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class UpdateEachAttribute : Attribute { }
-	public void OnUpdate(float deltaTime) => GetMethodSet<UpdateEachAttribute>().With(0, deltaTime).Invoke(componentSets);
+	public void OnUpdate() => GetMethodSet<UpdateEachAttribute>().Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DrawEachAttribute : Attribute { }
-	public void OnDraw(float deltaTime) => GetMethodSet<DrawEachAttribute>().With(0, deltaTime).Invoke(componentSets);
+	public void OnDraw() => GetMethodSet<DrawEachAttribute>().Invoke(componentSets);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class MouseMoveEachAttribute : Attribute { }

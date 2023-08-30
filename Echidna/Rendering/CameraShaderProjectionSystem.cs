@@ -7,7 +7,7 @@ public class CameraShaderProjectionSystem : System
 	public CameraShaderProjectionSystem() : base(typeof(Transform), typeof(Projection), typeof(Shaders)) { }
 	
 	[DrawEach]
-	private static void SetProjectionMatrices(float deltaTime, Transform transform, Projection projection, Shaders shaders)
+	private static void SetProjectionMatrices(Transform transform, Projection projection, Shaders shaders)
 	{
 		foreach (Shader shader in shaders.shaders)
 		{

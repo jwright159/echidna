@@ -7,6 +7,13 @@ public class LifetimeSystem : System
 	[InitializeEach]
 	private static void StartTimer(Lifetime lifetime)
 	{
-		lifetime.time.Start();
+		lifetime.watch.Start();
+	}
+	
+	[UpdateEach]
+	private static void UpdateDelta(Lifetime lifetime)
+	{
+		lifetime.DeltaTime = lifetime.Time - lifetime.previousTime;
+		lifetime.previousTime = lifetime.Time;
 	}
 }

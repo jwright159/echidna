@@ -8,7 +8,7 @@ public class ResizeWindowSystem : System
 	public ResizeWindowSystem() : base(typeof(CameraResizer)) { }
 	
 	[DrawEach]
-	private static void Resize(float deltaTime, CameraResizer resizer)
+	private static void Resize(CameraResizer resizer)
 	{
 		Vector2i size = resizer.window.window.Size;
 		if (size == resizer.size) return;
