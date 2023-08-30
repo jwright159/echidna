@@ -46,6 +46,8 @@ public abstract class System
 	
 	private void InvokeAnnotatedMethods<T>(params object[] otherParameters) where T : Attribute
 	{
+		if (methodSets[typeof(T)].Length == 0) return;
+		
 		IEnumerable<object[]> parameterSets = otherParameters.Length > 0 ? componentSets.Select(components => otherParameters.Concat(components).ToArray()) : componentSets;
 		foreach (object[] parameters in parameterSets)
 		foreach (MethodInfo method in methodSets[typeof(T)])
