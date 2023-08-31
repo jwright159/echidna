@@ -4,15 +4,9 @@ namespace Echidna.Rendering;
 
 public class ShaderSystem : System
 {
-	public ShaderSystem() : base(typeof(Shaders)) { }
+	public ShaderSystem() : base(typeof(Shader)) { }
 	
 	[InitializeEach]
-	private static void Initialize(Shaders shaders)
-	{
-		foreach (Shader shader in shaders.shaders)
-			Initialize(shader);
-	}
-	
 	private static void Initialize(Shader shader)
 	{
 		int vertexShader = CompileShader(shader.vertexSource, ShaderType.VertexShader);
@@ -61,12 +55,6 @@ public class ShaderSystem : System
 	}
 	
 	[DisposeEach]
-	private static void Dispose(Shaders shaders)
-	{
-		foreach (Shader shader in shaders.shaders)
-			Dispose(shader);
-	}
-	
 	private static void Dispose(Shader shader)
 	{
 		shader.hasBeenDisposed = true;

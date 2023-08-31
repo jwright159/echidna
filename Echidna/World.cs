@@ -19,7 +19,7 @@ public class World
 		
 		foreach (System system in systems)
 		{
-			foreach (Type componentType in system.ComponentTypes)
+			foreach (Type componentType in system.EachComponentTypes)
 			{
 				if (!systemsDepending.ContainsKey(componentType))
 					systemsDepending.Add(componentType, new List<System>());

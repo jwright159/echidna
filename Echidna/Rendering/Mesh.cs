@@ -2,13 +2,13 @@
 
 public class Mesh : Component
 {
-	internal readonly int dims = 3;
+	internal const int Dims = 3;
 	
 	public readonly string[] attributes = { "aPosition", "aColor" };
 	
-	public int NumVertices => positions.Length / dims;
+	public int NumVertices => positions.Length / Dims;
 	
-	internal bool isDirty = true;
+	internal bool isDirty;
 	
 	private float[] positions;
 	public float[] Positions
@@ -45,38 +45,20 @@ public class Mesh : Component
 	
 	internal float[] data;
 	
-	internal readonly Shader shader;
-	
 	internal int vertexBufferObject;
 	internal int elementBufferObject;
 	internal int vertexArrayObject;
 	
 	internal bool hasBeenDisposed;
 	
-	public Mesh(Shader shader)
+	public Mesh(float[] positions, float[] colors, uint[] indices)
 	{
-		this.shader = shader;
-		
-		positions = new[]
-		{
-			+0.5f, +0.0f, -0.5f,
-			-0.5f, +0.0f, -0.5f,
-			+0.0f, +0.0f, +0.5f,
-		};
-		
-		colors = new[]
-		{
-			1.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 1.0f,
-		};
+		this.positions = positions;
+		this.colors = colors;
+		this.indices = indices;
 		
 		data = Array.Empty<float>();
-		
-		indices = new uint[]
-		{
-			0, 1, 2,
-		};
+		isDirty = true;
 	}
 	
 	~Mesh()

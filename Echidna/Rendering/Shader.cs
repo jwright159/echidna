@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering;
 
-public class Shader
+public class Shader : Component
 {
 	internal int handle;
 	
@@ -32,25 +32,21 @@ public class Shader
 	
 	public void SetInt(string name, int data)
 	{
-		Bind();
 		GL.Uniform1(GetUniformLocation(name), data);
 	}
 	
 	public void SetFloat(string name, float data)
 	{
-		Bind();
 		GL.Uniform1(GetUniformLocation(name), data);
 	}
 	
 	public void SetMatrix4(string name, Matrix4 data)
 	{
-		Bind();
 		GL.UniformMatrix4(GetUniformLocation(name), true, ref data);
 	}
 	
 	public void SetVector3(string name, Vector3 data)
 	{
-		Bind();
 		GL.Uniform3(GetUniformLocation(name), data);
 	}
 	

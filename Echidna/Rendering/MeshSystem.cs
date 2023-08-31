@@ -1,14 +1,13 @@
-﻿using Echidna.Hierarchy;
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
 namespace Echidna.Rendering;
 
-public class MeshRenderSystem : System
+public class MeshSystem : System
 {
-	public MeshRenderSystem() : base(typeof(Transform), typeof(Mesh)) { }
+	public MeshSystem() : base(typeof(Mesh)) { }
 	
 	[InitializeEach]
-	private static void Initialize(Transform transform, Mesh mesh)
+	private static void Initialize(Mesh mesh)
 	{
 		mesh.vertexBufferObject = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.vertexBufferObject);
@@ -17,9 +16,8 @@ public class MeshRenderSystem : System
 		GL.BindVertexArray(mesh.vertexArrayObject);
 		for (int attribute = 0; attribute < mesh.attributes.Length; attribute++)
 		{
-			int attribLocation = mesh.shader.GetAttribLocation(mesh.attributes[attribute]);
-			GL.VertexAttribPointer(attribLocation, 3, VertexAttribPointerType.Float, false, mesh.attributes.Length * mesh.dims * sizeof(float), attribute * mesh.dims * sizeof(float));
-			GL.EnableVertexAttribArray(attribLocation);
+			GL.VertexAttribPointer(attribute, 3, VertexAttribPointerType.Float, false, mesh.attributes.Length * Mesh.Dims * sizeof(float), attribute * Mesh.Dims * sizeof(float));
+			GL.EnableVertexAttribArray(attribute);
 		}
 		
 		mesh.elementBufferObject = GL.GenBuffer();
@@ -27,16 +25,10 @@ public class MeshRenderSystem : System
 	}
 	
 	[DrawEach]
-	private static void Draw(Transform transform, Mesh mesh)
+	private static void Draw(Mesh mesh)
 	{
 		if (mesh.isDirty)
 			CleanMesh(mesh);
-		
-		mesh.shader.SetMatrix4("model", transform.Transformation);
-		mesh.shader.Bind();
-		
-		GL.BindVertexArray(mesh.vertexArrayObject);
-		GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 	}
 	
 	private static void CleanMesh(Mesh mesh)
@@ -54,8 +46,8 @@ public class MeshRenderSystem : System
 		
 		for (int i = 0; i < mesh.NumVertices; i++)
 		for (int dataset = 0; dataset < datasets.Length; dataset++)
-		for (int x = 0; x < mesh.dims; x++)
-			mesh.data[i * datasets.Length * mesh.dims + dataset * mesh.dims + x] = datasets[dataset][i * mesh.dims + x];
+		for (int x = 0; x < Mesh.Dims; x++)
+			mesh.data[i * datasets.Length * Mesh.Dims + dataset * Mesh.Dims + x] = datasets[dataset][i * Mesh.Dims + x];
 	}
 	
 	private static void BindData(int vertexBufferObject, float[] data)
@@ -71,7 +63,7 @@ public class MeshRenderSystem : System
 	}
 	
 	[DisposeEach]
-	private static void Dispose(Transform transform, Mesh mesh)
+	private static void Dispose(Mesh mesh)
 	{
 		mesh.hasBeenDisposed = true;
 		GL.DeleteBuffer(mesh.vertexBufferObject);

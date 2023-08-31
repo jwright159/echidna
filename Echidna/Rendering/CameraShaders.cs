@@ -1,10 +1,10 @@
 ﻿namespace Echidna.Rendering;
 
-public class Shaders : Component
+public class CameraShaders : Component
 {
 	internal readonly Shader[] shaders;
-
-	public Shaders(params Shader[] shaders)
+	
+	public CameraShaders(params Shader[] shaders)
 	{
 		this.shaders = shaders;
 	}

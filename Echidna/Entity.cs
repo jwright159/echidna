@@ -11,5 +11,6 @@ public class Entity
 	
 	internal void AddComponent(Component component) => components.Add(component.GetType(), component);
 	
+	public bool HasComponentType<T>() where T : Component => HasComponentType(typeof(T));
 	public bool HasComponentType(Type componentType) => components.ContainsKey(componentType);
 }
