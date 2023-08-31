@@ -30,7 +30,7 @@ public class MeshRendererSystem : System
 				GL.BindVertexArray(meshRenderer.mesh.vertexArrayObject);
 			}
 			
-			meshRenderer.shader.SetMatrix4("model", transform.Transformation);
+			meshRenderer.shader.SetMatrix4(0, transform.Transformation);
 			GL.DrawElements(PrimitiveType.Triangles, meshRenderer.mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 		}
 	}

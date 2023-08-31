@@ -45,6 +45,11 @@ public class Shader : Component
 		GL.UniformMatrix4(GetUniformLocation(name), true, ref data);
 	}
 	
+	public void SetMatrix4(int location, Matrix4 data)
+	{
+		GL.UniformMatrix4(location, true, ref data);
+	}
+	
 	public void SetVector3(string name, Vector3 data)
 	{
 		GL.Uniform3(GetUniformLocation(name), data);
