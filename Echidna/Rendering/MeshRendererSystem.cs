@@ -7,31 +7,32 @@ public class MeshRendererSystem : System
 {
 	public MeshRendererSystem() : base(typeof(Transform), typeof(MeshRenderer)) { }
 	
+	private Mesh? currentMesh;
+	private Shader? currentShader;
+	
 	[DrawAll]
-	private static void Draw(List<Entity> entities)
+	private void ResetCurrentMesh(List<Entity> entities)
 	{
-		Mesh? currentMesh = null;
-		Shader? currentShader = null;
-		
-		foreach (Entity entity in entities)
+		currentMesh = null;
+		currentShader = null;
+	}
+	
+	[DrawEach]
+	private void Draw(Transform transform, MeshRenderer meshRenderer)
+	{
+		if (meshRenderer.shader != currentShader)
 		{
-			Transform transform = entity.GetComponent<Transform>();
-			MeshRenderer meshRenderer = entity.GetComponent<MeshRenderer>();
-			
-			if (meshRenderer.shader != currentShader)
-			{
-				currentShader = meshRenderer.shader;
-				meshRenderer.shader.Bind();
-			}
-			
-			if (meshRenderer.mesh != currentMesh)
-			{
-				currentMesh = meshRenderer.mesh;
-				GL.BindVertexArray(meshRenderer.mesh.vertexArrayObject);
-			}
-			
-			meshRenderer.shader.SetMatrix4(0, transform.Transformation);
-			GL.DrawElements(PrimitiveType.Triangles, meshRenderer.mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+			currentShader = meshRenderer.shader;
+			meshRenderer.shader.Bind();
 		}
+			
+		if (meshRenderer.mesh != currentMesh)
+		{
+			currentMesh = meshRenderer.mesh;
+			GL.BindVertexArray(meshRenderer.mesh.vertexArrayObject);
+		}
+			
+		meshRenderer.shader.SetMatrix4(0, transform.Transformation);
+		GL.DrawElements(PrimitiveType.Triangles, meshRenderer.mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 	}
 }

@@ -42,7 +42,7 @@ public abstract class System
 	
 	private MethodInvoker[] GetAnnotatedMethods<T>(Type[] parameterSignature) where T : Attribute
 	{
-		IList<MethodInfo> methods = GetType().MethodsWith(Flags.StaticAnyVisibility, typeof(T));
+		IList<MethodInfo> methods = GetType().MethodsWith(Flags.StaticInstanceAnyVisibility, typeof(T));
 		foreach (MethodInfo method in methods)
 			if (!method.Parameters().Select(parameter => parameter.ParameterType).SequenceEqual(parameterSignature))
 				throw new ArgumentException($"System {this} method {method} with attribute {typeof(T)} does not have the right parameters ({string.Join(", ", parameterSignature.AsEnumerable())})");
@@ -65,43 +65,43 @@ public abstract class System
 	protected class InitializeAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class InitializeEachAttribute : Attribute { }
-	public void OnInitialize() => GetMethodSet<InitializeEachAttribute>().Invoke(entities, componentSets);
+	public void OnInitialize() => GetMethodSet<InitializeEachAttribute>().Invoke(this);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DisposeAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DisposeEachAttribute : Attribute { }
-	public void OnDispose() => GetMethodSet<DisposeEachAttribute>().Invoke(entities, componentSets);
+	public void OnDispose() => GetMethodSet<DisposeEachAttribute>().Invoke(this);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class UpdateAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class UpdateEachAttribute : Attribute { }
-	public void OnUpdate() => GetMethodSet<UpdateEachAttribute>().Invoke(entities, componentSets);
+	public void OnUpdate() => GetMethodSet<UpdateEachAttribute>().Invoke(this);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DrawAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class DrawEachAttribute : Attribute { }
-	public void OnDraw() => GetMethodSet<DrawEachAttribute>().Invoke(entities, componentSets);
+	public void OnDraw() => GetMethodSet<DrawEachAttribute>().Invoke(this);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class MouseMoveAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class MouseMoveEachAttribute : Attribute { }
-	public void OnMouseMove(Vector2 position, Vector2 delta) => GetMethodSet<MouseMoveEachAttribute>().With(0, position).With(1, delta).Invoke(entities, componentSets);
+	public void OnMouseMove(Vector2 position, Vector2 delta) => GetMethodSet<MouseMoveEachAttribute>().With(0, position).With(1, delta).Invoke(this);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class KeyDownAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class KeyDownEachAttribute : Attribute { }
-	public void OnKeyDown(Keys key) => GetMethodSet<KeyDownEachAttribute>().With(0, key).Invoke(entities, componentSets);
+	public void OnKeyDown(Keys key) => GetMethodSet<KeyDownEachAttribute>().With(0, key).Invoke(this);
 	
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class KeyUpAllAttribute : Attribute { }
 	[MeansImplicitUse, AttributeUsage(AttributeTargets.Method)]
 	protected class KeyUpEachAttribute : Attribute { }
-	public void OnKeyUp(Keys key) => GetMethodSet<KeyUpEachAttribute>().With(0, key).Invoke(entities, componentSets);
+	public void OnKeyUp(Keys key) => GetMethodSet<KeyUpEachAttribute>().With(0, key).Invoke(this);
 	
 	private class MethodSet
 	{
@@ -126,31 +126,55 @@ public abstract class System
 			return this;
 		}
 		
-		public void Invoke(List<Entity> entities, List<object[]> componentSets)
+		public void Invoke(System system) => Invoke(system, system.entities, system.componentSets);
+		public void Invoke(System system, List<Entity> entities, List<object[]> componentSets)
 		{
-			InvokeAll(entities);
-			InvokeEach(componentSets);
+			InvokeAll(system, entities);
+			InvokeEach(system, componentSets);
 		}
 		
-		private void InvokeAll(List<Entity> entities)
+		private void InvokeAll(System system, List<Entity> entities)
 		{
 			if (allMethods.Length == 0) return;
 			
 			allParameters[numOtherParameters] = entities;
 			foreach (MethodInvoker allMethod in allMethods)
-				allMethod.Invoke(null, allParameters);
+				allMethod.Invoke(system, allParameters);
 		}
 		
-		private void InvokeEach(List<object[]> componentSets)
+		private void InvokeEach(System system, List<object[]> componentSets)
 		{
 			if (eachMethods.Length == 0) return;
 			
+			InvokeEachLoop(system, componentSets);
+		}
+		
+		private void InvokeEachLoop(System system, List<object[]> componentSets)
+		{
 			foreach (object[] components in componentSets)
-			{
-				Array.Copy(components, 0, eachParameters, numOtherParameters, components.Length);
-				foreach (MethodInvoker eachMethod in eachMethods)
-					eachMethod.Invoke(null, eachParameters);
-			}
+				InvokeEachLoopInterior(system, components);
+		}
+		
+		private void InvokeEachLoopInterior(System system, object[] components)
+		{
+			InvokeEachLoopInteriorArrayCopy(components);
+			InvokeEachLoopInteriorLoop(system);
+		}
+		
+		private void InvokeEachLoopInteriorArrayCopy(object[] components)
+		{
+			Array.Copy(components, 0, eachParameters, numOtherParameters, components.Length);
+		}
+		
+		private void InvokeEachLoopInteriorLoop(System system)
+		{
+			foreach (MethodInvoker eachMethod in eachMethods)
+				InvokeEachLoopInteriorLoopInterior(system, eachMethod);
+		}
+		
+		private void InvokeEachLoopInteriorLoopInterior(System system, MethodInvoker eachMethod)
+		{
+			eachMethod.Invoke(system, eachParameters);
 		}
 	}
 }

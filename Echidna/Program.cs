@@ -1,4 +1,5 @@
-﻿using Echidna.Hierarchy;
+﻿using System.Diagnostics;
+using Echidna.Hierarchy;
 using Echidna.Input;
 using Echidna.Rendering;
 using OpenTK.Mathematics;
@@ -11,6 +12,49 @@ namespace Echidna;
 
 public static class Program
 {
+	private static void Mai()
+	{
+		const int num = 300_000_000;
+		Stopwatch watch = new();
+		
+		List<object> list = new();
+		object[] arr = new object[num];
+		object obj = new();
+		for (int i = 0; i < num; i++)
+		{
+			if (i % 100_000 == 0) Console.WriteLine(i);
+			list.Add(obj);
+			arr[i] = obj;
+		}
+		
+		watch.Start();
+		for (int i = 0; i < num; i++)
+		{
+			
+		}
+		watch.Stop();
+		Console.WriteLine($"For time {watch.ElapsedMilliseconds} ms");
+		watch.Reset();
+		
+		watch.Start();
+		foreach (object o in arr)
+		{
+			
+		}
+		watch.Stop();
+		Console.WriteLine($"Foreach Array time {watch.ElapsedMilliseconds} ms");
+		watch.Reset();
+		
+		watch.Start();
+		foreach (object o in list)
+		{
+			
+		}
+		watch.Stop();
+		Console.WriteLine($"Foreach List time {watch.ElapsedMilliseconds} ms");
+		watch.Reset();
+	}
+	
 	private static void Main()
 	{
 		Vector2i size = (1080, 720);
