@@ -116,7 +116,7 @@ public static class Program
 		AddMesh(world, (0, 1, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader);
 		AddMesh(world, (0, 0, 1), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader);
 		
-		for (int i = 0; i < 90001; i++)
+		for (int i = 0; i < 900_001; i++)
 			AddMesh(world, (i + 2, 0, 0), (0, 0, MathHelper.PiOver4 / (i + 1)), triangle, pulseShader);
 		
 		gameWindow.Load += world.Initialize;
@@ -135,6 +135,5 @@ public static class Program
 		world.AddComponent(entity, new MeshRenderer(mesh, shader));
 		world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 		world.AddComponent(entity, new Spinner(rotation, rotation.Length));
-		world.AddComponent(entity, new Lifetime());
 	}
 }
