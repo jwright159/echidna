@@ -2,12 +2,9 @@
 
 namespace Echidna.Rendering;
 
-public class ShaderSystem : System
+public class ShaderSystem : System<Shader>
 {
-	public ShaderSystem() : base(typeof(Shader)) { }
-	
-	[InitializeEach]
-	private static void Initialize(Shader shader)
+	protected override void OnInitializeEach(Shader shader)
 	{
 		int vertexShader = CompileShader(shader.vertexSource, ShaderType.VertexShader);
 		int fragmentShader = CompileShader(shader.fragmentSource, ShaderType.FragmentShader);
@@ -54,8 +51,7 @@ public class ShaderSystem : System
 		return shader;
 	}
 	
-	[DisposeEach]
-	private static void Dispose(Shader shader)
+	protected override void OnDisposeEach(Shader shader)
 	{
 		shader.hasBeenDisposed = true;
 		GL.DeleteProgram(shader.handle);

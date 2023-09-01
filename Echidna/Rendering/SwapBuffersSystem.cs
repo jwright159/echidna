@@ -2,12 +2,9 @@
 
 namespace Echidna.Rendering;
 
-public class SwapBuffersSystem : System
+public class SwapBuffersSystem : System<Window>
 {
-	public SwapBuffersSystem() : base(typeof(Window)) { }
-	
-	[DrawEach]
-	private static void SwapBuffers(Window window)
+	protected override void OnDrawEach(Window window)
 	{
 		window.window.SwapBuffers();
 		//CopyBuffer(window);

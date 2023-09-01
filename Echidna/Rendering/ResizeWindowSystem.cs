@@ -3,12 +3,9 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering;
 
-public class ResizeWindowSystem : System
+public class ResizeWindowSystem : System<CameraResizer>
 {
-	public ResizeWindowSystem() : base(typeof(CameraResizer)) { }
-	
-	[DrawEach]
-	private static void Resize(CameraResizer resizer)
+	protected override void OnDrawEach(CameraResizer resizer)
 	{
 		Vector2i size = resizer.window.window.Size;
 		if (size == resizer.size) return;

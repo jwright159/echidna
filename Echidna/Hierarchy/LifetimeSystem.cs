@@ -1,19 +1,9 @@
 ﻿namespace Echidna.Hierarchy;
 
-public class LifetimeSystem : System
+public class LifetimeSystem : System<Lifetime>
 {
-	public LifetimeSystem() : base(typeof(Lifetime)) { }
-	
-	[InitializeEach]
-	private static void StartTimer(Lifetime lifetime)
+	protected override void OnUpdateEach(float deltaTime, Lifetime lifetime)
 	{
-		lifetime.watch.Start();
-	}
-	
-	[UpdateEach]
-	private static void UpdateDelta(Lifetime lifetime)
-	{
-		lifetime.DeltaTime = lifetime.Time - lifetime.previousTime;
-		lifetime.previousTime = lifetime.Time;
+		lifetime.Time += deltaTime;
 	}
 }

@@ -19,7 +19,7 @@ public class World
 		
 		foreach (System system in systems)
 		{
-			foreach (Type componentType in system.EachComponentTypes)
+			foreach (Type componentType in system.ApplicableComponentTypes)
 			{
 				if (!systemsDepending.ContainsKey(componentType))
 					systemsDepending.Add(componentType, new List<System>());
@@ -51,42 +51,42 @@ public class World
 	public void Initialize()
 	{
 		foreach (System system in systems)
-			system.OnInitialize();
+			system.Initialize();
 	}
 	
 	public void Dispose()
 	{
 		foreach (System system in systems)
-			system.OnDispose();
+			system.Dispose();
 	}
 	
-	public void Update()
+	public void Update(float deltaTime)
 	{
 		foreach (System system in systems)
-			system.OnUpdate();
+			system.Update(deltaTime);
 	}
 	
 	public void Draw()
 	{
 		foreach (System system in systems)
-			system.OnDraw();
+			system.Draw();
 	}
 	
 	public void MouseMove(Vector2 position, Vector2 delta)
 	{
 		foreach (System system in systems)
-			system.OnMouseMove(position, delta);
+			system.MouseMove(position, delta);
 	}
 	
 	public void KeyDown(Keys key)
 	{
 		foreach (System system in systems)
-			system.OnKeyDown(key);
+			system.KeyDown(key);
 	}
 	
 	public void KeyUp(Keys key)
 	{
 		foreach (System system in systems)
-			system.OnKeyUp(key);
+			system.KeyUp(key);
 	}
 }

@@ -2,14 +2,11 @@
 
 namespace Echidna.Rendering;
 
-public class PulsatingShaderSystem : System
+public class PulsatingShaderSystem : System<PulsatingShader, Lifetime>
 {
-	public PulsatingShaderSystem() : base(typeof(PulsatingShader), typeof(Lifetime)) { }
-	
-	[UpdateEach]
-	private static void Pulse(PulsatingShader shader, Lifetime lifetime)
+	protected override void OnDrawEach(PulsatingShader shader, Lifetime lifetime)
 	{
 		shader.shader.Bind();
-		shader.shader.SetVector3("someColor", (0f, MathF.Sin((float)lifetime.watch.Elapsed.TotalSeconds) / 2.0f + 0.5f, 0f));
+		shader.shader.SetVector3("someColor", (0f, MathF.Sin(lifetime.Time) / 2.0f + 0.5f, 0f));
 	}
 }

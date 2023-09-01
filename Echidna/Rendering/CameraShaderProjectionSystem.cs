@@ -2,12 +2,9 @@
 
 namespace Echidna.Rendering;
 
-public class CameraShaderProjectionSystem : System
+public class CameraShaderProjectionSystem : System<Transform, Projection, CameraShaders>
 {
-	public CameraShaderProjectionSystem() : base(typeof(Transform), typeof(Projection), typeof(CameraShaders)) { }
-	
-	[DrawEach]
-	private static void SetProjectionMatrices(Transform transform, Projection projection, CameraShaders cameraShaders)
+	protected override void OnDrawEach(Transform transform, Projection projection, CameraShaders cameraShaders)
 	{
 		foreach (Shader shader in cameraShaders.shaders)
 		{

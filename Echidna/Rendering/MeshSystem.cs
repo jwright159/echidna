@@ -2,12 +2,9 @@
 
 namespace Echidna.Rendering;
 
-public class MeshSystem : System
+public class MeshSystem : System<Mesh>
 {
-	public MeshSystem() : base(typeof(Mesh)) { }
-	
-	[InitializeEach]
-	private static void Initialize(Mesh mesh)
+	protected override void OnInitializeEach(Mesh mesh)
 	{
 		mesh.vertexBufferObject = GL.GenBuffer();
 		GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.vertexBufferObject);
@@ -24,8 +21,7 @@ public class MeshSystem : System
 		GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.elementBufferObject);
 	}
 	
-	[DrawEach]
-	private static void Draw(Mesh mesh)
+	protected override void OnDrawEach(Mesh mesh)
 	{
 		if (mesh.isDirty)
 			CleanMesh(mesh);
@@ -62,8 +58,7 @@ public class MeshSystem : System
 		GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
 	}
 	
-	[DisposeEach]
-	private static void Dispose(Mesh mesh)
+	protected override void OnDisposeEach(Mesh mesh)
 	{
 		mesh.hasBeenDisposed = true;
 		GL.DeleteBuffer(mesh.vertexBufferObject);

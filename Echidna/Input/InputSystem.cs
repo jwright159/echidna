@@ -3,10 +3,8 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Echidna.Input;
 
-public class InputSystem : System
+public class InputSystem : System<InputGroup>
 {
-	public InputSystem() : base(typeof(InputGroup)) { }
-	
 	private static void Handle(InputGroup input, object type, float value)
 	{
 		if (input.HasActionFor(type))
@@ -15,8 +13,7 @@ public class InputSystem : System
 				action.Action(trigger.FactorIn(type, value));
 	}
 	
-	[MouseMoveEach]
-	private static void OnMouseMove(Vector2 position, Vector2 delta, InputGroup input)
+	protected override void OnMouseMoveEach(Vector2 position, Vector2 delta, InputGroup input)
 	{
 		Handle(input, MouseAxis.X, position.X);
 		Handle(input, MouseAxis.Y, position.Y);
@@ -24,11 +21,9 @@ public class InputSystem : System
 		Handle(input, MouseAxis.DeltaY, delta.Y);
 	}
 	
-	[KeyDownEach]
-	private static void OnKeyDown(Keys key, InputGroup input) => OnKey(key, 1, input);
+	protected override void OnKeyDownEach(Keys key, InputGroup input) => OnKey(key, 1, input);
 	
-	[KeyUpEach]
-	private static void OnKeyUp(Keys key, InputGroup input) => OnKey(key, 0, input);
+	protected override void OnKeyUpEach(Keys key, InputGroup input) => OnKey(key, 0, input);
 	
 	private static void OnKey(Keys key, float value, InputGroup input)
 	{
