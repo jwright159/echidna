@@ -11,9 +11,12 @@ public class MeshSystem : System<Mesh>
 		
 		mesh.vertexArrayObject = GL.GenVertexArray();
 		GL.BindVertexArray(mesh.vertexArrayObject);
-		for (int attribute = 0; attribute < mesh.attributes.Length; attribute++)
+		
+		int[] widths = { 3, 2, 3 };
+		int stride = widths.Sum();
+		for (int attribute = 0, offset = 0; attribute < widths.Length; offset += widths[attribute], attribute++)
 		{
-			GL.VertexAttribPointer(attribute, 3, VertexAttribPointerType.Float, false, mesh.attributes.Length * Mesh.Dims * sizeof(float), attribute * Mesh.Dims * sizeof(float));
+			GL.VertexAttribPointer(attribute, widths[attribute], VertexAttribPointerType.Float, false, stride * sizeof(float), offset * sizeof(float));
 			GL.EnableVertexAttribArray(attribute);
 		}
 		
@@ -37,13 +40,15 @@ public class MeshSystem : System<Mesh>
 	
 	private static void RegenerateData(Mesh mesh)
 	{
-		float[][] datasets = { mesh.Positions, mesh.Colors };
+		float[][] datasets = { mesh.Positions, mesh.TexCoords, mesh.Colors };
+		int[] widths = { 3, 2, 3 };
+		int stride = widths.Sum();
 		mesh.data = new float[datasets.Sum(data => data.Length)];
 		
 		for (int i = 0; i < mesh.NumVertices; i++)
-		for (int dataset = 0; dataset < datasets.Length; dataset++)
-		for (int x = 0; x < Mesh.Dims; x++)
-			mesh.data[i * datasets.Length * Mesh.Dims + dataset * Mesh.Dims + x] = datasets[dataset][i * Mesh.Dims + x];
+		for (int dataset = 0, offset = 0; dataset < datasets.Length; offset += widths[dataset], dataset++)
+		for (int x = 0; x < widths[dataset]; x++)
+			mesh.data[i * stride + offset + x] = datasets[dataset][i * widths[dataset] + x];
 	}
 	
 	private static void BindData(int vertexBufferObject, float[] data)

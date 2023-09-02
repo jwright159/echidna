@@ -26,6 +26,7 @@ public static class Program
 			new ResizeWindowSystem(),
 			new ClearScreenSystem(),
 			new ShaderSystem(),
+			new TextureSystem(),
 			new LifetimeSystem(),
 			new InputSystem(),
 			new SpinnerSystem(),
@@ -42,11 +43,19 @@ public static class Program
 		Shader globalCoordsShader = new("Shaders/shader.vert", "Shaders/global-coords.frag");
 		world.AddComponent(new Entity(), globalCoordsShader);
 		
+		Shader textureShader = new("Shaders/shader.vert", "Shaders/texture.frag");
+		world.AddComponent(new Entity(), textureShader);
+		
 		Mesh triangle = new(new[]
 		{
 			+0.5f, +0.0f, -0.5f,
 			-0.5f, +0.0f, -0.5f,
 			+0.0f, +0.0f, +0.5f,
+		}, new[]
+		{
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			0.5f, 1.0f,
 		}, new[]
 		{
 			1.0f, 0.0f, 0.0f,
@@ -60,19 +69,168 @@ public static class Program
 		
 		Mesh box = new(new[]
 		{
-			+0.5f, +0.0f, -0.5f,
-			-0.5f, +0.0f, -0.5f,
-			+0.0f, +0.0f, +0.5f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, +1.0f,
+			-1.0f, +1.0f, -1.0f,
+			-1.0f, +1.0f, +1.0f,
+			+1.0f, -1.0f, -1.0f,
+			+1.0f, -1.0f, +1.0f,
+			+1.0f, +1.0f, -1.0f,
+			+1.0f, +1.0f, +1.0f,
 		}, new[]
 		{
-			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f,
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+		}, new[]
+		{
+			0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
 			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 0.0f,
+			1.0f, 1.0f, 1.0f,
+		}, new uint[]
+		{
+			0, 2, 1,
+			1, 2, 3,
+			2, 6, 3,
+			3, 6, 7,
+			4, 0, 5,
+			5, 0, 1,
+			5, 1, 7,
+			7, 1, 3,
+			6, 2, 4,
+			4, 2, 0,
+			6, 4, 7,
+			7, 4, 5,
+		});
+		world.AddComponent(new Entity(), box);
+		
+		Mesh splitFacesBox = new(new[]
+		{
+			-1.0f, +1.0f, +1.0f,
+			-1.0f, -1.0f, +1.0f,
+			-1.0f, -1.0f, -1.0f,
+			-1.0f, +1.0f, -1.0f,
+			
+			+1.0f, -1.0f, +1.0f,
+			+1.0f, +1.0f, +1.0f,
+			+1.0f, +1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
+			
+			-1.0f, -1.0f, +1.0f,
+			+1.0f, -1.0f, +1.0f,
+			+1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			
+			+1.0f, +1.0f, +1.0f,
+			-1.0f, +1.0f, +1.0f,
+			-1.0f, +1.0f, -1.0f,
+			+1.0f, +1.0f, -1.0f,
+			
+			+1.0f, +1.0f, -1.0f,
+			-1.0f, +1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
+			
+			-1.0f, +1.0f, +1.0f,
+			+1.0f, +1.0f, +1.0f,
+			+1.0f, -1.0f, +1.0f,
+			-1.0f, -1.0f, +1.0f,
+		}, new[]
+		{
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+			
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f,
+			0.0f, 0.0f,
+		}, new[]
+		{
+			0.0f, 1.0f, 1.0f,
+			0.0f, 0.0f, 1.0f,
+			0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			
+			1.0f, 0.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			
+			0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,
+			
+			1.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 1.0f,
+			0.0f, 1.0f, 0.0f,
+			1.0f, 1.0f, 0.0f,
+			
+			1.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			
+			0.0f, 1.0f, 1.0f,
+			1.0f, 1.0f, 1.0f,
+			1.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 1.0f,
 		}, new uint[]
 		{
-			0, 1, 2,
+			0, 1, 3,
+			3, 1, 2,
+			
+			4, 5, 7,
+			7, 5, 6,
+			
+			8, 9, 11,
+			11, 9, 10,
+			
+			12, 13, 15,
+			15, 13, 14,
+			
+			16, 17, 19,
+			19, 17, 18,
+			
+			20, 21, 23,
+			23, 21, 22,
 		});
-		world.AddComponent(new Entity(), box);
+		world.AddComponent(new Entity(), splitFacesBox);
+		
+		Texture crateTexture = new("Shaders/container.jpg");
+		world.AddComponent(new Entity(), crateTexture);
 		
 		Window window = new(gameWindow);
 		world.AddSingletonComponent(window);
@@ -83,7 +241,7 @@ public static class Program
 		world.AddComponent(cameraEntity, projection);
 		
 		world.AddComponent(cameraEntity, new Lifetime());
-		world.AddComponent(cameraEntity, new CameraShaders(pulseShader, globalCoordsShader));
+		world.AddComponent(cameraEntity, new CameraShaders(pulseShader, globalCoordsShader, textureShader));
 		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
 		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
 		
@@ -111,10 +269,10 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		AddMesh(world, (0, 0, 0), (0, 0, 0), box, pulseShader);
-		AddMesh(world, (1, 0, 0), (MathHelper.PiOver4, 0, 0), triangle, globalCoordsShader);
-		AddMesh(world, (0, 1, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader);
-		AddMesh(world, (0, 0, 1), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader);
+		AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
+		AddMesh(world, (2, 0, 0), (MathHelper.PiOver4, 0, 0), triangle, globalCoordsShader, null);
+		AddMesh(world, (0, 2, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader, null);
+		AddMesh(world, (0, 0, 2), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader, null);
 		
 		gameWindow.Load += world.Initialize;
 		gameWindow.Unload += world.Dispose;
@@ -126,10 +284,10 @@ public static class Program
 		gameWindow.Run();
 	}
 	
-	private static void AddMesh(World world, Vector3 position, Vector3 rotation, Mesh mesh, Shader shader)
+	private static void AddMesh(World world, Vector3 position, Vector3 rotation, Mesh mesh, Shader shader, Texture? texture)
 	{
 		Entity entity = new();
-		world.AddComponent(entity, new MeshRenderer(mesh, shader));
+		world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
 		world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 		world.AddComponent(entity, new Spinner(rotation, rotation.Length));
 	}

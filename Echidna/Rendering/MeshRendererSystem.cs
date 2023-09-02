@@ -1,34 +1,38 @@
 ﻿using Echidna.Hierarchy;
-using OpenTK.Graphics.OpenGL4;
 
 namespace Echidna.Rendering;
 
 public class MeshRendererSystem : System<Transform, MeshRenderer>
 {
-	private Mesh? currentMesh;
-	private Shader? currentShader;
-	
 	protected override void OnDraw(IEnumerable<(Transform, MeshRenderer)> componentSets)
 	{
-		currentMesh = null;
-		currentShader = null;
-	}
-	
-	protected override void OnDrawEach(Transform transform, MeshRenderer meshRenderer)
-	{
-		if (meshRenderer.shader != currentShader)
+		Mesh? currentMesh = null;
+		Shader? currentShader = null;
+		Texture? currentTexture = null;
+
+		foreach ((Transform transform, MeshRenderer meshRenderer) in componentSets)
 		{
-			currentShader = meshRenderer.shader;
-			meshRenderer.shader.Bind();
+			if (meshRenderer.shader != currentShader)
+			{
+				currentShader = meshRenderer.shader;
+				meshRenderer.shader.Bind();
+			}
+			
+			if (meshRenderer.texture != null && meshRenderer.texture != currentTexture)
+			{
+				currentTexture = meshRenderer.texture;
+				meshRenderer.texture.Bind();
+				meshRenderer.shader.SetInt("texture0", 0);
+			}
+			
+			if (meshRenderer.mesh != currentMesh)
+			{
+				currentMesh = meshRenderer.mesh;
+				meshRenderer.mesh.Bind();
+			}
+			
+			meshRenderer.shader.SetMatrix4(0, transform.Transformation);
+			meshRenderer.mesh.Draw();
 		}
-		
-		if (meshRenderer.mesh != currentMesh)
-		{
-			currentMesh = meshRenderer.mesh;
-			GL.BindVertexArray(meshRenderer.mesh.vertexArrayObject);
-		}
-		
-		meshRenderer.shader.SetMatrix4(0, transform.Transformation);
-		GL.DrawElements(PrimitiveType.Triangles, meshRenderer.mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 	}
 }

@@ -4,8 +4,6 @@ public class Mesh : Component
 {
 	internal const int Dims = 3;
 	
-	public readonly string[] attributes = { "aPosition", "aColor" };
-	
 	public int NumVertices => positions.Length / Dims;
 	
 	internal bool isDirty;
@@ -17,6 +15,17 @@ public class Mesh : Component
 		set
 		{
 			positions = value;
+			isDirty = true;
+		}
+	}
+	
+	private float[] texCoords;
+	public float[] TexCoords
+	{
+		get => texCoords;
+		set
+		{
+			texCoords = value;
 			isDirty = true;
 		}
 	}
@@ -51,9 +60,10 @@ public class Mesh : Component
 	
 	internal bool hasBeenDisposed;
 	
-	public Mesh(float[] positions, float[] colors, uint[] indices)
+	public Mesh(float[] positions, float[] texCoords, float[] colors, uint[] indices)
 	{
 		this.positions = positions;
+		this.texCoords = texCoords;
 		this.colors = colors;
 		this.indices = indices;
 		
