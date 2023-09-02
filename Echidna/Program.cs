@@ -116,9 +116,6 @@ public static class Program
 		AddMesh(world, (0, 1, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader);
 		AddMesh(world, (0, 0, 1), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader);
 		
-		for (int i = 0; i < 900_001; i++)
-			AddMesh(world, (i + 2, 0, 0), (0, 0, MathHelper.PiOver4 / (i + 1)), triangle, pulseShader);
-		
 		gameWindow.Load += world.Initialize;
 		gameWindow.Unload += world.Dispose;
 		gameWindow.UpdateFrame += args => world.Update((float)args.Time);
