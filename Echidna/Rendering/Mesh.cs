@@ -58,14 +58,18 @@ public class Mesh : Component
 	internal int elementBufferObject;
 	internal int vertexArrayObject;
 	
+	internal bool cullBackFaces;
+	
 	internal bool hasBeenDisposed;
 	
-	public Mesh(float[] positions, float[] texCoords, float[] colors, uint[] indices)
+	public Mesh(float[] positions, float[] texCoords, float[] colors, uint[] indices, bool cullBackFaces = true)
 	{
 		this.positions = positions;
 		this.texCoords = texCoords;
 		this.colors = colors;
 		this.indices = indices;
+		
+		this.cullBackFaces = cullBackFaces;
 		
 		data = Array.Empty<float>();
 		isDirty = true;

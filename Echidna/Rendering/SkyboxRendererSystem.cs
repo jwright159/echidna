@@ -10,6 +10,7 @@ public class SkyboxRendererSystem : System<SkyboxRenderer>
 		Shader? currentShader = null;
 		CubeMap? currentCubeMap = null;
 		
+		GL.Disable(EnableCap.CullFace);
 		GL.DepthFunc(DepthFunction.Lequal);
 		
 		foreach (SkyboxRenderer skyboxRenderer in skyboxRenderers)

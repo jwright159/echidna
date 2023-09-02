@@ -69,7 +69,7 @@ public static class Program
 		}, new uint[]
 		{
 			0, 1, 2,
-		});
+		}, false);
 		world.AddComponent(new Entity(), triangle);
 		
 		Mesh box = new(new[]
