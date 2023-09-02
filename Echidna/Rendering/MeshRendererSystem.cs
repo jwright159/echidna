@@ -8,7 +8,7 @@ public class MeshRendererSystem : System<Transform, MeshRenderer>
 	private Mesh? currentMesh;
 	private Shader? currentShader;
 	
-	protected override void OnDraw(IEnumerable<Entity> entities)
+	protected override void OnDraw(IEnumerable<(Transform, MeshRenderer)> componentSets)
 	{
 		currentMesh = null;
 		currentShader = null;

@@ -4,9 +4,12 @@ namespace Echidna.Hierarchy;
 
 public class SpinnerSystem : System<Transform, Spinner>
 {
-	protected override void OnUpdateEach(float deltaTime, Transform transform, Spinner spinner)
+	protected override void OnUpdate(float deltaTime, IEnumerable<(Transform, Spinner)> componentSets)
 	{
-		spinner.currentAngle += deltaTime * spinner.speed;
-		transform.LocalRotation = Quaternion.FromAxisAngle(spinner.axis, spinner.currentAngle);
+		componentSets.AsParallel().ForAll(tuple =>
+		{
+			tuple.Item2.currentAngle += deltaTime * tuple.Item2.speed;
+			tuple.Item1.LocalRotation = Quaternion.FromAxisAngle(tuple.Item2.axis, tuple.Item2.currentAngle);
+		});
 	}
 }
