@@ -27,6 +27,7 @@ public static class Program
 			new ClearScreenSystem(),
 			new ShaderSystem(),
 			new TextureSystem(),
+			new CubeMapSystem(),
 			new LifetimeSystem(),
 			new InputSystem(),
 			new SpinnerSystem(),
@@ -35,6 +36,7 @@ public static class Program
 			new CameraShaderProjectionSystem(),
 			new MeshSystem(),
 			new MeshRendererSystem(),
+			new SkyboxRendererSystem(),
 			new SwapBuffersSystem());
 		
 		Shader pulseShader = new("Shaders/shader.vert", "Shaders/pulse.frag");
@@ -45,6 +47,9 @@ public static class Program
 		
 		Shader textureShader = new("Shaders/shader.vert", "Shaders/texture.frag");
 		world.AddComponent(new Entity(), textureShader);
+		
+		Shader skyboxShader = new("Shaders/skybox.vert", "Shaders/cubemap.frag");
+		world.AddComponent(new Entity(), skyboxShader);
 		
 		Mesh triangle = new(new[]
 		{
@@ -116,35 +121,35 @@ public static class Program
 		
 		Mesh splitFacesBox = new(new[]
 		{
-			-1.0f, +1.0f, +1.0f,
-			-1.0f, -1.0f, +1.0f,
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, +1.0f, -1.0f,
-			
 			+1.0f, -1.0f, +1.0f,
 			+1.0f, +1.0f, +1.0f,
 			+1.0f, +1.0f, -1.0f,
 			+1.0f, -1.0f, -1.0f,
 			
+			-1.0f, +1.0f, +1.0f,
 			-1.0f, -1.0f, +1.0f,
-			+1.0f, -1.0f, +1.0f,
-			+1.0f, -1.0f, -1.0f,
 			-1.0f, -1.0f, -1.0f,
+			-1.0f, +1.0f, -1.0f,
 			
 			+1.0f, +1.0f, +1.0f,
 			-1.0f, +1.0f, +1.0f,
 			-1.0f, +1.0f, -1.0f,
 			+1.0f, +1.0f, -1.0f,
 			
-			+1.0f, +1.0f, -1.0f,
-			-1.0f, +1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, +1.0f,
+			+1.0f, -1.0f, +1.0f,
 			+1.0f, -1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
 			
 			-1.0f, +1.0f, +1.0f,
 			+1.0f, +1.0f, +1.0f,
 			+1.0f, -1.0f, +1.0f,
 			-1.0f, -1.0f, +1.0f,
+			
+			+1.0f, +1.0f, -1.0f,
+			-1.0f, +1.0f, -1.0f,
+			-1.0f, -1.0f, -1.0f,
+			+1.0f, -1.0f, -1.0f,
 		}, new[]
 		{
 			0.0f, 1.0f,
@@ -178,35 +183,35 @@ public static class Program
 			0.0f, 0.0f,
 		}, new[]
 		{
-			0.0f, 1.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			
 			1.0f, 0.0f, 1.0f,
 			1.0f, 1.0f, 1.0f,
 			1.0f, 1.0f, 0.0f,
 			1.0f, 0.0f, 0.0f,
 			
+			0.0f, 1.0f, 1.0f,
 			0.0f, 0.0f, 1.0f,
-			1.0f, 0.0f, 1.0f,
-			1.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
 			
 			1.0f, 1.0f, 1.0f,
 			0.0f, 1.0f, 1.0f,
 			0.0f, 1.0f, 0.0f,
 			1.0f, 1.0f, 0.0f,
 			
-			1.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
+			1.0f, 0.0f, 1.0f,
 			1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,
 			
 			0.0f, 1.0f, 1.0f,
 			1.0f, 1.0f, 1.0f,
 			1.0f, 0.0f, 1.0f,
 			0.0f, 0.0f, 1.0f,
+			
+			1.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
 		}, new uint[]
 		{
 			0, 1, 3,
@@ -232,6 +237,15 @@ public static class Program
 		Texture crateTexture = new("Shaders/container.jpg");
 		world.AddComponent(new Entity(), crateTexture);
 		
+		CubeMap skyboxCubeMap = new(
+			"Shaders/Skybox/right.png",
+			"Shaders/Skybox/left.png",
+			"Shaders/Skybox/front.png",
+			"Shaders/Skybox/back.png",
+			"Shaders/Skybox/top.png",
+			"Shaders/Skybox/bottom.png");
+		world.AddComponent(new Entity(), skyboxCubeMap);
+		
 		Window window = new(gameWindow);
 		world.AddSingletonComponent(window);
 		
@@ -241,7 +255,7 @@ public static class Program
 		world.AddComponent(cameraEntity, projection);
 		
 		world.AddComponent(cameraEntity, new Lifetime());
-		world.AddComponent(cameraEntity, new CameraShaders(pulseShader, globalCoordsShader, textureShader));
+		world.AddComponent(cameraEntity, new CameraShaders(pulseShader, globalCoordsShader, textureShader, skyboxShader));
 		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
 		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
 		
@@ -269,10 +283,12 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
+		//AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
 		AddMesh(world, (2, 0, 0), (MathHelper.PiOver4, 0, 0), triangle, globalCoordsShader, null);
 		AddMesh(world, (0, 2, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader, null);
 		AddMesh(world, (0, 0, 2), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader, null);
+		
+		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));
 		
 		gameWindow.Load += world.Initialize;
 		gameWindow.Unload += world.Dispose;

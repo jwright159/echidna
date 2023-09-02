@@ -9,7 +9,7 @@ public class MeshRendererSystem : System<Transform, MeshRenderer>
 		Mesh? currentMesh = null;
 		Shader? currentShader = null;
 		Texture? currentTexture = null;
-
+		
 		foreach ((Transform transform, MeshRenderer meshRenderer) in componentSets)
 		{
 			if (meshRenderer.shader != currentShader)

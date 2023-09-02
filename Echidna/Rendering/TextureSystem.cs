@@ -7,7 +7,6 @@ public class TextureSystem : System<Texture>
 {
 	protected override void OnInitializeEach(Texture texture)
 	{
-		
 		texture.handle = GL.GenTexture();
 		texture.Bind();
 		
@@ -21,8 +20,6 @@ public class TextureSystem : System<Texture>
 		
 		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
 		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-		
-		GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 	}
 	
 	protected override void OnDisposeEach(Texture texture)

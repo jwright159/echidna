@@ -12,6 +12,11 @@ public static class GLResourceUtil
 		GL.ActiveTexture(unit);
 		GL.BindTexture(TextureTarget.Texture2D, texture.handle);
 	}
+	public static void Bind(this CubeMap cubeMap, TextureUnit unit = TextureUnit.Texture0)
+	{
+		GL.ActiveTexture(unit);
+		GL.BindTexture(TextureTarget.TextureCubeMap, cubeMap.handle);
+	}
 	
 	public static void Draw(this Mesh mesh) => GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 	
