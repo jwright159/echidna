@@ -283,7 +283,7 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		//AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
+		AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
 		AddMesh(world, (2, 0, 0), (MathHelper.PiOver4, 0, 0), triangle, globalCoordsShader, null);
 		AddMesh(world, (0, 2, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader, null);
 		AddMesh(world, (0, 0, 2), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader, null);
