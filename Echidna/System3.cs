@@ -24,6 +24,7 @@ public abstract class System<T1, T2, T3> : System where T1 : Component where T2 
 		hasOnInitializeEach = IsOverridden("OnInitializeEach");
 		hasOnDisposeEach = IsOverridden("OnDisposeEach");
 		hasOnUpdateEach = IsOverridden("OnUpdateEach");
+		hasOnPhysicsUpdateEach = IsOverridden("OnPhysicsUpdateEach");
 		hasOnDrawEach = IsOverridden("OnDrawEach");
 		hasOnMouseMoveEach = IsOverridden("OnMouseMoveEach");
 		hasOnKeyDownEach = IsOverridden("OnKeyDownEach");
@@ -59,6 +60,17 @@ public abstract class System<T1, T2, T3> : System where T1 : Component where T2 
 	}
 	protected virtual void OnDispose(IEnumerable<(T1, T2, T3)> componentSets) { }
 	protected virtual void OnDisposeEach(T1 component1, T2 component2, T3 component3) { }
+	
+	private bool hasOnPhysicsUpdateEach;
+	public void PhysicsUpdate(float deltaTime)
+	{
+		OnPhysicsUpdate(deltaTime, componentSets);
+		if (hasOnPhysicsUpdateEach)
+			foreach ((T1 component1, T2 component2, T3 component3) in componentSets)
+				OnPhysicsUpdateEach(deltaTime, component1, component2, component3);
+	}
+	protected virtual void OnPhysicsUpdate(float deltaTime, IEnumerable<(T1, T2, T3)> componentSets) { }
+	protected virtual void OnPhysicsUpdateEach(float deltaTime, T1 component1, T2 component2, T3 component3) { }
 	
 	private bool hasOnUpdateEach;
 	public void Update(float deltaTime)

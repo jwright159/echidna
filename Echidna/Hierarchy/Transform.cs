@@ -1,4 +1,6 @@
 ﻿using OpenTK.Mathematics;
+using Vector3 = Echidna.Mathematics.Vector3;
+using Vector3OpenTK = OpenTK.Mathematics.Vector3;
 
 namespace Echidna.Hierarchy;
 
@@ -9,5 +11,5 @@ public class Transform : Component
 	
 	public Matrix4 Transformation => Matrix4.CreateFromQuaternion(LocalRotation) * Matrix4.CreateTranslation(LocalPosition);
 	
-	public Vector3 TransformDirection(Vector3 direction) => LocalRotation * direction;
+	public Vector3 TransformDirection(Vector3 direction) => LocalRotation * (Vector3OpenTK)direction;
 }

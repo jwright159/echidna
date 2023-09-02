@@ -11,6 +11,9 @@ public class World
 	
 	private Entity globalEntity = new();
 	
+	private float accumulatedTime = 0;
+	public float PhysicsDeltaTime { get; set; } = 1f / 60f;
+	
 	public World(params System[] systems)
 	{
 		this.systems = systems;
@@ -62,8 +65,22 @@ public class World
 	
 	public void Update(float deltaTime)
 	{
+		PhysicsUpdate(deltaTime);
+		
 		foreach (System system in systems)
 			system.Update(deltaTime);
+	}
+	
+	private void PhysicsUpdate(float deltaTime)
+	{
+		accumulatedTime += deltaTime;
+		while (accumulatedTime >= PhysicsDeltaTime)
+		{
+			float physicsDeltaTime = PhysicsDeltaTime;
+			accumulatedTime -= physicsDeltaTime;
+			foreach (System system in systems)
+				system.PhysicsUpdate(physicsDeltaTime);
+		}
 	}
 	
 	public void Draw()

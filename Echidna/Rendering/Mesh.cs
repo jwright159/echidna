@@ -58,7 +58,7 @@ public class Mesh : Component
 	internal int elementBufferObject;
 	internal int vertexArrayObject;
 	
-	internal bool cullBackFaces;
+	internal readonly bool cullBackFaces;
 	
 	internal bool hasBeenDisposed;
 	

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.Contracts;
-using System.Reflection;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
@@ -15,6 +14,7 @@ public interface System
 	
 	public void Initialize();
 	public void Dispose();
+	public void PhysicsUpdate(float deltaTime);
 	public void Update(float deltaTime);
 	public void Draw();
 	public void MouseMove(Vector2 position, Vector2 delta);

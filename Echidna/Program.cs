@@ -1,5 +1,6 @@
 ﻿using Echidna.Hierarchy;
 using Echidna.Input;
+using Echidna.Physics;
 using Echidna.Rendering;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -28,17 +29,24 @@ public static class Program
 			new ShaderSystem(),
 			new TextureSystem(),
 			new CubeMapSystem(),
+			
 			new LifetimeSystem(),
+			new WorldSimulationSystem(),
+			new BodyTransformSystem(),
+			
 			new InputSystem(),
 			new SpinnerSystem(),
 			new FirstPersonCameraSystem(),
 			new PulsatingShaderSystem(),
+			
 			new CameraShaderProjectionSystem(),
 			new MeshSystem(),
 			new MeshRendererSystem(),
 			new SkyboxRendererSystem(),
+			
 			new SwapBuffersSystem());
 		
+		#region Shader definitions
 		Shader pulseShader = new("Shaders/shader.vert", "Shaders/pulse.frag");
 		world.AddComponent(new Entity(), pulseShader);
 		
@@ -50,7 +58,23 @@ public static class Program
 		
 		Shader skyboxShader = new("Shaders/skybox.vert", "Shaders/cubemap.frag");
 		world.AddComponent(new Entity(), skyboxShader);
+		#endregion
 		
+		#region Texture definitions
+		Texture crateTexture = new("Shaders/container.jpg");
+		world.AddComponent(new Entity(), crateTexture);
+		
+		CubeMap skyboxCubeMap = new(
+			"Shaders/Skybox/right.png",
+			"Shaders/Skybox/left.png",
+			"Shaders/Skybox/front.png",
+			"Shaders/Skybox/back.png",
+			"Shaders/Skybox/top.png",
+			"Shaders/Skybox/bottom.png");
+		world.AddComponent(new Entity(), skyboxCubeMap);
+		#endregion
+		
+		#region Mesh definitions
 		Mesh triangle = new(new[]
 		{
 			+0.5f, +0.0f, -0.5f,
@@ -233,18 +257,7 @@ public static class Program
 			23, 21, 22,
 		});
 		world.AddComponent(new Entity(), splitFacesBox);
-		
-		Texture crateTexture = new("Shaders/container.jpg");
-		world.AddComponent(new Entity(), crateTexture);
-		
-		CubeMap skyboxCubeMap = new(
-			"Shaders/Skybox/right.png",
-			"Shaders/Skybox/left.png",
-			"Shaders/Skybox/front.png",
-			"Shaders/Skybox/back.png",
-			"Shaders/Skybox/top.png",
-			"Shaders/Skybox/bottom.png");
-		world.AddComponent(new Entity(), skyboxCubeMap);
+		#endregion
 		
 		Window window = new(gameWindow);
 		world.AddSingletonComponent(window);
@@ -283,10 +296,18 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
+		//AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
 		AddMesh(world, (2, 0, 0), (MathHelper.PiOver4, 0, 0), triangle, globalCoordsShader, null);
 		AddMesh(world, (0, 2, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader, null);
 		AddMesh(world, (0, 0, 2), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader, null);
+		
+		WorldSimulation simulation = new();
+		world.AddSingletonComponent(simulation);
+		
+		Entity ball = new();
+		world.AddComponent(ball, new SimulationBody(simulation));
+		world.AddComponent(ball, new Transform{ LocalPosition = (0, 0, 5) });
+		world.AddComponent(ball, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
 		
 		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));
 		
