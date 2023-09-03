@@ -1,4 +1,6 @@
-﻿using Echidna.Hierarchy;
+﻿using BepuPhysics;
+using BepuPhysics.Collidables;
+using Echidna.Hierarchy;
 using Echidna.Input;
 using Echidna.Mathematics;
 using Echidna.Physics;
@@ -6,6 +8,7 @@ using Echidna.Rendering;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Mesh = Echidna.Rendering.Mesh;
 using Window = Echidna.Rendering.Window;
 using Vector2i = OpenTK.Mathematics.Vector2i;
 
@@ -33,7 +36,8 @@ public static class Program
 			
 			new LifetimeSystem(),
 			new WorldSimulationSystem(),
-			new BodyTransformSystem(),
+			new DynamicBodyTransformSystem(),
+			new StaticBodyTransformSystem(),
 			
 			new InputSystem(),
 			new SpinnerSystem(),
@@ -99,14 +103,14 @@ public static class Program
 		
 		Mesh box = new(new[]
 		{
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f, +1.0f,
-			-1.0f, +1.0f, -1.0f,
-			-1.0f, +1.0f, +1.0f,
-			+1.0f, -1.0f, -1.0f,
-			+1.0f, -1.0f, +1.0f,
-			+1.0f, +1.0f, -1.0f,
-			+1.0f, +1.0f, +1.0f,
+			-0.5f, -0.5f, -0.5f,
+			-0.5f, -0.5f, +0.5f,
+			-0.5f, +0.5f, -0.5f,
+			-0.5f, +0.5f, +0.5f,
+			+0.5f, -0.5f, -0.5f,
+			+0.5f, -0.5f, +0.5f,
+			+0.5f, +0.5f, -0.5f,
+			+0.5f, +0.5f, +0.5f,
 		}, new[]
 		{
 			1.0f, 0.0f,
@@ -146,35 +150,35 @@ public static class Program
 		
 		Mesh splitFacesBox = new(new[]
 		{
-			+1.0f, -1.0f, +1.0f,
-			+1.0f, +1.0f, +1.0f,
-			+1.0f, +1.0f, -1.0f,
-			+1.0f, -1.0f, -1.0f,
+			+0.5f, -0.5f, +0.5f,
+			+0.5f, +0.5f, +0.5f,
+			+0.5f, +0.5f, -0.5f,
+			+0.5f, -0.5f, -0.5f,
 			
-			-1.0f, +1.0f, +1.0f,
-			-1.0f, -1.0f, +1.0f,
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, +1.0f, -1.0f,
+			-0.5f, +0.5f, +0.5f,
+			-0.5f, -0.5f, +0.5f,
+			-0.5f, -0.5f, -0.5f,
+			-0.5f, +0.5f, -0.5f,
 			
-			+1.0f, +1.0f, +1.0f,
-			-1.0f, +1.0f, +1.0f,
-			-1.0f, +1.0f, -1.0f,
-			+1.0f, +1.0f, -1.0f,
+			+0.5f, +0.5f, +0.5f,
+			-0.5f, +0.5f, +0.5f,
+			-0.5f, +0.5f, -0.5f,
+			+0.5f, +0.5f, -0.5f,
 			
-			-1.0f, -1.0f, +1.0f,
-			+1.0f, -1.0f, +1.0f,
-			+1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
+			-0.5f, -0.5f, +0.5f,
+			+0.5f, -0.5f, +0.5f,
+			+0.5f, -0.5f, -0.5f,
+			-0.5f, -0.5f, -0.5f,
 			
-			-1.0f, +1.0f, +1.0f,
-			+1.0f, +1.0f, +1.0f,
-			+1.0f, -1.0f, +1.0f,
-			-1.0f, -1.0f, +1.0f,
+			-0.5f, +0.5f, +0.5f,
+			+0.5f, +0.5f, +0.5f,
+			+0.5f, -0.5f, +0.5f,
+			-0.5f, -0.5f, +0.5f,
 			
-			+1.0f, +1.0f, -1.0f,
-			-1.0f, +1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
-			+1.0f, -1.0f, -1.0f,
+			+0.5f, +0.5f, -0.5f,
+			-0.5f, +0.5f, -0.5f,
+			-0.5f, -0.5f, -0.5f,
+			+0.5f, -0.5f, -0.5f,
 		}, new[]
 		{
 			0.0f, 1.0f,
@@ -304,10 +308,20 @@ public static class Program
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
 		
-		Entity ball = new();
-		world.AddComponent(ball, new SimulationBody(simulation));
-		world.AddComponent(ball, new Transform{ LocalPosition = (0, 0, 5) });
-		world.AddComponent(ball, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
+		Entity boxBody = new();
+		Box boxShape = new(1, 1, 1);
+		BodyInertia boxInertia = boxShape.ComputeInertia(1);
+		world.AddComponent<BodyShape>(boxBody, new BodyShape<Box>(simulation, boxShape));
+		world.AddComponent(boxBody, new DynamicBody(boxInertia));
+		world.AddComponent(boxBody, new Transform{ LocalPosition = (0, 0, 5) });
+		world.AddComponent(boxBody, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
+		
+		Entity planeBody = new();
+		Box planeShape = new(1, 1, 1);
+		world.AddComponent<BodyShape>(planeBody, new BodyShape<Box>(simulation, planeShape));
+		world.AddComponent(planeBody, new StaticBody());
+		world.AddComponent(planeBody, new Transform{ LocalPosition = (0, 0, -1) });
+		world.AddComponent(planeBody, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
 		
 		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));
 		

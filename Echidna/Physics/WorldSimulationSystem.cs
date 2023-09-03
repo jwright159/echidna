@@ -16,8 +16,6 @@ public class WorldSimulationSystem : System<WorldSimulation>
 		simulation.BufferPool = new BufferPool();
 		simulation.Simulation = Simulation.Create(simulation.BufferPool, new NarrowPhaseCallbacks(), new PoseIntegratorCallbacks(new Vector3(0, 0, -10)), new SolveDescription(8, 1));
 		simulation.ThreadDispatcher = new ThreadDispatcher(Environment.ProcessorCount);
-		
-		simulation.Simulation.Statics.Add(new StaticDescription(new Vector3(0, 0, -1), simulation.Simulation.Shapes.Add(new Box(500, 500, 1))));
 	}
 	
 	protected override void OnPhysicsUpdateEach(float deltaTime, WorldSimulation simulation)

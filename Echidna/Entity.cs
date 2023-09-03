@@ -13,7 +13,7 @@ public class Entity
 	[Pure]
 	public Component GetComponent(Type type) => components[type];
 	
-	internal void AddComponent(Component component) => components.Add(component.GetType(), component);
+	internal void AddComponent<T>(T component) where T : Component => components.Add(typeof(T), component);
 	
 	[Pure]
 	public bool HasComponentType<T>() where T : Component => HasComponentType(typeof(T));

@@ -1,4 +1,5 @@
-﻿using Vector3System = System.Numerics.Vector3;
+﻿using BepuPhysics;
+using Vector3System = System.Numerics.Vector3;
 using Vector3OpenTK = OpenTK.Mathematics.Vector3;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -50,4 +51,5 @@ public struct Vector3 : IEquatable<Vector3>
 	public static implicit operator Vector3OpenTK(Vector3 vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator Vector3(Vector3OpenTK vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator Vector3((float X, float Y, float Z) vector) => new(vector.X, vector.Y, vector.Z);
+	public static implicit operator RigidPose(Vector3 vector) => new(vector);
 }

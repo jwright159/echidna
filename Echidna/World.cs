@@ -33,11 +33,11 @@ public class World
 		systemsDependingOn = systemsDepending.ToDictionary(pair => pair.Key, pair => pair.Value.ToArray());
 	}
 	
-	public void AddComponent(Entity entity, Component component)
+	public void AddComponent<T>(Entity entity, T component) where T : Component
 	{
-		if (entity.HasComponentType(component.GetType()))
+		Type addedComponentType = typeof(T);
+		if (entity.HasComponentType(addedComponentType))
 			throw new InvalidOperationException($"Entity {entity} already has a component of type {component}");
-		Type addedComponentType = component.GetType();
 		if (!systemsDependingOn.ContainsKey(addedComponentType))
 			throw new InvalidOperationException($"World {this} does not have a system depending on component type {addedComponentType}");
 		
@@ -49,7 +49,7 @@ public class World
 		}
 	}
 	
-	public void AddSingletonComponent(Component component) => AddComponent(globalEntity, component);
+	public void AddSingletonComponent<T>(T component) where T : Component => AddComponent(globalEntity, component);
 	
 	public void Initialize()
 	{
