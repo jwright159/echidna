@@ -1,12 +1,13 @@
 ﻿using Echidna.Hierarchy;
 using Echidna.Input;
+using Echidna.Mathematics;
 using Echidna.Physics;
 using Echidna.Rendering;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using Window = Echidna.Rendering.Window;
+using Vector2i = OpenTK.Mathematics.Vector2i;
 
 namespace Echidna;
 
@@ -272,10 +273,10 @@ public static class Program
 		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
 		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
 		
-		FirstPersonCamera firstPerson = new(){ mouseSensitivity = 0.5f, movementSpeed = 1.5f };
+		FirstPersonCamera firstPerson = new(){ MouseSensitivity = 0.5f, MovementSpeed = 1.5f };
 		world.AddComponent(cameraEntity, firstPerson);
 		world.AddComponent(cameraEntity, new InputGroup(
-			new InputAction<Vector3>(value => firstPerson.movement = value,
+			new InputAction<Vector3>(value => firstPerson.Movement = value,
 				new Axis3InputTrigger(
 					new AxisInputTrigger(
 						new SingleInputTrigger(Keys.D),
@@ -286,9 +287,9 @@ public static class Program
 					new AxisInputTrigger(
 						new SingleInputTrigger(Keys.E),
 						new SingleInputTrigger(Keys.Q)))),
-			new InputAction<float>(value => firstPerson.Pitch += value * firstPerson.mouseSensitivity,
+			new InputAction<float>(value => firstPerson.Pitch += value * firstPerson.MouseSensitivity,
 				new SingleInputTrigger(MouseAxis.DeltaY)),
-			new InputAction<float>(value => firstPerson.Yaw += value * firstPerson.mouseSensitivity,
+			new InputAction<float>(value => firstPerson.Yaw += value * firstPerson.MouseSensitivity,
 				new SingleInputTrigger(MouseAxis.DeltaX)),
 			new InputAction<float>(value => Console.WriteLine($"Space {value}"),
 				new SingleInputTrigger(Keys.Space)),
@@ -296,10 +297,9 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		//AddMesh(world, (0, 0, 0), (0, 0, 0), splitFacesBox, textureShader, crateTexture);
-		AddMesh(world, (2, 0, 0), (MathHelper.PiOver4, 0, 0), triangle, globalCoordsShader, null);
-		AddMesh(world, (0, 2, 0), (0, MathHelper.PiOver4, 0), triangle, globalCoordsShader, null);
-		AddMesh(world, (0, 0, 2), (0, 0, MathHelper.PiOver4), triangle, globalCoordsShader, null);
+		AddMesh(world, (2, 0, 0), (MathF.PI / 4f, 0, 0), triangle, globalCoordsShader, null);
+		AddMesh(world, (0, 2, 0), (0, MathF.PI / 4f, 0), triangle, globalCoordsShader, null);
+		AddMesh(world, (0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -326,6 +326,6 @@ public static class Program
 		Entity entity = new();
 		world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
 		world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
-		world.AddComponent(entity, new Spinner(rotation, rotation.Length));
+		world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
 	}
 }

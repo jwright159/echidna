@@ -2,24 +2,24 @@
 
 public class Shader : Component
 {
-	internal int handle;
+	internal int Handle;
 	
-	internal readonly string vertexPath;
-	internal readonly string fragmentPath;
+	internal readonly string VertexPath;
+	internal readonly string FragmentPath;
 	
-	internal readonly Dictionary<string, int> uniforms = new();
+	internal readonly Dictionary<string, int> Uniforms = new();
 	
-	internal bool hasBeenDisposed;
+	internal bool HasBeenDisposed;
 	
 	public Shader(string vertexPath, string fragmentPath)
 	{
-		this.vertexPath = vertexPath;
-		this.fragmentPath = fragmentPath;
+		VertexPath = vertexPath;
+		FragmentPath = fragmentPath;
 	}
 	
 	~Shader()
 	{
-		if (!hasBeenDisposed)
+		if (!HasBeenDisposed)
 			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

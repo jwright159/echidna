@@ -15,25 +15,25 @@ public class SkyboxRendererSystem : System<SkyboxRenderer>
 		
 		foreach (SkyboxRenderer skyboxRenderer in skyboxRenderers)
 		{
-			if (skyboxRenderer.shader != currentShader)
+			if (skyboxRenderer.Shader != currentShader)
 			{
-				currentShader = skyboxRenderer.shader;
-				skyboxRenderer.shader.Bind();
+				currentShader = skyboxRenderer.Shader;
+				skyboxRenderer.Shader.Bind();
 			}
 			
-			if (skyboxRenderer.cubeMap != currentCubeMap)
+			if (skyboxRenderer.CubeMap != currentCubeMap)
 			{
-				currentCubeMap = skyboxRenderer.cubeMap;
-				skyboxRenderer.cubeMap.Bind();
+				currentCubeMap = skyboxRenderer.CubeMap;
+				skyboxRenderer.CubeMap.Bind();
 			}
 			
-			if (skyboxRenderer.mesh != currentMesh)
+			if (skyboxRenderer.Mesh != currentMesh)
 			{
-				currentMesh = skyboxRenderer.mesh;
-				skyboxRenderer.mesh.Bind();
+				currentMesh = skyboxRenderer.Mesh;
+				skyboxRenderer.Mesh.Bind();
 			}
 			
-			skyboxRenderer.mesh.Draw();
+			skyboxRenderer.Mesh.Draw();
 		}
 		
 		GL.DepthFunc(DepthFunction.Less);

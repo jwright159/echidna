@@ -6,18 +6,20 @@ public class SwapBuffersSystem : System<Window>
 {
 	protected override void OnDrawEach(Window window)
 	{
-		window.window.SwapBuffers();
+		window.GameWindow.SwapBuffers();
 		//CopyBuffer(window);
 	}
 	
-	/** Important if you're not clearing the screen */
+	/// <summary>
+	/// Important if you're not clearing the screen
+	/// </summary>
 	private static void CopyBuffer(Window window)
 	{
 		GL.ReadBuffer(ReadBufferMode.Front);
 		GL.DrawBuffer(DrawBufferMode.Back);
 		GL.BlitFramebuffer(
-			0, 0, window.window.Size.X, window.window.Size.Y,
-			0, 0, window.window.Size.X, window.window.Size.Y,
+			0, 0, window.GameWindow.Size.X, window.GameWindow.Size.Y,
+			0, 0, window.GameWindow.Size.X, window.GameWindow.Size.Y,
 			ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit,
 			BlitFramebufferFilter.Nearest);
 	}

@@ -6,11 +6,11 @@ public class MeshSystem : System<Mesh>
 {
 	protected override void OnInitializeEach(Mesh mesh)
 	{
-		mesh.vertexBufferObject = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.vertexBufferObject);
+		mesh.VertexBufferObject = GL.GenBuffer();
+		GL.BindBuffer(BufferTarget.ArrayBuffer, mesh.VertexBufferObject);
 		
-		mesh.vertexArrayObject = GL.GenVertexArray();
-		GL.BindVertexArray(mesh.vertexArrayObject);
+		mesh.VertexArrayObject = GL.GenVertexArray();
+		GL.BindVertexArray(mesh.VertexArrayObject);
 		
 		int[] widths = { 3, 2, 3 };
 		int stride = widths.Sum();
@@ -20,22 +20,22 @@ public class MeshSystem : System<Mesh>
 			GL.EnableVertexAttribArray(attribute);
 		}
 		
-		mesh.elementBufferObject = GL.GenBuffer();
-		GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.elementBufferObject);
+		mesh.ElementBufferObject = GL.GenBuffer();
+		GL.BindBuffer(BufferTarget.ElementArrayBuffer, mesh.ElementBufferObject);
 	}
 	
 	protected override void OnDrawEach(Mesh mesh)
 	{
-		if (mesh.isDirty)
+		if (mesh.IsDirty)
 			CleanMesh(mesh);
 	}
 	
 	private static void CleanMesh(Mesh mesh)
 	{
-		mesh.isDirty = false;
+		mesh.IsDirty = false;
 		RegenerateData(mesh);
-		BindData(mesh.vertexBufferObject, mesh.data);
-		BindIndices(mesh.elementBufferObject, mesh.Indices);
+		BindData(mesh.VertexBufferObject, mesh.Data);
+		BindIndices(mesh.ElementBufferObject, mesh.Indices);
 	}
 	
 	private static void RegenerateData(Mesh mesh)
@@ -43,12 +43,12 @@ public class MeshSystem : System<Mesh>
 		float[][] datasets = { mesh.Positions, mesh.TexCoords, mesh.Colors };
 		int[] widths = { 3, 2, 3 };
 		int stride = widths.Sum();
-		mesh.data = new float[datasets.Sum(data => data.Length)];
+		mesh.Data = new float[datasets.Sum(data => data.Length)];
 		
 		for (int i = 0; i < mesh.NumVertices; i++)
 		for (int dataset = 0, offset = 0; dataset < datasets.Length; offset += widths[dataset], dataset++)
 		for (int x = 0; x < widths[dataset]; x++)
-			mesh.data[i * stride + offset + x] = datasets[dataset][i * widths[dataset] + x];
+			mesh.Data[i * stride + offset + x] = datasets[dataset][i * widths[dataset] + x];
 	}
 	
 	private static void BindData(int vertexBufferObject, float[] data)
@@ -65,9 +65,9 @@ public class MeshSystem : System<Mesh>
 	
 	protected override void OnDisposeEach(Mesh mesh)
 	{
-		mesh.hasBeenDisposed = true;
-		GL.DeleteBuffer(mesh.vertexBufferObject);
-		GL.DeleteVertexArray(mesh.vertexArrayObject);
-		GL.DeleteBuffer(mesh.elementBufferObject);
+		mesh.HasBeenDisposed = true;
+		GL.DeleteBuffer(mesh.VertexBufferObject);
+		GL.DeleteVertexArray(mesh.VertexArrayObject);
+		GL.DeleteBuffer(mesh.ElementBufferObject);
 	}
 }

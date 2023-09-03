@@ -2,20 +2,20 @@
 
 public class Texture : Component
 {
-	internal int handle;
+	internal int Handle;
 	
-	internal readonly string path;
+	internal readonly string Path;
 	
-	internal bool hasBeenDisposed;
+	internal bool HasBeenDisposed;
 	
 	public Texture(string path)
 	{
-		this.path = path;
+		Path = path;
 	}
 	
 	~Texture()
 	{
-		if (!hasBeenDisposed)
+		if (!HasBeenDisposed)
 			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

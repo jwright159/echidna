@@ -11,12 +11,12 @@ public class BodyTransformSystem : System<Transform, SimulationBody>
 	{
 		Box shape = new(1, 1, 1);
 		BodyInertia inertia = shape.ComputeInertia(1);
-		body.handle = body.simulation.simulation!.Bodies.Add(BodyDescription.CreateDynamic((Vector3)transform.LocalPosition, inertia, body.simulation.simulation.Shapes.Add(shape), 0.01f));
+		body.Handle = body.Simulation.Simulation!.Bodies.Add(BodyDescription.CreateDynamic((Vector3)transform.LocalPosition, inertia, body.Simulation.Simulation.Shapes.Add(shape), 0.01f));
 	}
 	
 	protected override void OnUpdateEach(float deltaTime, Transform transform, SimulationBody body)
 	{
-		RigidPose pose = body.simulation.simulation!.Bodies[body.handle].Pose;
+		RigidPose pose = body.Simulation.Simulation!.Bodies[body.Handle].Pose;
 		transform.LocalPosition = pose.Position;
 	}
 }

@@ -9,7 +9,7 @@ public class CameraShaderProjectionSystem : System<Transform, Projection, Camera
 	{
 		Matrix4 viewMatrix = transform.Transformation.Inverted();
 		Matrix4 projectionMatrix = projection.ProjectionMatrix;
-		foreach (Shader shader in cameraShaders.shaders)
+		foreach (Shader shader in cameraShaders.Shaders)
 		{
 			shader.Bind();
 			shader.SetMatrix4("view", viewMatrix);

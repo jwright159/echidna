@@ -13,24 +13,24 @@ public class WorldSimulationSystem : System<WorldSimulation>
 {
 	protected override void OnInitializeEach(WorldSimulation simulation)
 	{
-		simulation.bufferPool = new BufferPool();
-		simulation.simulation = Simulation.Create(simulation.bufferPool, new NarrowPhaseCallbacks(), new PoseIntegratorCallbacks(new Vector3(0, 0, -10)), new SolveDescription(8, 1));
-		simulation.threadDispatcher = new ThreadDispatcher(Environment.ProcessorCount);
+		simulation.BufferPool = new BufferPool();
+		simulation.Simulation = Simulation.Create(simulation.BufferPool, new NarrowPhaseCallbacks(), new PoseIntegratorCallbacks(new Vector3(0, 0, -10)), new SolveDescription(8, 1));
+		simulation.ThreadDispatcher = new ThreadDispatcher(Environment.ProcessorCount);
 		
-		simulation.simulation.Statics.Add(new StaticDescription(new Vector3(0, 0, -1), simulation.simulation.Shapes.Add(new Box(500, 500, 1))));
+		simulation.Simulation.Statics.Add(new StaticDescription(new Vector3(0, 0, -1), simulation.Simulation.Shapes.Add(new Box(500, 500, 1))));
 	}
 	
 	protected override void OnPhysicsUpdateEach(float deltaTime, WorldSimulation simulation)
 	{
-		simulation.simulation!.Timestep(deltaTime, simulation.threadDispatcher);
+		simulation.Simulation!.Timestep(deltaTime, simulation.ThreadDispatcher);
 	}
 	
 	protected override void OnDisposeEach(WorldSimulation simulation)
 	{
-		simulation.hasBeenDisposed = true;
-		simulation.simulation!.Dispose();
-		simulation.threadDispatcher!.Dispose();
-		simulation.bufferPool!.Clear();
+		simulation.HasBeenDisposed = true;
+		simulation.Simulation!.Dispose();
+		simulation.ThreadDispatcher!.Dispose();
+		simulation.BufferPool!.Clear();
 	}
 	
 	private struct NarrowPhaseCallbacks : INarrowPhaseCallbacks

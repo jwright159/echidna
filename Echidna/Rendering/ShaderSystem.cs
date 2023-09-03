@@ -6,13 +6,13 @@ public class ShaderSystem : System<Shader>
 {
 	protected override void OnInitializeEach(Shader shader)
 	{
-		string vertexSource = File.ReadAllText(shader.vertexPath);
-		string fragmentSource = File.ReadAllText(shader.fragmentPath);
+		string vertexSource = File.ReadAllText(shader.VertexPath);
+		string fragmentSource = File.ReadAllText(shader.FragmentPath);
 		
 		int vertexShader = CompileShader(vertexSource, ShaderType.VertexShader);
 		int fragmentShader = CompileShader(fragmentSource, ShaderType.FragmentShader);
 		
-		int handle = shader.handle = GL.CreateProgram();
+		int handle = shader.Handle = GL.CreateProgram();
 		GL.AttachShader(handle, vertexShader);
 		GL.AttachShader(handle, fragmentShader);
 		GL.LinkProgram(handle);
@@ -34,7 +34,7 @@ public class ShaderSystem : System<Shader>
 		{
 			string key = GL.GetActiveUniform(handle, i, out _, out _);
 			int location = GL.GetUniformLocation(handle, key);
-			shader.uniforms.Add(key, location);
+			shader.Uniforms.Add(key, location);
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class ShaderSystem : System<Shader>
 	
 	protected override void OnDisposeEach(Shader shader)
 	{
-		shader.hasBeenDisposed = true;
-		GL.DeleteProgram(shader.handle);
+		shader.HasBeenDisposed = true;
+		GL.DeleteProgram(shader.Handle);
 	}
 }

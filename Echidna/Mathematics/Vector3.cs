@@ -1,13 +1,18 @@
 ﻿using Vector3System = System.Numerics.Vector3;
 using Vector3OpenTK = OpenTK.Mathematics.Vector3;
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Echidna.Mathematics;
 
-public struct Vector3
+public struct Vector3 : IEquatable<Vector3>
 {
-	public float X { get; set; }
-	public float Y { get; set; }
-	public float Z { get; set; }
+	public float X;
+	public float Y;
+	public float Z;
+	
+	public float Length => MathF.Sqrt(LengthSquared);
+	public float LengthSquared => X * X + Y * Y + Z * Z;
+	public Vector3 Normalized => this / Length;
 	
 	public Vector3(float x, float y, float z)
 	{
@@ -15,6 +20,10 @@ public struct Vector3
 		Y = y;
 		Z = z;
 	}
+	
+	public override int GetHashCode() => HashCode.Combine(X, Y, Z);
+	public override bool Equals(object? obj) => obj is Vector3 other && other == this;
+	public bool Equals(Vector3 other) => other == this;
 	
 	public static Vector3 Right => new(1, 0, 0);
 	public static Vector3 East => new(1, 0, 0);
@@ -32,10 +41,13 @@ public struct Vector3
 	public static Vector3 operator+(Vector3 a, Vector3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 	public static Vector3 operator*(Vector3 vector, float scalar) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
 	public static Vector3 operator*(float scalar, Vector3 vector) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
+	public static Vector3 operator/(Vector3 vector, float scalar) => new(vector.X / scalar, vector.Y / scalar, vector.Z / scalar);
+	public static bool operator==(Vector3 a, Vector3 b) => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+	public static bool operator!=(Vector3 a, Vector3 b) => !(a == b);
 	
-	public static implicit operator Vector3OpenTK(Vector3 vector) => new(vector.X, vector.Y, vector.Z);
-	public static implicit operator Vector3(Vector3OpenTK vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator Vector3System(Vector3 vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator Vector3(Vector3System vector) => new(vector.X, vector.Y, vector.Z);
+	public static implicit operator Vector3OpenTK(Vector3 vector) => new(vector.X, vector.Y, vector.Z);
+	public static implicit operator Vector3(Vector3OpenTK vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator Vector3((float X, float Y, float Z) vector) => new(vector.X, vector.Y, vector.Z);
 }

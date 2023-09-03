@@ -7,11 +7,11 @@ public class ResizeWindowSystem : System<CameraResizer>
 {
 	protected override void OnDrawEach(CameraResizer resizer)
 	{
-		Vector2i size = resizer.window.window.Size;
-		if (size == resizer.size) return;
+		Vector2i size = resizer.Window.GameWindow.Size;
+		if (size == resizer.Size) return;
 		
-		resizer.size = size;
+		resizer.Size = size;
 		GL.Viewport(0, 0, size.X, size.Y);
-		resizer.projection.AspectRatio = (float)size.X / size.Y;
+		resizer.Projection.AspectRatio = (float)size.X / size.Y;
 	}
 }

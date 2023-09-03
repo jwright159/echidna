@@ -1,16 +1,16 @@
-﻿using OpenTK.Mathematics;
+﻿using Echidna.Mathematics;
 
 namespace Echidna.Hierarchy;
 
 public class Spinner : Component
 {
-	internal Vector3 axis;
-	internal float speed;
-	internal float currentAngle;
+	internal Vector3 Axis;
+	internal float Speed;
+	internal float CurrentAngle;
 	
 	public Spinner(Vector3 axis, float speed)
 	{
-		this.axis = axis;
-		this.speed = speed;
+		Axis = axis;
+		Speed = speed;
 	}
 }

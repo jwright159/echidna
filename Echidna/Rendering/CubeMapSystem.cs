@@ -7,7 +7,7 @@ public class CubeMapSystem : System<CubeMap>
 {
 	protected override void OnInitializeEach(CubeMap cubeMap)
 	{
-		cubeMap.handle = GL.GenTexture();
+		cubeMap.Handle = GL.GenTexture();
 		cubeMap.Bind();
 		
 		StbImage.stbi_set_flip_vertically_on_load(1);
@@ -15,12 +15,12 @@ public class CubeMapSystem : System<CubeMap>
 		{
 			string path = i switch
 			{
-				0 => cubeMap.rightPath,
-				1 => cubeMap.leftPath,
-				2 => cubeMap.forwardPath,
-				3 => cubeMap.backPath,
-				4 => cubeMap.upPath,
-				5 => cubeMap.downPath,
+				0 => cubeMap.RightPath,
+				1 => cubeMap.LeftPath,
+				2 => cubeMap.ForwardPath,
+				3 => cubeMap.BackPath,
+				4 => cubeMap.UpPath,
+				5 => cubeMap.DownPath,
 				_ => throw new InvalidOperationException("For loop broke")
 			};
 			using Stream textureStream = File.OpenRead(path);
@@ -38,7 +38,7 @@ public class CubeMapSystem : System<CubeMap>
 	
 	protected override void OnDisposeEach(CubeMap cubeMap)
 	{
-		cubeMap.hasBeenDisposed = true;
-		GL.DeleteTexture(cubeMap.handle);
+		cubeMap.HasBeenDisposed = true;
+		GL.DeleteTexture(cubeMap.Handle);
 	}
 }

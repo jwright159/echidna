@@ -6,7 +6,7 @@ public class Mesh : Component
 	
 	public int NumVertices => positions.Length / Dims;
 	
-	internal bool isDirty;
+	internal bool IsDirty;
 	
 	private float[] positions;
 	public float[] Positions
@@ -15,7 +15,7 @@ public class Mesh : Component
 		set
 		{
 			positions = value;
-			isDirty = true;
+			IsDirty = true;
 		}
 	}
 	
@@ -26,7 +26,7 @@ public class Mesh : Component
 		set
 		{
 			texCoords = value;
-			isDirty = true;
+			IsDirty = true;
 		}
 	}
 	
@@ -37,7 +37,7 @@ public class Mesh : Component
 		set
 		{
 			colors = value;
-			isDirty = true;
+			IsDirty = true;
 		}
 	}
 	
@@ -48,19 +48,19 @@ public class Mesh : Component
 		set
 		{
 			indices = value;
-			isDirty = true;
+			IsDirty = true;
 		}
 	}
 	
-	internal float[] data;
+	internal float[] Data;
 	
-	internal int vertexBufferObject;
-	internal int elementBufferObject;
-	internal int vertexArrayObject;
+	internal int VertexBufferObject;
+	internal int ElementBufferObject;
+	internal int VertexArrayObject;
 	
-	internal readonly bool cullBackFaces;
+	internal readonly bool CullBackFaces;
 	
-	internal bool hasBeenDisposed;
+	internal bool HasBeenDisposed;
 	
 	public Mesh(float[] positions, float[] texCoords, float[] colors, uint[] indices, bool cullBackFaces = true)
 	{
@@ -69,15 +69,15 @@ public class Mesh : Component
 		this.colors = colors;
 		this.indices = indices;
 		
-		this.cullBackFaces = cullBackFaces;
+		CullBackFaces = cullBackFaces;
 		
-		data = Array.Empty<float>();
-		isDirty = true;
+		Data = Array.Empty<float>();
+		IsDirty = true;
 	}
 	
 	~Mesh()
 	{
-		if (!hasBeenDisposed)
+		if (!HasBeenDisposed)
 			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

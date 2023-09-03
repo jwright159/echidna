@@ -1,5 +1,4 @@
-﻿using OpenTK.Mathematics;
-using Vector3 = Echidna.Mathematics.Vector3;
+﻿using Echidna.Mathematics;
 
 namespace Echidna.Rendering;
 
@@ -9,15 +8,15 @@ public class FirstPersonCamera : Component
 	public float Pitch
 	{
 		get => pitch;
-		set => pitch = MathHelper.Clamp(value, -90f, 90f);
+		set => pitch = Math.Clamp(value, -90f, 90f);
 	}
 	
 	public float Yaw { get; set; }
 	
-	public float movementSpeed = 1f;
-	public float mouseSensitivity = 1f;
+	public float MovementSpeed = 1f;
+	public float MouseSensitivity = 1f;
 	
-	public Vector3 movement = Vector3.Zero;
+	public Vector3 Movement = Vector3.Zero;
 	
-	public Quaternion Rotation => Quaternion.FromAxisAngle(Vector3.Up, MathHelper.DegreesToRadians(-Yaw)) * Quaternion.FromAxisAngle(Vector3.Right, MathHelper.DegreesToRadians(-Pitch));
+	public Quaternion Rotation => Quaternion.FromEulerAngles(-Pitch, 0, -Yaw);
 }

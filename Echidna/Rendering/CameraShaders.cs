@@ -2,10 +2,10 @@
 
 public class CameraShaders : Component
 {
-	internal readonly Shader[] shaders;
+	internal readonly Shader[] Shaders;
 	
 	public CameraShaders(params Shader[] shaders)
 	{
-		this.shaders = shaders;
+		Shaders = shaders;
 	}
 }

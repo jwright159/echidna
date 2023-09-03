@@ -2,10 +2,10 @@
 
 public class PulsatingShader : Component
 {
-	public readonly Shader shader;
+	public readonly Shader Shader;
 	
 	public PulsatingShader(Shader shader)
 	{
-		this.shader = shader;
+		Shader = shader;
 	}
 }

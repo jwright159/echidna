@@ -4,11 +4,11 @@ namespace Echidna.Physics;
 
 public class SimulationBody : Component
 {
-	internal readonly WorldSimulation simulation;
-	internal BodyHandle handle;
+	internal readonly WorldSimulation Simulation;
+	internal BodyHandle Handle;
 	
 	public SimulationBody(WorldSimulation simulation)
 	{
-		this.simulation = simulation;
+		Simulation = simulation;
 	}
 }

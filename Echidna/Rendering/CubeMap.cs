@@ -2,30 +2,30 @@
 
 public class CubeMap : Component
 {
-	internal int handle;
+	internal int Handle;
 	
-	internal readonly string rightPath;
-	internal readonly string leftPath;
-	internal readonly string forwardPath;
-	internal readonly string backPath;
-	internal readonly string upPath;
-	internal readonly string downPath;
+	internal readonly string RightPath;
+	internal readonly string LeftPath;
+	internal readonly string ForwardPath;
+	internal readonly string BackPath;
+	internal readonly string UpPath;
+	internal readonly string DownPath;
 	
-	internal bool hasBeenDisposed;
+	internal bool HasBeenDisposed;
 	
 	public CubeMap(string rightPath, string leftPath, string forwardPath, string backPath, string upPath, string downPath)
 	{
-		this.rightPath = rightPath;
-		this.leftPath = leftPath;
-		this.forwardPath = forwardPath;
-		this.backPath = backPath;
-		this.upPath = upPath;
-		this.downPath = downPath;
+		RightPath = rightPath;
+		LeftPath = leftPath;
+		ForwardPath = forwardPath;
+		BackPath = backPath;
+		UpPath = upPath;
+		DownPath = downPath;
 	}
 	
 	~CubeMap()
 	{
-		if (!hasBeenDisposed)
+		if (!HasBeenDisposed)
 			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }

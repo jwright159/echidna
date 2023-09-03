@@ -1,4 +1,4 @@
-﻿using OpenTK.Mathematics;
+﻿using Echidna.Mathematics;
 
 namespace Echidna.Input;
 
@@ -40,7 +40,7 @@ public class Axis3InputTrigger : InputTrigger<Vector3>
 			currentZValue = z.FactorIn(type, value);
 		
 		Vector3 currentValue = (currentXValue, currentYValue, currentZValue);
-		if (normalize && currentValue.Length > 1) currentValue = currentValue.Normalized();
+		if (normalize && currentValue.Length > 1) currentValue = currentValue.Normalized;
 		return currentValue;
 	}
 }

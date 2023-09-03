@@ -7,11 +7,11 @@ public class TextureSystem : System<Texture>
 {
 	protected override void OnInitializeEach(Texture texture)
 	{
-		texture.handle = GL.GenTexture();
+		texture.Handle = GL.GenTexture();
 		texture.Bind();
 		
 		StbImage.stbi_set_flip_vertically_on_load(1);
-		using Stream textureStream = File.OpenRead(texture.path);
+		using Stream textureStream = File.OpenRead(texture.Path);
 		ImageResult image = ImageResult.FromStream(textureStream, ColorComponents.RedGreenBlueAlpha);
 		GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, image.Data);
 		
@@ -24,7 +24,7 @@ public class TextureSystem : System<Texture>
 	
 	protected override void OnDisposeEach(Texture texture)
 	{
-		texture.hasBeenDisposed = true;
-		GL.DeleteTexture(texture.handle);
+		texture.HasBeenDisposed = true;
+		GL.DeleteTexture(texture.Handle);
 	}
 }

@@ -4,10 +4,10 @@ namespace Echidna.Rendering;
 
 public class Window : Component
 {
-	public readonly GameWindow window;
+	public readonly GameWindow GameWindow;
 	
-	public Window(GameWindow window)
+	public Window(GameWindow gameWindow)
 	{
-		this.window = window;
+		GameWindow = gameWindow;
 	}
 }

@@ -6,15 +6,15 @@ namespace Echidna.Physics;
 
 public class WorldSimulation : Component
 {
-	internal BufferPool? bufferPool;
-	internal ThreadDispatcher? threadDispatcher;
-	internal Simulation? simulation;
+	internal BufferPool? BufferPool;
+	internal ThreadDispatcher? ThreadDispatcher;
+	internal Simulation? Simulation;
 	
-	internal bool hasBeenDisposed;
+	internal bool HasBeenDisposed;
 	
 	~WorldSimulation()
 	{
-		if (!hasBeenDisposed)
+		if (!HasBeenDisposed)
 			Console.WriteLine("GPU Resource leak! Did you forget to call Dispose()?");
 	}
 }
