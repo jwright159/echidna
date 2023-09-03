@@ -1,4 +1,5 @@
-﻿using Echidna.Hierarchy;
+﻿using Echidna.Core;
+using Echidna.Hierarchy;
 using OpenTK.Mathematics;
 
 namespace Echidna.Rendering;

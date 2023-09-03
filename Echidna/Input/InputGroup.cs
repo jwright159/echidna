@@ -1,4 +1,6 @@
-﻿namespace Echidna.Input;
+﻿using Echidna.Core;
+
+namespace Echidna.Input;
 
 public class InputGroup : Component
 {

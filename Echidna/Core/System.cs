@@ -2,7 +2,7 @@
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Echidna;
+namespace Echidna.Core;
 
 public interface System
 {

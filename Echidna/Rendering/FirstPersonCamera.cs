@@ -1,4 +1,5 @@
-﻿using Echidna.Mathematics;
+﻿using Echidna.Core;
+using Echidna.Mathematics;
 
 namespace Echidna.Rendering;
 

@@ -1,4 +1,6 @@
-﻿namespace Echidna.Hierarchy;
+﻿using Echidna.Core;
+
+namespace Echidna.Hierarchy;
 
 public class Lifetime : Component
 {

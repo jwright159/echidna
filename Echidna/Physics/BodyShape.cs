@@ -1,28 +1,21 @@
-﻿using BepuPhysics;
-using BepuPhysics.Collidables;
+﻿using BepuPhysics.Collidables;
+using Echidna.Core;
 
 namespace Echidna.Physics;
 
 public abstract class BodyShape : Component
 {
-	internal readonly WorldSimulation Simulation;
-	
-	protected BodyShape(WorldSimulation simulation)
-	{
-		Simulation = simulation;
-	}
-	
-	public abstract TypedIndex AddToSimulation();
+	public abstract TypedIndex AddToShapes(Shapes shapes);
 }
 
 public class BodyShape<TShape> : BodyShape where TShape : unmanaged, IShape
 {
 	internal readonly TShape Shape;
 	
-	public BodyShape(WorldSimulation simulation, TShape shape) : base(simulation)
+	public BodyShape(TShape shape)
 	{
 		Shape = shape;
 	}
 	
-	public override TypedIndex AddToSimulation() => Simulation.Simulation!.Shapes.Add(Shape);
+	public override TypedIndex AddToShapes(Shapes shapes) => shapes.Add(Shape);
 }

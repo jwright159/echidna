@@ -1,4 +1,5 @@
-﻿using Echidna.Mathematics;
+﻿using Echidna.Core;
+using Echidna.Mathematics;
 using Matrix4 = OpenTK.Mathematics.Matrix4;
 
 namespace Echidna.Hierarchy;

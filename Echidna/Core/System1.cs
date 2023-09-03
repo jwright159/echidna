@@ -3,7 +3,7 @@ using System.Reflection;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace Echidna;
+namespace Echidna.Core;
 
 public abstract class System<T1> : System where T1 : Component
 {

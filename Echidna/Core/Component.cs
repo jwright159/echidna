@@ -1,4 +1,4 @@
-﻿namespace Echidna;
+﻿namespace Echidna.Core;
 
 public abstract class Component
 {

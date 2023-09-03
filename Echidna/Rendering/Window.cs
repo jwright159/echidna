@@ -1,4 +1,5 @@
-﻿using OpenTK.Windowing.Desktop;
+﻿using Echidna.Core;
+using OpenTK.Windowing.Desktop;
 
 namespace Echidna.Rendering;
 

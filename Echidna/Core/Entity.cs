@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 
-namespace Echidna;
+namespace Echidna.Core;
 
 public class Entity
 {

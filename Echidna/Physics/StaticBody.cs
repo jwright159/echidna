@@ -1,4 +1,5 @@
 ﻿using BepuPhysics;
+using Echidna.Core;
 
 namespace Echidna.Physics;
 

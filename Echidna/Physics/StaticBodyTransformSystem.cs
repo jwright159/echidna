@@ -1,12 +1,13 @@
 ﻿using BepuPhysics;
+using Echidna.Core;
 using Echidna.Hierarchy;
 
 namespace Echidna.Physics;
 
-public class StaticBodyTransformSystem : System<Transform, BodyShape, StaticBody>
+public class StaticBodyTransformSystem : System<Transform, SimulationTarget, BodyShape, StaticBody>
 {
-	protected override void OnInitializeEach(Transform transform, BodyShape shape, StaticBody body)
+	protected override void OnInitializeEach(Transform transform, SimulationTarget target, BodyShape shape, StaticBody body)
 	{
-		body.Handle = shape.Simulation.Simulation!.Statics.Add(new StaticDescription(transform.LocalPosition, shape.AddToSimulation()));
+		body.Handle = target.Simulation.Statics.Add(new StaticDescription(transform.LocalPosition, shape.AddToShapes(target.Simulation.Shapes)));
 	}
 }

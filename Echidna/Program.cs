@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
+using Echidna.Core;
 using Echidna.Hierarchy;
 using Echidna.Input;
 using Echidna.Mathematics;
@@ -12,7 +13,7 @@ using Mesh = Echidna.Rendering.Mesh;
 using Window = Echidna.Rendering.Window;
 using Vector2i = OpenTK.Mathematics.Vector2i;
 
-namespace Echidna;
+namespace Echidna.Demo;
 
 public static class Program
 {
@@ -311,16 +312,18 @@ public static class Program
 		Entity boxBody = new();
 		Box boxShape = new(1, 1, 1);
 		BodyInertia boxInertia = boxShape.ComputeInertia(1);
-		world.AddComponent<BodyShape>(boxBody, new BodyShape<Box>(simulation, boxShape));
+		world.AddComponent(boxBody, new SimulationTarget(simulation));
+		world.AddComponent<BodyShape>(boxBody, new BodyShape<Box>(boxShape));
 		world.AddComponent(boxBody, new DynamicBody(boxInertia));
 		world.AddComponent(boxBody, new Transform{ LocalPosition = (0, 0, 5) });
 		world.AddComponent(boxBody, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
 		
 		Entity planeBody = new();
 		Box planeShape = new(1, 1, 1);
-		world.AddComponent<BodyShape>(planeBody, new BodyShape<Box>(simulation, planeShape));
+		world.AddComponent(planeBody, new SimulationTarget(simulation));
+		world.AddComponent<BodyShape>(planeBody, new BodyShape<Box>(planeShape));
 		world.AddComponent(planeBody, new StaticBody());
-		world.AddComponent(planeBody, new Transform{ LocalPosition = (0, 0, -1) });
+		world.AddComponent(planeBody, new Transform{ LocalPosition = (0, 0, -4) });
 		world.AddComponent(planeBody, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
 		
 		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));

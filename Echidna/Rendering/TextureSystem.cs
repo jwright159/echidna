@@ -1,4 +1,5 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Echidna.Core;
+using OpenTK.Graphics.OpenGL4;
 using StbImageSharp;
 
 namespace Echidna.Rendering;

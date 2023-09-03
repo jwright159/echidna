@@ -1,6 +1,7 @@
 ﻿using BepuPhysics;
 using BepuUtilities;
 using BepuUtilities.Memory;
+using Echidna.Core;
 
 namespace Echidna.Physics;
 

@@ -1,4 +1,5 @@
-﻿using Echidna.Hierarchy;
+﻿using Echidna.Core;
+using Echidna.Hierarchy;
 
 namespace Echidna.Rendering;
 

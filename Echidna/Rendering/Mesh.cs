@@ -1,4 +1,6 @@
-﻿namespace Echidna.Rendering;
+﻿using Echidna.Core;
+
+namespace Echidna.Rendering;
 
 public class Mesh : Component
 {
