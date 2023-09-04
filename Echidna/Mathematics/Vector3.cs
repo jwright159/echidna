@@ -25,6 +25,7 @@ public struct Vector3 : IEquatable<Vector3>
 	public override int GetHashCode() => HashCode.Combine(X, Y, Z);
 	public override bool Equals(object? obj) => obj is Vector3 other && other == this;
 	public bool Equals(Vector3 other) => other == this;
+	public override string ToString() => $"<{X}, {Y}, {Z}>";
 	
 	public static Vector3 Right => new(1, 0, 0);
 	public static Vector3 East => new(1, 0, 0);
@@ -40,6 +41,7 @@ public struct Vector3 : IEquatable<Vector3>
 	public static Vector3 Zero => new(0, 0, 0);
 	
 	public static Vector3 operator+(Vector3 a, Vector3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+	public static Vector3 operator-(Vector3 a, Vector3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 	public static Vector3 operator*(Vector3 vector, float scalar) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
 	public static Vector3 operator*(float scalar, Vector3 vector) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
 	public static Vector3 operator/(Vector3 vector, float scalar) => new(vector.X / scalar, vector.Y / scalar, vector.Z / scalar);
@@ -52,4 +54,10 @@ public struct Vector3 : IEquatable<Vector3>
 	public static implicit operator Vector3(Vector3OpenTK vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator Vector3((float X, float Y, float Z) vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator RigidPose(Vector3 vector) => new(vector);
+	
+	public static float Distance(Vector3 a, Vector3 b) => (a - b).Length;
+	public static float DistanceSquared(Vector3 a, Vector3 b) => (a - b).LengthSquared;
+	public static Vector3 UnitFromTo(Vector3 a, Vector3 b) => (b - a).Normalized;
+	
+	public static Vector3 Sum<T>(IEnumerable<T> source, Func<T, Vector3> selector) => source.Aggregate(Zero, (current, item) => current + selector(item));
 }

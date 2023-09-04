@@ -9,7 +9,7 @@ public class World
 	
 	private Dictionary<Type, System[]> systemsDependingOn;
 	
-	private Entity globalEntity = new();
+	private Entity globalEntity = new("Global Entity");
 	
 	private float accumulatedTime = 0;
 	public float PhysicsDeltaTime { get; set; } = 1f / 60f;
@@ -35,13 +35,17 @@ public class World
 	
 	public void AddComponent<T>(Entity entity, T component) where T : Component
 	{
+		if (component.Entity != null)
+			throw new ArgumentException($"Component {component} already added to entity {entity}", nameof(component));
 		Type addedComponentType = typeof(T);
 		if (entity.HasComponentType(addedComponentType))
-			throw new InvalidOperationException($"Entity {entity} already has a component of type {component}");
-		if (!systemsDependingOn.ContainsKey(addedComponentType))
-			throw new InvalidOperationException($"World {this} does not have a system depending on component type {addedComponentType}");
+			throw new ArgumentException($"Entity {entity} already has a component of type {component}", nameof(entity));
 		
 		entity.AddComponent(component);
+		
+		if (!systemsDependingOn.ContainsKey(addedComponentType))
+			//throw new ArgumentException($"World {this} does not have a system depending on component type {addedComponentType}", nameof(world));
+			return;
 		foreach (System system in systemsDependingOn[addedComponentType])
 		{
 			if (system.IsApplicableTo(entity))

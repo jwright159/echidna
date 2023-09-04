@@ -15,7 +15,7 @@ public class WorldSimulationSystem : System<WorldSimulation>
 	protected override void OnInitializeEach(WorldSimulation simulation)
 	{
 		simulation.BufferPool = new BufferPool();
-		simulation.Simulation = Simulation.Create(simulation.BufferPool, new NarrowPhaseCallbacks(), new PoseIntegratorCallbacks(new Vector3(0, 0, -10)), new SolveDescription(8, 1));
+		simulation.Simulation = Simulation.Create(simulation.BufferPool, new NarrowPhaseCallbacks(), new PoseIntegratorCallbacks(), new SolveDescription(8, 1));
 		simulation.ThreadDispatcher = new ThreadDispatcher(Environment.ProcessorCount);
 	}
 	
@@ -72,19 +72,11 @@ public class WorldSimulationSystem : System<WorldSimulation>
 	
 	private struct PoseIntegratorCallbacks : IPoseIntegratorCallbacks
 	{
-		private Vector3 gravity;
-		private Vector3Wide gravityWideDt;
-		
 		public readonly AngularIntegrationMode AngularIntegrationMode => AngularIntegrationMode.Nonconserving;
 		
 		public readonly bool AllowSubstepsForUnconstrainedBodies => false;
 		
 		public readonly bool IntegrateVelocityForKinematics => false;
-		
-		public PoseIntegratorCallbacks(Vector3 gravity) : this()
-		{
-			this.gravity = gravity;
-		}
 		
 		public void Initialize(Simulation simulation)
 		{
@@ -92,12 +84,10 @@ public class WorldSimulationSystem : System<WorldSimulation>
 		
 		public void PrepareForIntegration(float dt)
 		{
-			gravityWideDt = Vector3Wide.Broadcast(gravity * dt);
 		}
 		
 		public void IntegrateVelocity(Vector<int> bodyIndices, Vector3Wide position, QuaternionWide orientation, BodyInertiaWide localInertia, Vector<int> integrationMask, int workerIndex, Vector<float> dt, ref BodyVelocityWide velocity)
 		{
-			velocity.Linear += gravityWideDt;
 		}
 	}
 }
