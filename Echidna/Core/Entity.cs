@@ -24,7 +24,6 @@ public class Entity
 	{
 		components.Add(typeof(T), component);
 		component.Entity = this;
-		Console.WriteLine($"{component} {component.Entity}");
 	}
 	
 	[Pure]

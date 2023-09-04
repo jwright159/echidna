@@ -304,9 +304,9 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		AddMesh(world, (2, 0, 0), (MathF.PI / 4f, 0, 0), triangle, globalCoordsShader, null);
-		AddMesh(world, (0, 2, 0), (0, MathF.PI / 4f, 0), triangle, globalCoordsShader, null);
-		AddMesh(world, (0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
+		AddMesh((2, 0, 0), (MathF.PI / 4f, 0, 0), triangle, globalCoordsShader, null);
+		AddMesh((0, 2, 0), (0, MathF.PI / 4f, 0), triangle, globalCoordsShader, null);
+		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -314,29 +314,8 @@ public static class Program
 		GravitationalFields gravitationalFields = new();
 		world.AddSingletonComponent(gravitationalFields);
 		
-		Entity box1 = new("box1");
-		Transform box1Transform = new() { LocalPosition = Vector3.Up * 5 };
-		GravitationalField box1Gravity = new(10f, box1Transform, gravitationalFields);
-		Box boxShape = new(1, 1, 1);
-		BodyInertia boxInertia = boxShape.ComputeInertia(1);
-		world.AddComponent(box1, new SimulationTarget(simulation));
-		world.AddComponent<BodyShape>(box1, new BodyShape<Box>(boxShape));
-		world.AddComponent(box1, new DynamicBody(boxInertia));
-		world.AddComponent(box1, box1Transform);
-		world.AddComponent(box1, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
-		world.AddComponent(box1, box1Gravity);
-		world.AddComponent(box1, new AffectedByGravity(gravitationalFields, box1Gravity));
-		
-		Entity box2 = new("box2");
-		Transform box2Transform = new() { LocalPosition = Vector3.Down * 4 };
-		GravitationalField box2Gravity = new(10f, box2Transform, gravitationalFields);
-		world.AddComponent(box2, new SimulationTarget(simulation));
-		world.AddComponent<BodyShape>(box2, new BodyShape<Box>(boxShape));
-		world.AddComponent(box2, new DynamicBody(boxInertia));
-		world.AddComponent(box2, box2Transform);
-		world.AddComponent(box2, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
-		world.AddComponent(box2, box2Gravity);
-		world.AddComponent(box2, new AffectedByGravity(gravitationalFields, box2Gravity));
+		AddBody((0, 0, 5), (0, 30, 0));
+		AddBody((0, 0, -4), (0, 0, 0));
 		
 		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));
 		
@@ -348,13 +327,30 @@ public static class Program
 		gameWindow.KeyDown += args => world.KeyDown(args.Key);
 		gameWindow.KeyUp += args => world.KeyUp(args.Key);
 		gameWindow.Run();
-	}
-	
-	private static void AddMesh(World world, Vector3 position, Vector3 rotation, Mesh mesh, Shader shader, Texture? texture)
-	{
-		Entity entity = new();
-		world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
-		world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
-		world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
+		return;
+		
+		void AddMesh(Vector3 position, Vector3 rotation, Mesh mesh, Shader shader, Texture? texture)
+		{
+			Entity entity = new();
+			world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
+			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
+		}
+		
+		void AddBody(Vector3 position, Quaternion rotation)
+		{
+			Entity entity = new();
+			Transform transform = new() { LocalPosition = position, LocalRotation = rotation };
+			Box shape = new(1, 1, 1);
+			BodyInertia inertia = shape.ComputeInertia(1);
+			GravitationalField gravity = new(20f, transform, gravitationalFields);
+			world.AddComponent(entity, new SimulationTarget(simulation));
+			world.AddComponent<BodyShape>(entity, new BodyShape<Box>(shape));
+			world.AddComponent(entity, new DynamicBody(inertia));
+			world.AddComponent(entity, transform);
+			world.AddComponent(entity, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
+			world.AddComponent(entity, gravity);
+			world.AddComponent(entity, new AffectedByGravity(gravitationalFields, gravity));
+		}
 	}
 }

@@ -50,6 +50,7 @@ public struct Quaternion
 	public static implicit operator Quaternion(QuaternionSystem quaternion) => new(quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
 	public static implicit operator QuaternionOpenTK(Quaternion quaternion) => new(quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
 	public static implicit operator Quaternion(QuaternionOpenTK quaternion) => new(quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
+	public static implicit operator Quaternion((float X, float Y, float Z) eulers) => FromEulerAngles(eulers);
 	public static implicit operator Quaternion((float X, float Y, float Z, float W) quaternion) => new(quaternion.X, quaternion.Y, quaternion.Z, quaternion.W);
 	
 	public static Quaternion FromAxisAngle(Vector3 axis, float angle)

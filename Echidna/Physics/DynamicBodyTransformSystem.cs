@@ -8,7 +8,7 @@ public class DynamicBodyTransformSystem : System<Transform, SimulationTarget, Bo
 {
 	protected override void OnInitializeEach(Transform transform, SimulationTarget target, BodyShape shape, DynamicBody body)
 	{
-		body.Handle = target.Simulation.Bodies.Add(BodyDescription.CreateDynamic(transform.LocalPosition, body.Inertia, shape.AddToShapes(target.Simulation.Shapes), 0.01f));
+		body.Handle = target.Simulation.Bodies.Add(BodyDescription.CreateDynamic(new RigidPose(transform.LocalPosition, transform.LocalRotation), body.Inertia, shape.AddToShapes(target.Simulation.Shapes), 0.01f));
 	}
 	
 	protected override void OnUpdateEach(float deltaTime, Transform transform, SimulationTarget target, BodyShape shape, DynamicBody body)
