@@ -18,7 +18,12 @@ public static class GLResourceUtil
 		GL.BindTexture(TextureTarget.TextureCubeMap, cubeMap.Handle);
 	}
 	
-	public static void Draw(this Mesh mesh) => GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+	public static void Draw(this Mesh mesh)
+	{
+		if (mesh.Entity == null)
+			Console.WriteLine("WARNING: Mesh doesn't have an entity, it might not be valid");
+		GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+	}
 	
 	public static int GetAttribLocation(this Shader shader, string attribName) => GL.GetAttribLocation(shader.Handle, attribName);
 	public static int GetUniformLocation(this Shader shader, string uniformName) => shader.Uniforms[uniformName];

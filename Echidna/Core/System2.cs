@@ -5,7 +5,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Echidna.Core;
 
-public abstract class System<T1, T2> : System where T1 : Component where T2 : Component
+public abstract class System<T1, T2> : ISystem where T1 : Component where T2 : Component
 {
 	private List<(T1, T2)> componentSets = new();
 	

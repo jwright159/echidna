@@ -4,7 +4,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Echidna.Core;
 
-public interface System
+public interface ISystem
 {
 	public IEnumerable<Type> ApplicableComponentTypes { get; }
 	

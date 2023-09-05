@@ -6,11 +6,6 @@ namespace Echidna.Rendering;
 
 public class MeshRendererSystem : System<Transform, MeshRenderer>
 {
-	protected override void OnInitialize(IEnumerable<(Transform, MeshRenderer)> componentSets)
-	{
-		GL.FrontFace(FrontFaceDirection.Cw);
-	}
-	
 	protected override void OnDraw(IEnumerable<(Transform, MeshRenderer)> componentSets)
 	{
 		Mesh? currentMesh = null;

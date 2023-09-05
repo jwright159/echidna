@@ -6,6 +6,7 @@ using Echidna.Input;
 using Echidna.Mathematics;
 using Echidna.Physics;
 using Echidna.Rendering;
+using ObjLoader.Loader.Loaders;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -265,6 +266,10 @@ public static class Program
 			23, 21, 22,
 		});
 		world.AddComponent(new Entity(), splitFacesBox);
+		
+		IObjLoader objLoader = new ObjLoaderFactory().Create();
+		Mesh sphere = LoadObj("Shaders/sphere.obj");
+		world.AddComponent(new Entity(), sphere);
 		#endregion
 		
 		Window window = new(gameWindow);
@@ -307,6 +312,7 @@ public static class Program
 		AddMesh((2, 0, 0), (MathF.PI / 4f, 0, 0), triangle, globalCoordsShader, null);
 		AddMesh((0, 2, 0), (0, MathF.PI / 4f, 0), triangle, globalCoordsShader, null);
 		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
+		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -314,8 +320,8 @@ public static class Program
 		GravitationalFields gravitationalFields = new();
 		world.AddSingletonComponent(gravitationalFields);
 		
-		AddBody((0, 0, 5), (0, 30, 0));
-		AddBody((0, 0, -4), (0, 0, 0));
+		//AddBody((0, 0, 5), (0, 30, 0));
+		//AddBody((0, 0, -4), (0, 0, 0));
 		
 		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));
 		
@@ -352,5 +358,18 @@ public static class Program
 			world.AddComponent(entity, gravity);
 			world.AddComponent(entity, new AffectedByGravity(gravitationalFields, gravity));
 		}
+		
+		Mesh LoadObj(string filename)
+		{
+			using Stream fileStream = File.OpenRead(filename);
+			LoadResult result = objLoader.Load(fileStream);
+			return new Mesh(
+				result.Vertices.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y, vertex.Z)).ToArray(),
+				result.Textures.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y)).ToArray(),
+				result.Vertices.SelectMany(_ => EnumerableOf(1f, 1f, 1f)).ToArray(),
+				result.Groups.SelectMany(group => group.Faces.SelectMany(face => EnumerableOf((uint)face[0].VertexIndex - 1, (uint)face[1].VertexIndex - 1, (uint)face[2].VertexIndex - 1))).ToArray());
+		}
 	}
+	
+	private static IEnumerable<T> EnumerableOf<T>(params T[] items) => items;
 }

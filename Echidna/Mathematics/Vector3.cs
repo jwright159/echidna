@@ -1,11 +1,12 @@
-﻿using BepuPhysics;
+﻿using System.Collections;
+using BepuPhysics;
 using Vector3System = System.Numerics.Vector3;
 using Vector3OpenTK = OpenTK.Mathematics.Vector3;
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace Echidna.Mathematics;
 
-public struct Vector3 : IEquatable<Vector3>
+public struct Vector3 : IEquatable<Vector3>, IEnumerable<float>
 {
 	public float X;
 	public float Y;
@@ -26,6 +27,14 @@ public struct Vector3 : IEquatable<Vector3>
 	public override bool Equals(object? obj) => obj is Vector3 other && other == this;
 	public bool Equals(Vector3 other) => other == this;
 	public override string ToString() => $"<{X}, {Y}, {Z}>";
+	
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	public IEnumerator<float> GetEnumerator()
+	{
+		yield return X;
+		yield return Y;
+		yield return Z;
+	}
 	
 	public static Vector3 Right => new(1, 0, 0);
 	public static Vector3 East => new(1, 0, 0);
