@@ -6,6 +6,8 @@ namespace Echidna.Physics;
 public abstract class BodyShape : Component
 {
 	public abstract TypedIndex AddToShapes(Shapes shapes);
+	
+	public static BodyShape Of<TShape>(TShape shape)  where TShape : unmanaged, IShape => new BodyShape<TShape>(shape);
 }
 
 public class BodyShape<TShape> : BodyShape where TShape : unmanaged, IShape

@@ -1,5 +1,6 @@
 ﻿using BepuPhysics;
 using BepuPhysics.Collidables;
+using BepuUtilities.Memory;
 using Echidna.Core;
 using Echidna.Hierarchy;
 using Echidna.Input;
@@ -10,6 +11,7 @@ using ObjLoader.Loader.Loaders;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using MeshShape = BepuPhysics.Collidables.Mesh;
 using Mesh = Echidna.Rendering.Mesh;
 using Window = Echidna.Rendering.Window;
 using Vector2i = OpenTK.Mathematics.Vector2i;
@@ -110,7 +112,7 @@ public static class Program
 		world.AddSingletonComponent(window);
 		
 		Entity cameraEntity = new();
-		Projection projection = new();
+		Projection projection = new(){ DepthFar = 10000f };
 		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, -5, 0) });
 		world.AddComponent(cameraEntity, projection);
 		
@@ -154,8 +156,9 @@ public static class Program
 		GravitationalFields gravitationalFields = new();
 		world.AddSingletonComponent(gravitationalFields);
 		
-		//AddBody((0, 0, 5), (0, 30, 0));
-		//AddBody((0, 0, -4), (0, 0, 0));
+		AddPlanet((0, 0, -10_005), 10_000);
+		AddBox((-2, 0, 5), (0, 30, 0));
+		AddBox((-4, 0, 3), (0, 0, 0));
 		
 		world.AddComponent(new Entity(), new SkyboxRenderer(cube, skyboxShader, skyboxCubeMap));
 		
@@ -177,20 +180,33 @@ public static class Program
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
 		}
 		
-		void AddBody(Vector3 position, Quaternion rotation)
+		void AddBox(Vector3 position, Quaternion rotation)
 		{
 			Entity entity = new();
 			Transform transform = new() { LocalPosition = position, LocalRotation = rotation };
-			Box shape = new(1, 1, 1);
+			Box shape = new(2, 2, 2);
 			BodyInertia inertia = shape.ComputeInertia(1);
-			GravitationalField gravity = new(20f, transform, gravitationalFields);
 			world.AddComponent(entity, new SimulationTarget(simulation));
-			world.AddComponent<BodyShape>(entity, new BodyShape<Box>(shape));
+			world.AddComponent(entity, BodyShape.Of(shape));
 			world.AddComponent(entity, new DynamicBody(inertia));
 			world.AddComponent(entity, transform);
 			world.AddComponent(entity, new MeshRenderer(cube, textureShader, crateTexture));
+			world.AddComponent(entity, new AffectedByGravity(gravitationalFields));
+		}
+		
+		void AddPlanet(Vector3 position, float radius)
+		{
+			Entity entity = new();
+			Transform transform = new() { LocalPosition = position, LocalScale = Vector3.One * radius };
+			ConvexHull shape = new(new Span<System.Numerics.Vector3>(sphere.Positions.Chunk(3).Select(vertex => new System.Numerics.Vector3(vertex[0], vertex[1], vertex[2]) * radius).ToArray()), new BufferPool(), out _);
+			GravitationalField gravity = new(1000000000f, transform, gravitationalFields);
+			world.AddComponent(entity, new SimulationTarget(simulation));
+			world.AddComponent(entity, BodyShape.Of(shape));
+			world.AddComponent(entity, new StaticBody());
+			world.AddComponent(entity, transform);
+			world.AddComponent(entity, new MeshRenderer(sphere, textureShader, crateTexture));
 			world.AddComponent(entity, gravity);
-			world.AddComponent(entity, new AffectedByGravity(gravitationalFields, gravity));
+			world.AddComponent(entity, new AffectedByGravity(gravitationalFields));
 		}
 		
 		Mesh LoadObj(string filename)

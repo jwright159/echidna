@@ -14,5 +14,8 @@ public class Projection : Component
 	
 	public float AspectRatio { get; set; } = 16f / 9f;
 	
-	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(fov), AspectRatio, 0.01f, 100f);
+	public float DepthNear { get; set; } = 0.01f;
+	public float DepthFar { get; set; } = 100f;
+	
+	public Matrix4 ProjectionMatrix => Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(fov), AspectRatio, DepthNear, DepthFar);
 }
