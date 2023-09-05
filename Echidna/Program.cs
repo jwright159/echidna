@@ -13,6 +13,7 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using MeshShape = BepuPhysics.Collidables.Mesh;
 using Mesh = Echidna.Rendering.Mesh;
+using Texture = Echidna.Rendering.Texture;
 using Window = Echidna.Rendering.Window;
 using Vector2i = OpenTK.Mathematics.Vector2i;
 
@@ -213,13 +214,44 @@ public static class Program
 		{
 			using Stream fileStream = File.OpenRead(filename);
 			LoadResult result = new ObjLoaderFactory().Create().Load(fileStream);
+			
+			List<ObjVertex> uniqueVertices = new(); // this is probably not going to hold up, figure out a set with insertion order
+			uint[] faces = result.Groups
+				.SelectMany(group => group.Faces
+					.SelectMany(face => Enumerable.Range(0, face.Count)
+						.Select(i =>
+						{
+							ObjLoader.Loader.Data.VertexData.Vertex vertex = result.Vertices[face[i].VertexIndex - 1];
+							ObjLoader.Loader.Data.VertexData.Texture texCoord = result.Textures[face[i].TextureIndex - 1];
+							uniqueVertices.Add(new ObjVertex
+							{
+								X = vertex.X,
+								Y = vertex.Y,
+								Z = vertex.Z,
+								U = texCoord.X,
+								V = texCoord.Y,
+							});
+							return (uint)uniqueVertices.Count - 1;
+						})
+					)
+				).ToArray();
+			
 			return new Mesh(
-				result.Vertices.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y, vertex.Z)).ToArray(),
-				result.Textures.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y)).ToArray(),
-				result.Vertices.SelectMany(_ => EnumerableOf(1f, 1f, 1f)).ToArray(),
-				result.Groups.SelectMany(group => group.Faces.SelectMany(face => EnumerableOf((uint)face[0].VertexIndex - 1, (uint)face[1].VertexIndex - 1, (uint)face[2].VertexIndex - 1))).ToArray());
+				uniqueVertices.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y, vertex.Z)).ToArray(),
+				uniqueVertices.SelectMany(vertex => EnumerableOf(vertex.U, vertex.V)).ToArray(),
+				uniqueVertices.SelectMany(_ => EnumerableOf(1f, 1f, 1f)).ToArray(),
+				faces);
 		}
 	}
 	
 	private static IEnumerable<T> EnumerableOf<T>(params T[] items) => items;
+}
+
+public struct ObjVertex
+{
+	public float X;
+	public float Y;
+	public float Z;
+	public float U;
+	public float V;
 }
