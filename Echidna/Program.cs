@@ -55,7 +55,6 @@ public static class Program
 			
 			new SwapBuffersSystem());
 		
-		#region Shader definitions
 		Shader pulseShader = new("Shaders/shader.vert", "Shaders/pulse.frag");
 		world.AddComponent(new Entity(), pulseShader);
 		
@@ -67,9 +66,7 @@ public static class Program
 		
 		Shader skyboxShader = new("Shaders/skybox.vert", "Shaders/cubemap.frag");
 		world.AddComponent(new Entity(), skyboxShader);
-		#endregion
 		
-		#region Texture definitions
 		Texture crateTexture = new("Shaders/container.jpg");
 		world.AddComponent(new Entity(), crateTexture);
 		
@@ -81,9 +78,7 @@ public static class Program
 			"Shaders/Skybox/top.png",
 			"Shaders/Skybox/bottom.png");
 		world.AddComponent(new Entity(), skyboxCubeMap);
-		#endregion
 		
-		#region Mesh definitions
 		Mesh triangle = new(new[]
 		{
 			+0.5f, +0.0f, -0.5f,
@@ -105,172 +100,11 @@ public static class Program
 		}, false);
 		world.AddComponent(new Entity(), triangle);
 		
-		Mesh box = new(new[]
-		{
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f, +0.5f,
-			-0.5f, +0.5f, -0.5f,
-			-0.5f, +0.5f, +0.5f,
-			+0.5f, -0.5f, -0.5f,
-			+0.5f, -0.5f, +0.5f,
-			+0.5f, +0.5f, -0.5f,
-			+0.5f, +0.5f, +0.5f,
-		}, new[]
-		{
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 0.0f,
-			0.0f, 1.0f,
-			1.0f, 0.0f,
-			1.0f, 1.0f,
-			0.0f, 0.0f,
-			0.0f, 1.0f,
-		}, new[]
-		{
-			0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, 0.0f,
-			1.0f, 1.0f, 1.0f,
-		}, new uint[]
-		{
-			0, 2, 1,
-			1, 2, 3,
-			2, 6, 3,
-			3, 6, 7,
-			4, 0, 5,
-			5, 0, 1,
-			5, 1, 7,
-			7, 1, 3,
-			6, 2, 4,
-			4, 2, 0,
-			6, 4, 7,
-			7, 4, 5,
-		});
-		world.AddComponent(new Entity(), box);
+		Mesh cube = LoadObj("Shaders/cube.obj");
+		world.AddComponent(new Entity(), cube);
 		
-		Mesh splitFacesBox = new(new[]
-		{
-			+0.5f, -0.5f, +0.5f,
-			+0.5f, +0.5f, +0.5f,
-			+0.5f, +0.5f, -0.5f,
-			+0.5f, -0.5f, -0.5f,
-			
-			-0.5f, +0.5f, +0.5f,
-			-0.5f, -0.5f, +0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, +0.5f, -0.5f,
-			
-			+0.5f, +0.5f, +0.5f,
-			-0.5f, +0.5f, +0.5f,
-			-0.5f, +0.5f, -0.5f,
-			+0.5f, +0.5f, -0.5f,
-			
-			-0.5f, -0.5f, +0.5f,
-			+0.5f, -0.5f, +0.5f,
-			+0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			
-			-0.5f, +0.5f, +0.5f,
-			+0.5f, +0.5f, +0.5f,
-			+0.5f, -0.5f, +0.5f,
-			-0.5f, -0.5f, +0.5f,
-			
-			+0.5f, +0.5f, -0.5f,
-			-0.5f, +0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			+0.5f, -0.5f, -0.5f,
-		}, new[]
-		{
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f,
-			0.0f, 0.0f,
-			
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f,
-			0.0f, 0.0f,
-			
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f,
-			0.0f, 0.0f,
-			
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f,
-			0.0f, 0.0f,
-			
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f,
-			0.0f, 0.0f,
-			
-			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f,
-			0.0f, 0.0f,
-		}, new[]
-		{
-			1.0f, 0.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			
-			0.0f, 1.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			
-			1.0f, 1.0f, 1.0f,
-			0.0f, 1.0f, 1.0f,
-			0.0f, 1.0f, 0.0f,
-			1.0f, 1.0f, 0.0f,
-			
-			0.0f, 0.0f, 1.0f,
-			1.0f, 0.0f, 1.0f,
-			1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.0f,
-			
-			0.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			1.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-			
-			1.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-		}, new uint[]
-		{
-			0, 1, 3,
-			3, 1, 2,
-			
-			4, 5, 7,
-			7, 5, 6,
-			
-			8, 9, 11,
-			11, 9, 10,
-			
-			12, 13, 15,
-			15, 13, 14,
-			
-			16, 17, 19,
-			19, 17, 18,
-			
-			20, 21, 23,
-			23, 21, 22,
-		});
-		world.AddComponent(new Entity(), splitFacesBox);
-		
-		IObjLoader objLoader = new ObjLoaderFactory().Create();
 		Mesh sphere = LoadObj("Shaders/sphere.obj");
 		world.AddComponent(new Entity(), sphere);
-		#endregion
 		
 		Window window = new(gameWindow);
 		world.AddSingletonComponent(window);
@@ -323,7 +157,7 @@ public static class Program
 		//AddBody((0, 0, 5), (0, 30, 0));
 		//AddBody((0, 0, -4), (0, 0, 0));
 		
-		world.AddComponent(new Entity(), new SkyboxRenderer(splitFacesBox, skyboxShader, skyboxCubeMap));
+		world.AddComponent(new Entity(), new SkyboxRenderer(cube, skyboxShader, skyboxCubeMap));
 		
 		gameWindow.Load += world.Initialize;
 		gameWindow.Unload += world.Dispose;
@@ -354,7 +188,7 @@ public static class Program
 			world.AddComponent<BodyShape>(entity, new BodyShape<Box>(shape));
 			world.AddComponent(entity, new DynamicBody(inertia));
 			world.AddComponent(entity, transform);
-			world.AddComponent(entity, new MeshRenderer(splitFacesBox, textureShader, crateTexture));
+			world.AddComponent(entity, new MeshRenderer(cube, textureShader, crateTexture));
 			world.AddComponent(entity, gravity);
 			world.AddComponent(entity, new AffectedByGravity(gravitationalFields, gravity));
 		}
@@ -362,7 +196,7 @@ public static class Program
 		Mesh LoadObj(string filename)
 		{
 			using Stream fileStream = File.OpenRead(filename);
-			LoadResult result = objLoader.Load(fileStream);
+			LoadResult result = new ObjLoaderFactory().Create().Load(fileStream);
 			return new Mesh(
 				result.Vertices.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y, vertex.Z)).ToArray(),
 				result.Textures.SelectMany(vertex => EnumerableOf(vertex.X, vertex.Y)).ToArray(),
