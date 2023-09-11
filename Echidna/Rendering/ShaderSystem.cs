@@ -7,7 +7,7 @@ public class ShaderSystem : System<Shader>
 {
 	protected override void OnInitializeEach(Shader shader)
 	{
-		string vertexSource = File.ReadAllText(shader.VertexPath);
+		string vertexSource = shader.VertexSource;
 		string fragmentSource = File.ReadAllText(shader.FragmentPath);
 		
 		int vertexShader = CompileShader(vertexSource, ShaderType.VertexShader);

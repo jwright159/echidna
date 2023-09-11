@@ -13,31 +13,49 @@ public static class ShaderNodeUtil
 						new Vector3ToVector4(
 							new PositionInput().Output,
 							new FloatValue(1.0f).Output
-						).Output,
+							).Output,
 						new TransformInput().Output
-					).Output,
+						).Output,
 					new ViewInput().Output
-				).Output,
+					).Output,
 				new ProjectionInput().Output
-			).Output),
+				).Output),
 		Bindings = new OutInBinding[]
 		{
-			new OutInBinding<Vector3>("texCoord", new PositionInput().Output),
+			new OutInBinding<Vector3>("worldPosition", 
+				new Vector4XYZ(
+					new Vector4TimesMatrix4(
+						new Vector3ToVector4(
+							new PositionInput().Output,
+							new FloatValue(1.0f).Output
+							).Output,
+						new TransformInput().Output
+						).Output
+					).Output
+				),
+			new OutInBinding<Vector2>("texCoord", new TexCoordInput().Output),
+			new OutInBinding<Vector3>("vertexColor", new VertexColorInput().Output),
 		},
 	};
 	
 	public static ShaderProgram Skybox = new()
 	{
 		Position = new PositionOutput(
-			new Vector4TimesMatrix4(
+			new Vector4XYWW(
 				new Vector4TimesMatrix4(
-					new Vector3ToVector4(
-						new PositionInput().Output,
-						new FloatValue(1.0f).Output
+					new Vector4TimesMatrix4(
+						new Vector3ToVector4(
+							new PositionInput().Output,
+							new FloatValue(1.0f).Output
+							).Output,
+						new Matrix3ToMatrix4(
+							new Matrix4ToMatrix3(
+								new ViewInput().Output
+								).Output
+							).Output
 						).Output,
-					new ViewInput().Output
-					).Output,
-				new ProjectionInput().Output
+					new ProjectionInput().Output
+					).Output
 				).Output),
 		Bindings = new OutInBinding[]
 		{
@@ -49,9 +67,10 @@ public static class ShaderNodeUtil
 	{
 		return type switch
 		{
+			not null when type == typeof(Vector2) => "vec2",
 			not null when type == typeof(Vector3) => "vec3",
 			not null when type == typeof(Vector4) => "vec4",
-			_ => throw new ArgumentException("Invalid type", nameof(type))
+			_ => throw new ArgumentException($"Invalid type {type}", nameof(type))
 		};
 	}
 }
@@ -86,24 +105,6 @@ void main()
     {Position?.ToString() ?? ""}
     {string.Join("\n    ", Bindings.Select(binding => binding.ToString()))}
 }}
-
-void mainShaderVert()
-{{
-    vec4 localPosition4 = vec4(aPosition, 1.0);
-    vec4 worldPosition4 = localPosition4 * transform;
-    worldPosition = worldPosition4.xyz;
-    gl_Position = worldPosition4 * view * flip * projection;
-    texCoord = aTexCoord;
-    vertexColor = aColor;
-}}
-
-void mainSkyboxVert()
-{{
-    vec4 position = vec4(aPosition, 1.0);
-    vec4 projectedPosition = position * mat4(mat3(view)) * flip * projection;
-    gl_Position = projectedPosition.xyww;
-    texCoord = aPosition;
-}}
 ";
 }
 
@@ -111,6 +112,7 @@ public interface ShaderNode
 {
 }
 
+// ReSharper disable once UnusedTypeParameter
 public class ShaderNodeSlot<T>
 {
 	private Func<string> selector;
@@ -171,6 +173,30 @@ public class PositionInput : ShaderNode
 	public override string ToString() => "aPosition";
 }
 
+public class TexCoordInput : ShaderNode
+{
+	public readonly ShaderNodeSlot<Vector2> Output;
+	
+	public TexCoordInput()
+	{
+		Output = new ShaderNodeSlot<Vector2>(ToString);
+	}
+	
+	public override string ToString() => "aTexCoord";
+}
+
+public class VertexColorInput : ShaderNode
+{
+	public readonly ShaderNodeSlot<Vector3> Output;
+	
+	public VertexColorInput()
+	{
+		Output = new ShaderNodeSlot<Vector3>(ToString);
+	}
+	
+	public override string ToString() => "aColor";
+}
+
 public class PositionOutput : ShaderNode
 {
 	private readonly ShaderNodeSlot<Vector4> position;
@@ -215,6 +241,66 @@ public class Vector3ToVector4 : ShaderNode
 	}
 	
 	public override string ToString() => $"vec4({xyz}, {w})";
+}
+
+public class Matrix3ToMatrix4 : ShaderNode
+{
+	private readonly ShaderNodeSlot<Matrix3> mat3;
+	
+	public readonly ShaderNodeSlot<Matrix4> Output;
+	
+	public Matrix3ToMatrix4(ShaderNodeSlot<Matrix3> mat3)
+	{
+		this.mat3 = mat3;
+		Output = new ShaderNodeSlot<Matrix4>(ToString);
+	}
+	
+	public override string ToString() => $"mat4({mat3})";
+}
+
+public class Matrix4ToMatrix3 : ShaderNode
+{
+	private readonly ShaderNodeSlot<Matrix4> mat4;
+	
+	public readonly ShaderNodeSlot<Matrix3> Output;
+	
+	public Matrix4ToMatrix3(ShaderNodeSlot<Matrix4> mat4)
+	{
+		this.mat4 = mat4;
+		Output = new ShaderNodeSlot<Matrix3>(ToString);
+	}
+	
+	public override string ToString() => $"mat3({mat4})";
+}
+
+public class Vector4XYZ : ShaderNode
+{
+	private readonly ShaderNodeSlot<Vector4> xyzw;
+	
+	public readonly ShaderNodeSlot<Vector3> Output;
+	
+	public Vector4XYZ(ShaderNodeSlot<Vector4> xyzw)
+	{
+		this.xyzw = xyzw;
+		Output = new ShaderNodeSlot<Vector3>(ToString);
+	}
+	
+	public override string ToString() => $"{xyzw}.xyz";
+}
+
+public class Vector4XYWW : ShaderNode
+{
+	private readonly ShaderNodeSlot<Vector4> xyzw;
+	
+	public readonly ShaderNodeSlot<Vector4> Output;
+	
+	public Vector4XYWW(ShaderNodeSlot<Vector4> xyzw)
+	{
+		this.xyzw = xyzw;
+		Output = new ShaderNodeSlot<Vector4>(ToString);
+	}
+	
+	public override string ToString() => $"{xyzw}.xyww";
 }
 
 public class FloatValue : ShaderNode

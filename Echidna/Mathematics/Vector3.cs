@@ -64,7 +64,7 @@ public struct Vector3 : IEquatable<Vector3>, IEnumerable<float>
 	public static implicit operator Vector3((float X, float Y, float Z) vector) => new(vector.X, vector.Y, vector.Z);
 	public static implicit operator RigidPose(Vector3 vector) => new(vector);
 	
-	public static float Distance(Vector3 a, Vector3 b) => (a - b).Length;
+	public static float DistanceTo(Vector3 a, Vector3 b) => (a - b).Length;
 	public static float DistanceSquared(Vector3 a, Vector3 b) => (a - b).LengthSquared;
 	public static Vector3 UnitFromTo(Vector3 a, Vector3 b) => (b - a).Normalized;
 	
