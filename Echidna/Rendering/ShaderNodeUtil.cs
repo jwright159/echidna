@@ -4,7 +4,12 @@ namespace Echidna.Rendering;
 
 public static class ShaderNodeUtil
 {
-	public static ShaderProgram MainShader = new()
+	private static readonly InOutVariable<Vector2> TexCoordVariable = new("texCoord");
+	private static readonly InOutVariable<Vector3> WorldPositionVariable = new("worldPosition");
+	private static readonly InOutVariable<Vector3> VertexColorVariable = new("vertexColor");
+	private static readonly InOutVariable<Vector3> CubeMapTexCoordVariable = new("texCoord");
+	
+	public static readonly VertexShader MainVertexShader = new()
 	{
 		Position = new PositionOutput(
 			new Vector4TimesMatrix4(
@@ -20,9 +25,9 @@ public static class ShaderNodeUtil
 					).Output,
 				new ProjectionInput().Output
 				).Output),
-		Bindings = new OutInBinding[]
+		Bindings = new InOutBinding[]
 		{
-			new OutInBinding<Vector3>("worldPosition", 
+			new InOutBinding<Vector3>(WorldPositionVariable, 
 				new Vector4XYZ(
 					new Vector4TimesMatrix4(
 						new Vector3ToVector4(
@@ -33,12 +38,12 @@ public static class ShaderNodeUtil
 						).Output
 					).Output
 				),
-			new OutInBinding<Vector2>("texCoord", new TexCoordInput().Output),
-			new OutInBinding<Vector3>("vertexColor", new VertexColorInput().Output),
+			new InOutBinding<Vector2>(TexCoordVariable, new TexCoordInput().Output),
+			new InOutBinding<Vector3>(VertexColorVariable, new VertexColorInput().Output),
 		},
 	};
 	
-	public static ShaderProgram Skybox = new()
+	public static readonly VertexShader SkyboxVertexShader = new()
 	{
 		Position = new PositionOutput(
 			new Vector4XYWW(
@@ -57,9 +62,23 @@ public static class ShaderNodeUtil
 					new ProjectionInput().Output
 					).Output
 				).Output),
-		Bindings = new OutInBinding[]
+		Bindings = new InOutBinding[]
 		{
-			new OutInBinding<Vector3>("texCoord", new PositionInput().Output),
+			new InOutBinding<Vector3>(CubeMapTexCoordVariable, new PositionInput().Output),
+		},
+	};
+	
+	public static readonly FragmentShader CubeMapFragmentShader = new()
+	{
+		FragColor = new FragColorOutput(
+			new Vector3ToVector4(
+				CubeMapTexCoordVariable.Output,
+				new FloatValue(1.0f).Output
+				).Output
+			),
+		Bindings = new InOutVariable[]
+		{
+			CubeMapTexCoordVariable,
 		},
 	};
     
@@ -75,19 +94,19 @@ public static class ShaderNodeUtil
 	}
 }
 
-public class ShaderProgram
+public class VertexShader
 {
 	public PositionOutput? Position { get; init; }
-	public OutInBinding[] Bindings { get; init; } = Array.Empty<OutInBinding>();
+	public InOutBinding[] Bindings { get; init; } = Array.Empty<InOutBinding>();
     
-	public string VertexSource => $@"
+	public override string ToString() => $@"
 #version 430 core
 
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec2 aTexCoord;
 layout (location = 2) in vec3 aColor;
 
-{string.Join("\n", Bindings.Select(binding => $"out {binding.Type} {binding.Name};"))}
+{string.Join("\n", Bindings.Select(binding => binding.Variable.Out))}
 
 layout (location = 0) uniform mat4 transform;
 layout (location = 1) uniform mat4 view;
@@ -104,6 +123,25 @@ void main()
 {{
     {Position?.ToString() ?? ""}
     {string.Join("\n    ", Bindings.Select(binding => binding.ToString()))}
+}}
+";
+}
+
+public class FragmentShader
+{
+	public FragColorOutput? FragColor { get; init; }
+	public InOutVariable[] Bindings { get; init; } = Array.Empty<InOutVariable>();
+    
+	public override string ToString() => $@"
+#version 430 core
+
+{string.Join("\n", Bindings.Select(variable => variable.In))}
+
+out vec4 FragColor;
+
+void main()
+{{
+    {FragColor?.ToString() ?? ""}
 }}
 ";
 }
@@ -207,6 +245,18 @@ public class PositionOutput : ShaderNode
 	}
     
 	public override string ToString() => $"gl_Position = {position};";
+}
+
+public class FragColorOutput : ShaderNode
+{
+	private readonly ShaderNodeSlot<Vector4> fragColor;
+	
+	public FragColorOutput(ShaderNodeSlot<Vector4> fragColor)
+	{
+		this.fragColor = fragColor;
+	}
+    
+	public override string ToString() => $"FragColor = {fragColor};";
 }
 
 public class Vector4TimesMatrix4 : ShaderNode
@@ -318,27 +368,53 @@ public class FloatValue : ShaderNode
 	public override string ToString() => $"{value}";
 }
 
-public abstract class OutInBinding
+public abstract class InOutVariable
 {
 	public readonly string Name;
-	public abstract string Type { get; }
+	protected abstract string Type { get; }
+	
+	public string In => $"in {Type} {Name};";
+	public string Out => $"out {Type} {Name};";
     
-	protected OutInBinding(string name)
+	protected InOutVariable(string name)
 	{
 		Name = name;
 	}
 }
 
-public class OutInBinding<T> : OutInBinding
+public class InOutVariable<T> : InOutVariable
 {
-	public override string Type => ShaderNodeUtil.GetShaderTypeName(typeof(T));
+	protected override string Type => ShaderNodeUtil.GetShaderTypeName(typeof(T));
 	
 	public readonly ShaderNodeSlot<T> Output;
     
-	public OutInBinding(string name, ShaderNodeSlot<T> output) : base(name)
+	public InOutVariable(string name) : base(name)
 	{
-		Output = output;
+		Output = new ShaderNodeSlot<T>(ToString);
 	}
     
-	public override string ToString() => $"{Name} = {Output};";
+	public override string ToString() => $"{Name}";
+}
+
+public abstract class InOutBinding
+{
+	public readonly InOutVariable Variable;
+	
+	protected InOutBinding(InOutVariable variable)
+	{
+		Variable = variable;
+	}
+}
+
+public class InOutBinding<T> : InOutBinding
+{
+	private readonly ShaderNodeSlot<T> input;
+	
+	// ReSharper disable once SuggestBaseTypeForParameterInConstructor
+	public InOutBinding(InOutVariable<T> variable, ShaderNodeSlot<T> input) : base(variable)
+	{
+		this.input = input;
+	}
+    
+	public override string ToString() => $"{Variable.Name} = {input};";
 }

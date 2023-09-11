@@ -7,11 +7,8 @@ public class ShaderSystem : System<Shader>
 {
 	protected override void OnInitializeEach(Shader shader)
 	{
-		string vertexSource = shader.VertexSource;
-		string fragmentSource = File.ReadAllText(shader.FragmentPath);
-		
-		int vertexShader = CompileShader(vertexSource, ShaderType.VertexShader);
-		int fragmentShader = CompileShader(fragmentSource, ShaderType.FragmentShader);
+		int vertexShader = CompileShader(shader.VertexSource, ShaderType.VertexShader);
+		int fragmentShader = CompileShader(shader.FragmentSource, ShaderType.FragmentShader);
 		
 		int handle = shader.Handle = GL.CreateProgram();
 		GL.AttachShader(handle, vertexShader);

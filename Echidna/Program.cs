@@ -23,8 +23,9 @@ public static class Program
 {
 	private static void Main()
 	{
-		Console.WriteLine(ShaderNodeUtil.MainShader.VertexSource);
-		Console.WriteLine(ShaderNodeUtil.Skybox.VertexSource);
+		Console.WriteLine(ShaderNodeUtil.MainVertexShader);
+		Console.WriteLine(ShaderNodeUtil.SkyboxVertexShader);
+		Console.WriteLine(ShaderNodeUtil.CubeMapFragmentShader);
 		
 		Vector2i size = (1080, 720);
 		using GameWindow gameWindow = new(
@@ -61,16 +62,16 @@ public static class Program
 			
 			new SwapBuffersSystem());
 		
-		Shader pulseShader = new(ShaderNodeUtil.MainShader.VertexSource, "Shaders/pulse.frag");
+		Shader pulseShader = new(ShaderNodeUtil.MainVertexShader.ToString(), File.ReadAllText("Shaders/pulse.frag"));
 		world.AddComponent(new Entity(), pulseShader);
 		
-		Shader globalCoordsShader = new(ShaderNodeUtil.MainShader.VertexSource, "Shaders/global-coords.frag");
+		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader.ToString(), File.ReadAllText("Shaders/global-coords.frag"));
 		world.AddComponent(new Entity(), globalCoordsShader);
 		
-		Shader textureShader = new(ShaderNodeUtil.MainShader.VertexSource, "Shaders/texture.frag");
+		Shader textureShader = new(ShaderNodeUtil.MainVertexShader.ToString(), File.ReadAllText("Shaders/texture.frag"));
 		world.AddComponent(new Entity(), textureShader);
 		
-		Shader skyboxShader = new(ShaderNodeUtil.Skybox.VertexSource, "Shaders/cubemap.frag");
+		Shader skyboxShader = new(ShaderNodeUtil.SkyboxVertexShader.ToString(), ShaderNodeUtil.CubeMapFragmentShader.ToString());
 		world.AddComponent(new Entity(), skyboxShader);
 		
 		Texture crateTexture = new("Shaders/container.jpg");

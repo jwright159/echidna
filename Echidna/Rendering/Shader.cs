@@ -7,16 +7,16 @@ public class Shader : Component
 	internal int Handle;
 	
 	internal readonly string VertexSource;
-	internal readonly string FragmentPath;
+	internal readonly string FragmentSource;
 	
 	internal readonly Dictionary<string, int> Uniforms = new();
 	
 	internal bool HasBeenDisposed;
 	
-	public Shader(string vertexSource, string fragmentPath)
+	public Shader(string vertexSource, string fragmentSource)
 	{
 		VertexSource = vertexSource;
-		FragmentPath = fragmentPath;
+		FragmentSource = fragmentSource;
 	}
 	
 	~Shader()
