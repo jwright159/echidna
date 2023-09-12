@@ -23,10 +23,6 @@ public static class Program
 {
 	private static void Main()
 	{
-		Console.WriteLine(ShaderNodeUtil.MainVertexShader);
-		Console.WriteLine(ShaderNodeUtil.SkyboxVertexShader);
-		Console.WriteLine(ShaderNodeUtil.CubeMapFragmentShader);
-		
 		Vector2i size = (1080, 720);
 		using GameWindow gameWindow = new(
 			new GameWindowSettings(),
@@ -42,6 +38,7 @@ public static class Program
 			new ShaderSystem(),
 			new TextureSystem(),
 			new CubeMapSystem(),
+			new FontSystem(),
 			
 			new LifetimeSystem(),
 			new WorldSimulationSystem(),
@@ -59,19 +56,20 @@ public static class Program
 			new MeshSystem(),
 			new MeshRendererSystem(),
 			new SkyboxRendererSystem(),
+			new FontRendererSystem(),
 			
 			new SwapBuffersSystem());
 		
-		Shader pulseShader = new(ShaderNodeUtil.MainVertexShader.ToString(), File.ReadAllText("Shaders/pulse.frag"));
+		Shader pulseShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/pulse.frag"));
 		world.AddComponent(new Entity(), pulseShader);
 		
-		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader.ToString(), File.ReadAllText("Shaders/global-coords.frag"));
+		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/global-coords.frag"));
 		world.AddComponent(new Entity(), globalCoordsShader);
 		
-		Shader textureShader = new(ShaderNodeUtil.MainVertexShader.ToString(), File.ReadAllText("Shaders/texture.frag"));
+		Shader textureShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/texture.frag"));
 		world.AddComponent(new Entity(), textureShader);
 		
-		Shader skyboxShader = new(ShaderNodeUtil.SkyboxVertexShader.ToString(), ShaderNodeUtil.CubeMapFragmentShader.ToString());
+		Shader skyboxShader = new(ShaderNodeUtil.SkyboxVertexShader, ShaderNodeUtil.CubeMapFragmentShader);
 		world.AddComponent(new Entity(), skyboxShader);
 		
 		Texture crateTexture = new("Shaders/container.jpg");
@@ -85,6 +83,9 @@ public static class Program
 			"Shaders/Skybox/top.png",
 			"Shaders/Skybox/bottom.png");
 		world.AddComponent(new Entity(), skyboxCubeMap);
+		
+		Font cascadiaCode = new("Shaders/CascadiaCode.ttf");
+		world.AddComponent(new Entity(), cascadiaCode);
 		
 		Mesh triangle = new(new[]
 		{
@@ -106,6 +107,31 @@ public static class Program
 			0, 1, 2,
 		}, false);
 		world.AddComponent(new Entity(), triangle);
+		
+		Mesh quad = new(new[]
+		{
+			-1.0f, +0.0f, -1.0f,
+			+1.0f, +0.0f, -1.0f,
+			-1.0f, +0.0f, +1.0f,
+			+1.0f, +0.0f, +1.0f,
+		}, new[]
+		{
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+		}, new[]
+		{
+			0.0f, 0.0f, 0.0f,
+			1.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 1.0f,
+		}, new uint[]
+		{
+			0, 1, 2,
+			2, 1, 3,
+		}, false);
+		world.AddComponent(new Entity(), quad);
 		
 		Mesh cube = LoadObj("Shaders/cube.obj");
 		world.AddComponent(new Entity(), cube);
@@ -155,6 +181,9 @@ public static class Program
 		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
 		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
 		
+		AddText("bepis", (0, 0, 4), (0, 0, 0));
+		AddMesh((0, 0, 4), (0, 0, 0), sphere, globalCoordsShader, null);
+		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
 		
@@ -181,8 +210,15 @@ public static class Program
 		{
 			Entity entity = new();
 			world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
-			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * 0.1f });
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
+		}
+		
+		void AddText(string text, Vector3 position, Vector3 rotation)
+		{
+			Entity entity = new();
+			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, textureShader));
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 		}
 		
 		void AddBox(Vector3 position, Quaternion rotation)

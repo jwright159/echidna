@@ -17,6 +17,13 @@ public static class GLResourceUtil
 		GL.ActiveTexture(unit);
 		GL.BindTexture(TextureTarget.TextureCubeMap, cubeMap.Handle);
 	}
+	public static void Bind(this Font font, TextureUnit unit = TextureUnit.Texture0)
+	{
+		GL.ActiveTexture(unit);
+		GL.BindTexture(TextureTarget.Texture2D, font.TextureHandle);
+		GL.BindVertexArray(font.VertexArrayObject);
+		GL.BindBuffer(BufferTarget.ArrayBuffer, font.VertexBufferObject);
+	}
 	
 	public static void Draw(this Mesh mesh)
 	{

@@ -13,11 +13,16 @@
       <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
       <PackageReference Include="OpenTK" Version="4.8.0" />
       <PackageReference Include="StbImageSharp" Version="2.27.13" />
+      <PackageReference Include="StbTrueTypeSharp" Version="1.26.11" />
     </ItemGroup>
     
     <ItemGroup>
       <Content Include="Shaders\**">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\StbSharpOpenTK\StbSharpOpenTK.csproj" />
     </ItemGroup>
 </Project>

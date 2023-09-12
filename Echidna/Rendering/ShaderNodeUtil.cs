@@ -98,7 +98,9 @@ public class VertexShader
 {
 	public PositionOutput? Position { get; init; }
 	public InOutBinding[] Bindings { get; init; } = Array.Empty<InOutBinding>();
-    
+	
+	public static implicit operator string(VertexShader shader) => shader.ToString();
+	
 	public override string ToString() => $@"
 #version 430 core
 
@@ -131,6 +133,8 @@ public class FragmentShader
 {
 	public FragColorOutput? FragColor { get; init; }
 	public InOutVariable[] Bindings { get; init; } = Array.Empty<InOutVariable>();
+	
+	public static implicit operator string(FragmentShader shader) => shader.ToString();
     
 	public override string ToString() => $@"
 #version 430 core

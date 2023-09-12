@@ -17,8 +17,8 @@ public class MeshSystem : System<Mesh>
 		int stride = widths.Sum();
 		for (int attribute = 0, offset = 0; attribute < widths.Length; offset += widths[attribute], attribute++)
 		{
-			GL.VertexAttribPointer(attribute, widths[attribute], VertexAttribPointerType.Float, false, stride * sizeof(float), offset * sizeof(float));
 			GL.EnableVertexAttribArray(attribute);
+			GL.VertexAttribPointer(attribute, widths[attribute], VertexAttribPointerType.Float, false, stride * sizeof(float), offset * sizeof(float));
 		}
 		
 		mesh.ElementBufferObject = GL.GenBuffer();

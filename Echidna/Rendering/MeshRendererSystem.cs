@@ -14,6 +14,7 @@ public class MeshRendererSystem : System<Transform, MeshRenderer>
 		
 		bool backfaceCullingEnabled = true;
 		GL.Enable(EnableCap.CullFace);
+		GL.Disable(EnableCap.Blend);
 		
 		foreach ((Transform transform, MeshRenderer meshRenderer) in componentSets)
 		{
