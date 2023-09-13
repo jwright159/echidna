@@ -182,7 +182,6 @@ public static class Program
 		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
 		
 		AddText("bepis", (0, 0, 4), (0, 0, 0));
-		AddMesh((0, 0, 4), (0, 0, 0), sphere, globalCoordsShader, null);
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -210,7 +209,7 @@ public static class Program
 		{
 			Entity entity = new();
 			world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
-			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * 0.1f });
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
 		}
 		

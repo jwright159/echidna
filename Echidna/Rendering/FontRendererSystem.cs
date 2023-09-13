@@ -40,7 +40,7 @@ public class FontRendererSystem : System<Transform, FontRenderer>
 			foreach (GlyphInfo glyph in fontRenderer.Text.Select(c => fontRenderer.Font.FontResult!.Glyphs[c]))
 			{
 				float xPos = x + glyph.XOffset;
-				float yPos = 0;//glyph.YOffset;
+				float yPos = -glyph.Height - glyph.YOffset;
 				float w = glyph.Width;
 				float h = glyph.Height;
 				
