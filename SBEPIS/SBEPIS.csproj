@@ -20,5 +20,11 @@
       <ProjectReference Include="..\Echidna.Physics\Echidna.Physics.csproj" />
       <ProjectReference Include="..\Echidna.Rendering\Echidna.Rendering.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Content Include="Assets\**">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 
 </Project>

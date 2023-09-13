@@ -63,37 +63,37 @@ public static class Program
 			
 			new SwapBuffersSystem());
 		
-		Shader pulseShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/pulse.frag"));
+		Shader pulseShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/pulse.frag"));
 		world.AddComponent(new Entity(), pulseShader);
 		
-		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/global-coords.frag"));
+		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
 		world.AddComponent(new Entity(), globalCoordsShader);
 		
-		Shader textureShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/texture.frag"));
+		Shader textureShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/texture.frag"));
 		world.AddComponent(new Entity(), textureShader);
 		
-		Shader font2dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/font.frag"));
+		Shader font2dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/font.frag"));
 		world.AddComponent(new Entity(), font2dShader);
 		
-		Shader font3dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/font.frag"));
+		Shader font3dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/font.frag"));
 		world.AddComponent(new Entity(), font3dShader);
 		
 		Shader skyboxShader = new(ShaderNodeUtil.SkyboxVertexShader, ShaderNodeUtil.CubeMapFragmentShader);
 		world.AddComponent(new Entity(), skyboxShader);
 		
-		Texture crateTexture = new("Shaders/container.jpg");
+		Texture crateTexture = new("Assets/container.jpg");
 		world.AddComponent(new Entity(), crateTexture);
 		
 		CubeMap skyboxCubeMap = new(
-			"Shaders/Skybox/right.png",
-			"Shaders/Skybox/left.png",
-			"Shaders/Skybox/front.png",
-			"Shaders/Skybox/back.png",
-			"Shaders/Skybox/top.png",
-			"Shaders/Skybox/bottom.png");
+			"Assets/Skybox/right.png",
+			"Assets/Skybox/left.png",
+			"Assets/Skybox/front.png",
+			"Assets/Skybox/back.png",
+			"Assets/Skybox/top.png",
+			"Assets/Skybox/bottom.png");
 		world.AddComponent(new Entity(), skyboxCubeMap);
 		
-		Font cascadiaCode = new("Shaders/CascadiaCode.ttf");
+		Font cascadiaCode = new("Assets/CascadiaCode.ttf");
 		world.AddComponent(new Entity(), cascadiaCode);
 		
 		Mesh triangle = new(new[]
@@ -142,10 +142,10 @@ public static class Program
 		}, false);
 		world.AddComponent(new Entity(), quad);
 		
-		Mesh cube = LoadObj("Shaders/cube.obj");
+		Mesh cube = LoadObj("Assets/cube.obj");
 		world.AddComponent(new Entity(), cube);
 		
-		Mesh sphere = LoadObj("Shaders/sphere.obj");
+		Mesh sphere = LoadObj("Assets/sphere.obj");
 		world.AddComponent(new Entity(), sphere);
 		
 		Window window = new(gameWindow);
