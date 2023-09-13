@@ -51,6 +51,7 @@ public static class Program
 			new InputSystem(),
 			new SpinnerSystem(),
 			new FirstPersonCameraSystem(),
+			new LookAtSystem(),
 			new PulsatingShaderSystem(),
 			
 			new CameraShader2dSystem(),
@@ -190,8 +191,8 @@ public static class Program
 		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
 		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
 		
-		AddText("bepis", (0, 0, 4), (0, 0, 0), true);
-		AddText("bepis2", (0, 0, 100), (0, 0, 0), false);
+		Add3dText("bepis", (0, 0, 4), (0, 0, 0));
+		Add2dText("bepis2", (0, 0, 100), (0, 0, 0));
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -223,11 +224,19 @@ public static class Program
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
 		}
 		
-		void AddText(string text, Vector3 position, Vector3 rotation, bool use3d = false)
+		void Add2dText(string text, Vector3 position, Vector3 rotation)
 		{
 			Entity entity = new();
-			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.Red, use3d ? font3dShader : font2dShader));
-			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * (use3d ? 0.01f : 1f)});
+			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.Red, font2dShader));
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
+		}
+		
+		void Add3dText(string text, Vector3 position, Vector3 rotation)
+		{
+			Entity entity = new();
+			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.Red, font3dShader));
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * 0.01f });
+			world.AddComponent(entity, new LookAt(cameraEntity.GetComponent<Transform>()));
 		}
 		
 		void AddBox(Vector3 position, Quaternion rotation)

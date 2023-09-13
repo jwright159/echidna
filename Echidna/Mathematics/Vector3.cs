@@ -49,6 +49,9 @@ public struct Vector3 : IEquatable<Vector3>, IEnumerable<float>
 	public static Vector3 One => new(1, 1, 1);
 	public static Vector3 Zero => new(0, 0, 0);
 	
+	public Vector3 Cross(Vector3 other) => Cross(this, other);
+	public float Dot(Vector3 other) => Dot(this, other);
+	
 	public static Vector3 operator+(Vector3 a, Vector3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 	public static Vector3 operator-(Vector3 a, Vector3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 	public static Vector3 operator*(Vector3 vector, float scalar) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
@@ -67,6 +70,8 @@ public struct Vector3 : IEquatable<Vector3>, IEnumerable<float>
 	public static float DistanceTo(Vector3 a, Vector3 b) => (a - b).Length;
 	public static float DistanceSquared(Vector3 a, Vector3 b) => (a - b).LengthSquared;
 	public static Vector3 UnitFromTo(Vector3 a, Vector3 b) => (b - a).Normalized;
+	public static Vector3 Cross(Vector3 a, Vector3 b) => new(a.Y * b.Z - a.Z * b.Y, a.Z * b.X - a.X * b.Z, a.X * b.Y - a.Y * b.X);
+	public static float Dot(Vector3 a, Vector3 b) => a.X * b.X + a.Y * b.Y + a.Z * b.Z;
 	
 	public static Vector3 Sum<T>(IEnumerable<T> source, Func<T, Vector3> selector) => source.Aggregate(Zero, (current, item) => current + selector(item));
 }
