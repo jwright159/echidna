@@ -186,11 +186,12 @@ public static class Program
 			new InputAction<float>(_ => gameWindow.Close(),
 				new SingleInputTrigger(Keys.Escape))));
 		
-		AddMesh((2, 0, 0), (MathF.PI / 4f, 0, 0), triangle, globalCoordsShader, null);
-		AddMesh((0, 2, 0), (0, MathF.PI / 4f, 0), triangle, globalCoordsShader, null);
-		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
-		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
+		AddMesh((2, 0, 0), (MathF.PI / 4f, 0, 0), Vector3.One, triangle, globalCoordsShader, null);
+		AddMesh((0, 2, 0), (0, MathF.PI / 4f, 0), Vector3.One, triangle, globalCoordsShader, null);
+		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), Vector3.One, triangle, globalCoordsShader, null);
+		AddMesh((0, 0, 0), (0, 0, 0), Vector3.One, sphere, globalCoordsShader, null);
 		
+		AddMesh((0, 0, 4), (0, 0, 0), Vector3.One * 0.1f, sphere, globalCoordsShader, null);
 		Add3dText("bepis", (0, 0, 4), (0, 0, 0));
 		Add2dText("bepis2", (0, 0, 0), (0, 0, 0));
 		
@@ -216,11 +217,11 @@ public static class Program
 		gameWindow.Run();
 		return;
 		
-		void AddMesh(Vector3 position, Vector3 rotation, Mesh mesh, Shader shader, Texture? texture)
+		void AddMesh(Vector3 position, Vector3 rotation, Vector3 scale, Mesh mesh, Shader shader, Texture? texture)
 		{
 			Entity entity = new();
 			world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
-			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = scale });
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
 		}
 		

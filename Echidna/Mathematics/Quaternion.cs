@@ -105,8 +105,7 @@ public struct Quaternion
 		// https://www.andre-gaschler.com/rotationconverter/
 		
 		forward = forward.Normalized;
-		up = up.Normalized;
-		Vector3 right = forward.Cross(up);
+		Vector3 right = forward.Cross(up).Normalized;
 		up = right.Cross(forward);
 		
 		float m00 = right.X;
@@ -119,16 +118,10 @@ public struct Quaternion
 		float m11 = forward.Y;
 		float m12 = forward.Z;
 		
-		// TODO: does not work, det(m) != 0
-		Console.WriteLine();
-		Console.WriteLine($"{right} {forward} {up}");
-		Console.WriteLine($"{m00 * (m11 * m22 - m12 * m21) - m01 * (m10 * m22 - m12 * m20) + m02 * (m10 * m21 - m11 * m20)}");
-		
 		float trace = m00 + m11 + m22;
 		if (trace > 0)
 		{
 			float s = MathF.Sqrt(trace + 1) * 2;
-			Console.WriteLine($"a {s}");
 			return new Quaternion(
 				(m12 - m21) / s,
 				(m20 - m02) / s,
@@ -138,7 +131,6 @@ public struct Quaternion
 		else if (m00 > m11 && m00 > m22)
 		{
 			float s = MathF.Sqrt(1 + m00 - m11 - m22) * 2;
-			Console.WriteLine($"b {s}");
 			return new Quaternion(
 				0.25f * s,
 				(m01 + m10) / s,
@@ -148,7 +140,6 @@ public struct Quaternion
 		else if (m11 > m22)
 		{
 			float s = MathF.Sqrt(1 + m11 - m00 - m22) * 2;
-			Console.WriteLine($"c {s}");
 			return new Quaternion(
 				(m01 + m10) / s,
 				0.25f * s,
@@ -158,7 +149,6 @@ public struct Quaternion
 		else
 		{
 			float s = MathF.Sqrt(1 + m22 - m00 - m11) * 2;
-			Console.WriteLine($"d {s}");
 			return new Quaternion(
 				(m02 + m20) / s,
 				(m12 + m21) / s,
