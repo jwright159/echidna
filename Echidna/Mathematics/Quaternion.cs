@@ -112,12 +112,12 @@ public struct Quaternion
 		float m00 = right.X;
 		float m01 = right.Y;
 		float m02 = right.Z;
-		float m10 = forward.X;
-		float m11 = forward.Y;
-		float m12 = forward.Z;
 		float m20 = up.X;
 		float m21 = up.Y;
 		float m22 = up.Z;
+		float m10 = forward.X;
+		float m11 = forward.Y;
+		float m12 = forward.Z;
 		
 		// TODO: does not work, det(m) != 0
 		Console.WriteLine();
@@ -130,9 +130,9 @@ public struct Quaternion
 			float s = MathF.Sqrt(trace + 1) * 2;
 			Console.WriteLine($"a {s}");
 			return new Quaternion(
-				(m21 - m12) / s,
-				(m02 - m20) / s,
-				(m10 - m01) / s,
+				(m12 - m21) / s,
+				(m20 - m02) / s,
+				(m01 - m10) / s,
 				0.25f * s);
 		}
 		else if (m00 > m11 && m00 > m22)
@@ -143,7 +143,7 @@ public struct Quaternion
 				0.25f * s,
 				(m01 + m10) / s,
 				(m02 + m20) / s,
-				(m21 - m12) / s);
+				(m12 - m21) / s);
 		}
 		else if (m11 > m22)
 		{
@@ -153,7 +153,7 @@ public struct Quaternion
 				(m01 + m10) / s,
 				0.25f * s,
 				(m12 + m21) / s,
-				(m02 - m20) / s);
+				(m20 - m02) / s);
 		}
 		else
 		{
@@ -163,7 +163,7 @@ public struct Quaternion
 				(m02 + m20) / s,
 				(m12 + m21) / s,
 				0.25f * s,
-				(m10 - m01) / s);
+				(m01 - m10) / s);
 		}
 	}
 	public static Quaternion LookAt(Vector3 position, Vector3 target, Vector3 up) => LookToward(target - position, up);

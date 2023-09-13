@@ -192,7 +192,7 @@ public static class Program
 		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
 		
 		Add3dText("bepis", (0, 0, 4), (0, 0, 0));
-		Add2dText("bepis2", (0, 0, 100), (0, 0, 0));
+		Add2dText("bepis2", (0, 0, 0), (0, 0, 0));
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -227,14 +227,14 @@ public static class Program
 		void Add2dText(string text, Vector3 position, Vector3 rotation)
 		{
 			Entity entity = new();
-			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.Red, font2dShader));
+			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.White, font2dShader));
 			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 		}
 		
 		void Add3dText(string text, Vector3 position, Vector3 rotation)
 		{
 			Entity entity = new();
-			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.Red, font3dShader));
+			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.White, font3dShader));
 			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * 0.01f });
 			world.AddComponent(entity, new LookAt(cameraEntity.GetComponent<Transform>()));
 		}
