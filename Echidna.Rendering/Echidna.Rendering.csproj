@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="OpenTK.Mathematics" Version="4.8.0" />
+      <PackageReference Include="StbImageSharp" Version="2.27.13" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Echidna.Core\Echidna.Core.csproj" />
+      <ProjectReference Include="..\Echidna.Hierarchy\Echidna.Hierarchy.csproj" />
+      <ProjectReference Include="..\StbSharp.MonoGame.Test\StbSharp.MonoGame.Test.csproj" />
+    </ItemGroup>
+
+</Project>

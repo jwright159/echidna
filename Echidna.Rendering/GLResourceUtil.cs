@@ -39,8 +39,6 @@ public static class GLResourceUtil
 	
 	public static void Draw(this Mesh mesh)
 	{
-		if (mesh.Entity == null)
-			Console.WriteLine("WARNING: Mesh doesn't have an entity, it might not be valid");
 		GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 	}
 	

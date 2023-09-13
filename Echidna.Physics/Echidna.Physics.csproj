@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Echidna.Core\Echidna.Core.csproj" />
+      <ProjectReference Include="..\Echidna.Hierarchy\Echidna.Hierarchy.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="BepuPhysics" Version="2.4.0" />
+    </ItemGroup>
+
+</Project>

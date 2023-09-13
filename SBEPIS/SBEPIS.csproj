@@ -10,19 +10,15 @@
     <ItemGroup>
       <PackageReference Include="BepuPhysics" Version="2.4.0" />
       <PackageReference Include="CjClutter.ObjLoader.Unofficial" Version="1.1.0" />
-      <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
       <PackageReference Include="OpenTK" Version="4.8.0" />
-      <PackageReference Include="StbImageSharp" Version="2.27.13" />
-      <PackageReference Include="StbTrueTypeSharp" Version="1.26.11" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Content Include="Shaders\**">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+      <ProjectReference Include="..\Echidna.Core\Echidna.Core.csproj" />
+      <ProjectReference Include="..\Echidna.Hierarchy\Echidna.Hierarchy.csproj" />
+      <ProjectReference Include="..\Echidna.Input\Echidna.Input.csproj" />
+      <ProjectReference Include="..\Echidna.Physics\Echidna.Physics.csproj" />
+      <ProjectReference Include="..\Echidna.Rendering\Echidna.Rendering.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <ProjectReference Include="..\StbSharpOpenTK\StbSharpOpenTK.csproj" />
-    </ItemGroup>
+
 </Project>

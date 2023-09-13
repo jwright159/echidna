@@ -18,7 +18,7 @@ using Texture = Echidna.Rendering.Texture;
 using Window = Echidna.Rendering.Window;
 using Vector2i = OpenTK.Mathematics.Vector2i;
 
-namespace Echidna.Demo;
+namespace SBEPIS;
 
 public static class Program
 {
