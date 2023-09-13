@@ -18,4 +18,9 @@
       <ProjectReference Include="..\StbSharp.MonoGame.Test\StbSharp.MonoGame.Test.csproj" />
     </ItemGroup>
 
+
+
+
+
+
 </Project>
