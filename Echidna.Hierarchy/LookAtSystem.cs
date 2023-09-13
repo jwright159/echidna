@@ -7,6 +7,6 @@ public class LookAtSystem : System<Transform, LookAt>
 {
 	protected override void OnDrawEach(Transform transform, LookAt lookAt)
 	{
-		transform.LocalRotation = Quaternion.LookAt(transform.LocalPosition, lookAt.Target.LocalPosition, Vector3.Up);
+		transform.LocalRotation = Quaternion.LookAt(transform.Position, lookAt.Target.Position, Vector3.Up);
 	}
 }

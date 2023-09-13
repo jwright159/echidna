@@ -199,7 +199,7 @@ public static class Program
 		AddMesh((0, 0, 0), (0, 0, 0), Vector3.One, sphere, globalCoordsShader, null);
 		
 		AddMesh((0, 0, 4), (0, 0, 0), Vector3.One * 0.1f, sphere, globalCoordsShader, null);
-		Add3dText("bepis", (0, 0, 4), (0, 0, 0));
+		Add3dText("bepis", (0, 0, 4));
 		AddMesh(Vector3.In * 10f, (0, 0, 0), Vector3.One * 10f, sphere, globalCoords2dShader, null);
 		Add2dText("bepis2", (0, 0, 0), (0, 0, 0));
 		
@@ -240,12 +240,16 @@ public static class Program
 			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
 		}
 		
-		void Add3dText(string text, Vector3 position, Vector3 rotation)
+		void Add3dText(string text, Vector3 position)
 		{
+			Entity parentEntity = new();
+			Transform parent = new(){ LocalPosition = position, LocalScale = Vector3.One * 0.01f };
+			world.AddComponent(parentEntity, new LookAt(cameraEntity.GetComponent<Transform>()));
+			world.AddComponent(parentEntity, parent);
+			
 			Entity entity = new();
 			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.White, font3dShader));
-			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * 0.01f });
-			world.AddComponent(entity, new LookAt(cameraEntity.GetComponent<Transform>()));
+			world.AddComponent(entity, new Transform{ LocalRotation = (90, 0, 180), Parent = parent });
 		}
 		
 		void AddBox(Vector3 position, Quaternion rotation)
