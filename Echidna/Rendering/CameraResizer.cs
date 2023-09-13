@@ -6,13 +6,13 @@ namespace Echidna.Rendering;
 public class CameraResizer : Component
 {
 	public readonly Window Window;
-	public readonly Projection Projection;
+	public readonly Perspective Perspective;
 	public Vector2i Size;
 	
-	public CameraResizer(Window window, Projection projection, Vector2i size)
+	public CameraResizer(Window window, Perspective perspective, Vector2i size)
 	{
 		Window = window;
-		Projection = projection;
+		Perspective = perspective;
 		Size = size;
 	}
 }

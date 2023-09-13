@@ -13,6 +13,6 @@ public class ResizeWindowSystem : System<CameraResizer>
 		
 		resizer.Size = size;
 		GL.Viewport(0, 0, size.X, size.Y);
-		resizer.Projection.AspectRatio = (float)size.X / size.Y;
+		resizer.Perspective.AspectRatio = (float)size.X / size.Y;
 	}
 }

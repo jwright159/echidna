@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering;
 
-public class Projection : Component
+public class Perspective : Component
 {
 	private float fov = 90f;
 	public float Fov

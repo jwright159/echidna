@@ -4,12 +4,12 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering;
 
-public class CameraShaderProjectionSystem : System<Transform, Projection, CameraShaders>
+public class CameraShaderPerspectiveSystem : System<Transform, Perspective, CameraShaders3d>
 {
-	protected override void OnDrawEach(Transform transform, Projection projection, CameraShaders cameraShaders)
+	protected override void OnDrawEach(Transform transform, Perspective perspective, CameraShaders3d cameraShaders)
 	{
 		Matrix4 viewMatrix = transform.Transformation.Inverted();
-		Matrix4 projectionMatrix = projection.ProjectionMatrix;
+		Matrix4 projectionMatrix = perspective.ProjectionMatrix;
 		foreach (Shader shader in cameraShaders.Shaders)
 		{
 			shader.Bind();

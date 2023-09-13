@@ -13,8 +13,6 @@ public class FontRendererSystem : System<Transform, FontRenderer>
 		Shader? currentShader = null;
 		Font? currentFont = null;
 		
-		Matrix4 flip = Matrix4.CreateScale(0.01f, 0.01f, 0.01f);
-		
 		GL.Disable(EnableCap.CullFace);
 		GL.Enable(EnableCap.Blend);
 		GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -34,7 +32,8 @@ public class FontRendererSystem : System<Transform, FontRenderer>
 				fontRenderer.Shader.SetInt("texture0", 0);
 			}
 			
-			fontRenderer.Shader.SetMatrix4(0, flip * transform.Transformation);
+			fontRenderer.Shader.SetMatrix4(0, transform.Transformation);
+			fontRenderer.Shader.SetVector4("color", fontRenderer.Color);
 			
 			float xStart = 0;
 			foreach (GlyphInfo glyph in fontRenderer.Text.Select(c => fontRenderer.Font.FontResult!.Glyphs[c]))

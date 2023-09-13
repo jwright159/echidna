@@ -1,4 +1,5 @@
-﻿using BepuPhysics;
+﻿using System.Drawing;
+using BepuPhysics;
 using BepuPhysics.Collidables;
 using BepuUtilities.Memory;
 using Echidna.Core;
@@ -52,7 +53,8 @@ public static class Program
 			new FirstPersonCameraSystem(),
 			new PulsatingShaderSystem(),
 			
-			new CameraShaderProjectionSystem(),
+			new CameraShader2dSystem(),
+			new CameraShaderPerspectiveSystem(),
 			new MeshSystem(),
 			new MeshRendererSystem(),
 			new SkyboxRendererSystem(),
@@ -68,6 +70,12 @@ public static class Program
 		
 		Shader textureShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/texture.frag"));
 		world.AddComponent(new Entity(), textureShader);
+		
+		Shader font2dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/font.frag"));
+		world.AddComponent(new Entity(), font2dShader);
+		
+		Shader font3dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Shaders/font.frag"));
+		world.AddComponent(new Entity(), font3dShader);
 		
 		Shader skyboxShader = new(ShaderNodeUtil.SkyboxVertexShader, ShaderNodeUtil.CubeMapFragmentShader);
 		world.AddComponent(new Entity(), skyboxShader);
@@ -143,14 +151,15 @@ public static class Program
 		world.AddSingletonComponent(window);
 		
 		Entity cameraEntity = new();
-		Projection projection = new(){ DepthFar = 10000f };
+		Perspective perspective = new(){ DepthFar = 10000f };
 		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, -5, 0) });
-		world.AddComponent(cameraEntity, projection);
+		world.AddComponent(cameraEntity, perspective);
 		
 		world.AddComponent(cameraEntity, new Lifetime());
-		world.AddComponent(cameraEntity, new CameraShaders(pulseShader, globalCoordsShader, textureShader, skyboxShader));
+		world.AddComponent(cameraEntity, new CameraShaders2d(font2dShader));
+		world.AddComponent(cameraEntity, new CameraShaders3d(pulseShader, globalCoordsShader, textureShader, font3dShader, skyboxShader));
 		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
-		world.AddComponent(cameraEntity, new CameraResizer(window, projection, size));
+		world.AddComponent(cameraEntity, new CameraResizer(window, perspective, size));
 		
 		FirstPersonCamera firstPerson = new(){ MouseSensitivity = 0.5f, MovementSpeed = 1.5f };
 		world.AddComponent(cameraEntity, firstPerson);
@@ -181,7 +190,8 @@ public static class Program
 		AddMesh((0, 0, 2), (0, 0, MathF.PI / 4f), triangle, globalCoordsShader, null);
 		AddMesh((0, 0, 0), (0, 0, 0), sphere, globalCoordsShader, null);
 		
-		AddText("bepis", (0, 0, 4), (0, 0, 0));
+		AddText("bepis", (0, 0, 4), (0, 0, 0), true);
+		AddText("bepis2", (0, 0, 100), (0, 0, 0), false);
 		
 		WorldSimulation simulation = new();
 		world.AddSingletonComponent(simulation);
@@ -213,11 +223,11 @@ public static class Program
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
 		}
 		
-		void AddText(string text, Vector3 position, Vector3 rotation)
+		void AddText(string text, Vector3 position, Vector3 rotation, bool use3d = false)
 		{
 			Entity entity = new();
-			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, textureShader));
-			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation) });
+			world.AddComponent(entity, new FontRenderer(text, cascadiaCode, Color.Red, use3d ? font3dShader : font2dShader));
+			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = Vector3.One * (use3d ? 0.01f : 1f)});
 		}
 		
 		void AddBox(Vector3 position, Quaternion rotation)
