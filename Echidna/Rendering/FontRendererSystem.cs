@@ -36,11 +36,11 @@ public class FontRendererSystem : System<Transform, FontRenderer>
 			
 			fontRenderer.Shader.SetMatrix4(0, flip * transform.Transformation);
 			
-			float x = 0;
+			float xStart = 0;
 			foreach (GlyphInfo glyph in fontRenderer.Text.Select(c => fontRenderer.Font.FontResult!.Glyphs[c]))
 			{
-				float xPos = x + glyph.XOffset;
-				float yPos = -glyph.Height - glyph.YOffset;
+				float x = xStart + glyph.XOffset;
+				float y = -glyph.Height - glyph.YOffset;
 				float w = glyph.Width;
 				float h = glyph.Height;
 				
@@ -49,21 +49,43 @@ public class FontRendererSystem : System<Transform, FontRenderer>
 				float uw = (float)glyph.Width / Font.TextureSize;
 				float vh = (float)glyph.Height / Font.TextureSize;
 				
-				float[] vertices = {
-					xPos,     0.0f, yPos + h,   u,      v,        0.0f, 0.0f, 0.0f,
-					xPos,     0.0f, yPos,       u,      v + vh,   1.0f, 0.0f, 0.0f,
-					xPos + w, 0.0f, yPos,       u + uw, v + vh,   0.0f, 0.0f, 1.0f,
-					
-					xPos,     0.0f, yPos + h,   u,      v,        0.0f, 0.0f, 0.0f,
-					xPos + w, 0.0f, yPos,       u + uw, v + vh,   0.0f, 0.0f, 1.0f,
-					xPos + w, 0.0f, yPos + h,   u + uw, v,        0.0f, 1.0f, 0.0f,
-				};
+				float[] vertices = fontRenderer.Font.Vertices;
+				
+				vertices[00] = x;
+				vertices[02] = y + h;
+				vertices[03] = u;
+				vertices[04] = v;
+				
+				vertices[08] = x;
+				vertices[10] = y;
+				vertices[11] = u;
+				vertices[12] = v + vh;
+				
+				vertices[16] = x + w;
+				vertices[18] = y;
+				vertices[19] = u + uw;
+				vertices[20] = v + vh;
+				
+				vertices[24] = x;
+				vertices[26] = y + h;
+				vertices[27] = u;
+				vertices[28] = v;
+				
+				vertices[32] = x + w;
+				vertices[34] = y;
+				vertices[35] = u + uw;
+				vertices[36] = v + vh;
+				
+				vertices[40] = x + w;
+				vertices[42] = y + h;
+				vertices[43] = u + uw;
+				vertices[44] = v;
 				
 				GL.BufferSubData(BufferTarget.ArrayBuffer, IntPtr.Zero, vertices.Length * sizeof(float), vertices);
 				
 				GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
 				
-				x += glyph.XAdvance; // bitshift by 6 to get value in pixels (2^6 = 64)
+				xStart += glyph.XAdvance;
 			}
 		}
 	}

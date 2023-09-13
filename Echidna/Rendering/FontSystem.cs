@@ -41,7 +41,7 @@ public class FontSystem : System<Font>
 		GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 		
 		GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
-
+		
 		return handle;
 	}
 	

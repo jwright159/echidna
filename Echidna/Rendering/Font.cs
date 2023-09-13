@@ -10,6 +10,16 @@ public class Font : Component
 	internal int TextureHandle;
 	internal int VertexBufferObject;
 	internal int VertexArrayObject;
+	internal readonly float[] Vertices =
+	{
+		0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f,   0.0f, 1.0f,   1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+		
+		0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   0.0f, 0.0f, 1.0f,
+		1.0f, 0.0f, 1.0f,   1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+	};
 	
 	internal FontBakerResult? FontResult;
 	
