@@ -1,7 +1,7 @@
 ﻿using Echidna.Core;
 using Echidna.Hierarchy;
 
-namespace Echidna.Rendering;
+namespace Echidna.Editor;
 
 public class FirstPersonCameraSystem : System<Transform, Lifetime, FirstPersonCamera>
 {

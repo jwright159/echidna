@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StbSharp.MonoGame.Test", "StbSharp.MonoGame.Test\StbSharp.MonoGame.Test.csproj", "{76F72C8C-BE34-49D8-BFD3-47A8AD00DD42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SBEPIS", "SBEPIS\SBEPIS.csproj", "{DB0B6609-AEDD-437A-9968-D4184E845A91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echidna.Editor", "Echidna.Editor\Echidna.Editor.csproj", "{DB0B6609-AEDD-437A-9968-D4184E845A91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Echidna.Core", "Echidna.Core\Echidna.Core.csproj", "{C0CDF39F-C086-4C22-AD67-D5722D0E2564}"
 EndProject

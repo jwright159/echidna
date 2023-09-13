@@ -45,7 +45,9 @@ public struct Vector3 : IEquatable<Vector3>, IEnumerable<float>
 	public static Vector3 Back => new(0, -1, 0);
 	public static Vector3 South => new(0, -1, 0);
 	public static Vector3 Up => new(0, 0, 1);
+	public static Vector3 Out => new(0, 0, 1);
 	public static Vector3 Down => new(0, 0, -1);
+	public static Vector3 In => new(0, 0, -1);
 	public static Vector3 One => new(1, 1, 1);
 	public static Vector3 Zero => new(0, 0, 0);
 	

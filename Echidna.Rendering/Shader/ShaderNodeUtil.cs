@@ -114,13 +114,6 @@ layout (location = 0) uniform mat4 transform;
 layout (location = 1) uniform mat4 view;
 layout (location = 2) uniform mat4 projection;
 
-const mat4 flip = mat4(
-    1, 0, 0, 0,
-    0, 0, 1, 0,
-    0, -1, 0, 0,
-    0, 0, 0, 1
-);
-
 void main()
 {{
     {Position?.ToString() ?? ""}
@@ -188,7 +181,7 @@ public class ViewInput : ShaderNode
 		Output = new ShaderNodeSlot<Matrix4>(ToString);
 	}
 	
-	public override string ToString() => "view * flip";
+	public override string ToString() => "view";
 }
 
 public class ProjectionInput : ShaderNode

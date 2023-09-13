@@ -7,7 +7,6 @@ using Echidna.Hierarchy;
 using Echidna.Input;
 using Echidna.Mathematics;
 using Echidna.Physics;
-using Echidna.Rendering;
 using Echidna.Rendering.Font;
 using Echidna.Rendering.Mesh;
 using Echidna.Rendering.Shader;
@@ -23,7 +22,7 @@ using Texture = Echidna.Rendering.Texture.Texture;
 using Window = Echidna.Rendering.Window.Window;
 using Vector2i = OpenTK.Mathematics.Vector2i;
 
-namespace SBEPIS;
+namespace Echidna.Editor;
 
 public static class Program
 {
@@ -73,6 +72,9 @@ public static class Program
 		
 		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
 		world.AddComponent(new Entity(), globalCoordsShader);
+		
+		Shader globalCoords2dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
+		world.AddComponent(new Entity(), globalCoords2dShader);
 		
 		Shader textureShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/texture.frag"));
 		world.AddComponent(new Entity(), textureShader);
@@ -162,7 +164,7 @@ public static class Program
 		world.AddComponent(cameraEntity, perspective);
 		
 		world.AddComponent(cameraEntity, new Lifetime());
-		world.AddComponent(cameraEntity, new CameraShaders2d(font2dShader));
+		world.AddComponent(cameraEntity, new CameraShaders2d(font2dShader, globalCoords2dShader));
 		world.AddComponent(cameraEntity, new CameraShaders3d(pulseShader, globalCoordsShader, textureShader, font3dShader, skyboxShader));
 		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
 		world.AddComponent(cameraEntity, new CameraResizer(window, perspective, size));
@@ -198,6 +200,7 @@ public static class Program
 		
 		AddMesh((0, 0, 4), (0, 0, 0), Vector3.One * 0.1f, sphere, globalCoordsShader, null);
 		Add3dText("bepis", (0, 0, 4), (0, 0, 0));
+		AddMesh(Vector3.In * 10f, (0, 0, 0), Vector3.One * 10f, sphere, globalCoords2dShader, null);
 		Add2dText("bepis2", (0, 0, 0), (0, 0, 0));
 		
 		WorldSimulation simulation = new();

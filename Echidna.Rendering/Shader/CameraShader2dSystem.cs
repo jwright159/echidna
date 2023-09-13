@@ -6,10 +6,11 @@ namespace Echidna.Rendering.Shader;
 
 public class CameraShader2dSystem : System<CameraResizer, CameraShaders2d>
 {
+	private static Matrix4 viewMatrix = Matrix4.CreateTranslation(Mathematics.Vector3.Out).Inverted();
+	
 	protected override void OnDrawEach(CameraResizer resizer, CameraShaders2d cameraShaders)
 	{
-		Matrix4 viewMatrix = Matrix4.CreateTranslation(0, -1, 0).Inverted();
-		Matrix4 projectionMatrix = Matrix4.CreateOrthographic(resizer.Size.X, resizer.Size.Y, 0.5f, 1000);
+		Matrix4 projectionMatrix = Matrix4.CreateOrthographic(resizer.Size.X, resizer.Size.Y, 1.0f, 101);
 		foreach (Shader shader in cameraShaders.Shaders)
 		{
 			shader.Bind();

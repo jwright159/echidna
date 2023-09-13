@@ -1,7 +1,7 @@
 ﻿using Echidna.Core;
 using Echidna.Mathematics;
 
-namespace Echidna.Rendering;
+namespace Echidna.Editor;
 
 public class FirstPersonCamera : Component
 {

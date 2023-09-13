@@ -50,32 +50,32 @@ public class FontRendererSystem : System<Transform, FontRenderer>
 				float[] vertices = fontRenderer.Font.Vertices;
 				
 				vertices[00] = x;
-				vertices[02] = y + h;
+				vertices[01] = y + h;
 				vertices[03] = u;
 				vertices[04] = v;
 				
 				vertices[08] = x;
-				vertices[10] = y;
+				vertices[09] = y;
 				vertices[11] = u;
 				vertices[12] = v + vh;
 				
 				vertices[16] = x + w;
-				vertices[18] = y;
+				vertices[17] = y;
 				vertices[19] = u + uw;
 				vertices[20] = v + vh;
 				
 				vertices[24] = x;
-				vertices[26] = y + h;
+				vertices[25] = y + h;
 				vertices[27] = u;
 				vertices[28] = v;
 				
 				vertices[32] = x + w;
-				vertices[34] = y;
+				vertices[33] = y;
 				vertices[35] = u + uw;
 				vertices[36] = v + vh;
 				
 				vertices[40] = x + w;
-				vertices[42] = y + h;
+				vertices[41] = y + h;
 				vertices[43] = u + uw;
 				vertices[44] = v;
 				
