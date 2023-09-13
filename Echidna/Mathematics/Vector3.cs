@@ -52,7 +52,9 @@ public struct Vector3 : IEquatable<Vector3>, IEnumerable<float>
 	public Vector3 Cross(Vector3 other) => Cross(this, other);
 	public float Dot(Vector3 other) => Dot(this, other);
 	
+	public static Vector3 operator+(Vector3 a) => a;
 	public static Vector3 operator+(Vector3 a, Vector3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+	public static Vector3 operator-(Vector3 a) => new(-a.X, -a.Y, -a.Z);
 	public static Vector3 operator-(Vector3 a, Vector3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 	public static Vector3 operator*(Vector3 vector, float scalar) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
 	public static Vector3 operator*(float scalar, Vector3 vector) => new(vector.X * scalar, vector.Y * scalar, vector.Z * scalar);
