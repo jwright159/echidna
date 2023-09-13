@@ -102,11 +102,12 @@ public struct Quaternion
 	{
 		// https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
 		// maybe https://gamedev.net/forums/topic/648857-how-to-implement-lookrotation/5113120/ ?
+		// https://www.andre-gaschler.com/rotationconverter/
 		
 		forward = forward.Normalized;
 		up = up.Normalized;
-		Vector3 right = up.Cross(forward);
-		up = forward.Cross(right);
+		Vector3 right = forward.Cross(up);
+		up = right.Cross(forward);
 		
 		float m00 = right.X;
 		float m01 = right.Y;
