@@ -81,6 +81,8 @@ public static class Program
 		Scene3d scene = new(cameraEntity);
 		world.AddComponent(new Entity(), scene);
 		
+		world.AddWorldComponent(new CurrentScene(guiScene, scene));
+		
 		Shader pulseShader = Add3dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/pulse.frag"));
 		Shader globalCoordsShader = Add3dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
 		Shader globalCoords2dShader = Add2dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
@@ -225,7 +227,6 @@ public static class Program
 			Entity entity = new();
 			Shader shader = new(vertexSource, fragmentSource);
 			world.AddComponent(entity, shader);
-			world.AddComponent(entity, new Scene2dObject(guiScene));
 			return shader;
 		}
 		
@@ -234,7 +235,6 @@ public static class Program
 			Entity entity = new();
 			Shader shader = new(vertexSource, fragmentSource);
 			world.AddComponent(entity, shader);
-			world.AddComponent(entity, new Scene3dObject(scene));
 			return shader;
 		}
 		
