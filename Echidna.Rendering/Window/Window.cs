@@ -3,7 +3,7 @@ using OpenTK.Windowing.Desktop;
 
 namespace Echidna.Rendering.Window;
 
-public class Window : WorldComponent
+public class Window : Component, WorldComponent
 {
 	public readonly GameWindow GameWindow;
 	

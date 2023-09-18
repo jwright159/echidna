@@ -53,7 +53,7 @@ public class World
 		}
 	}
 	
-	public void AddWorldComponent<T>(T component) where T : WorldComponent => AddComponent(globalEntity, component);
+	public void AddWorldComponent<T>(T component) where T : Component, WorldComponent => AddComponent(globalEntity, component);
 	
 	public void Initialize()
 	{

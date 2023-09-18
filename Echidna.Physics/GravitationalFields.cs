@@ -2,7 +2,7 @@
 
 namespace Echidna.Physics;
 
-public class GravitationalFields : WorldComponent
+public class GravitationalFields : Component, WorldComponent
 {
 	internal List<GravitationalField> Gravities = new();
 }

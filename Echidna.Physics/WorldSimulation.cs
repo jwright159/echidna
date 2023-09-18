@@ -5,7 +5,7 @@ using Echidna.Core;
 
 namespace Echidna.Physics;
 
-public class WorldSimulation : WorldComponent
+public class WorldSimulation : Component, WorldComponent
 {
 	internal BufferPool? BufferPool;
 	internal ThreadDispatcher? ThreadDispatcher;
