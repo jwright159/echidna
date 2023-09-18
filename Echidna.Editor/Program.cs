@@ -28,15 +28,6 @@ public static class Program
 {
 	private static void Main()
 	{
-		Vector2i size = (1080, 720);
-		using GameWindow gameWindow = new(
-			new GameWindowSettings(),
-			new NativeWindowSettings
-			{
-				Size = size,
-			});
-		gameWindow.CursorState = CursorState.Grabbed;
-		
 		World world = new(
 			new ResizeWindowSystem(),
 			new ClearScreenSystem(),
@@ -58,8 +49,8 @@ public static class Program
 			new LookAtSystem(),
 			new PulsatingShaderSystem(),
 			
-			new CameraShader2dSystem(),
-			new CameraShaderPerspectiveSystem(),
+			new Shader2dSystem(),
+			new Shader3dSystem(),
 			new MeshSystem(),
 			new MeshRendererSystem(),
 			new SkyboxRendererSystem(),
@@ -67,26 +58,36 @@ public static class Program
 			
 			new SwapBuffersSystem());
 		
-		Shader pulseShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/pulse.frag"));
-		world.AddComponent(new Entity(), pulseShader);
+		Vector2i size = (1080, 720);
+		using GameWindow gameWindow = new(
+			new GameWindowSettings(),
+			new NativeWindowSettings
+			{
+				Size = size,
+			});
+		gameWindow.CursorState = CursorState.Grabbed;
 		
-		Shader globalCoordsShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
-		world.AddComponent(new Entity(), globalCoordsShader);
+		Window window = new(gameWindow);
+		world.AddSingletonComponent(window);
 		
-		Shader globalCoords2dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
-		world.AddComponent(new Entity(), globalCoords2dShader);
+		Entity cameraEntity = new();
+		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, -5, 0) });
+		world.AddComponent(cameraEntity, new Perspective{ DepthFar = 10000f });
+		world.AddComponent(cameraEntity, new CameraSize(window, size));
 		
-		Shader textureShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/texture.frag"));
-		world.AddComponent(new Entity(), textureShader);
+		Scene2d guiScene = new(cameraEntity);
+		world.AddComponent(new Entity(), guiScene);
 		
-		Shader font2dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/font.frag"));
-		world.AddComponent(new Entity(), font2dShader);
+		Scene3d scene = new(cameraEntity);
+		world.AddComponent(new Entity(), scene);
 		
-		Shader font3dShader = new(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/font.frag"));
-		world.AddComponent(new Entity(), font3dShader);
-		
-		Shader skyboxShader = new(ShaderNodeUtil.SkyboxVertexShader, ShaderNodeUtil.CubeMapFragmentShader);
-		world.AddComponent(new Entity(), skyboxShader);
+		Shader pulseShader = Add3dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/pulse.frag"));
+		Shader globalCoordsShader = Add3dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
+		Shader globalCoords2dShader = Add2dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/global-coords.frag"));
+		Shader textureShader = Add3dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/texture.frag"));
+		Shader font2dShader = Add2dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/font.frag"));
+		Shader font3dShader = Add3dShader(ShaderNodeUtil.MainVertexShader, File.ReadAllText("Assets/font.frag"));
+		Shader skyboxShader = Add3dShader(ShaderNodeUtil.SkyboxVertexShader, ShaderNodeUtil.CubeMapFragmentShader);
 		
 		Texture crateTexture = new("Assets/container.jpg");
 		world.AddComponent(new Entity(), crateTexture);
@@ -155,20 +156,6 @@ public static class Program
 		Mesh sphere = LoadObj("Assets/sphere.obj");
 		world.AddComponent(new Entity(), sphere);
 		
-		Window window = new(gameWindow);
-		world.AddSingletonComponent(window);
-		
-		Entity cameraEntity = new();
-		Perspective perspective = new(){ DepthFar = 10000f };
-		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, -5, 0) });
-		world.AddComponent(cameraEntity, perspective);
-		
-		world.AddComponent(cameraEntity, new Lifetime());
-		world.AddComponent(cameraEntity, new CameraShaders2d(font2dShader, globalCoords2dShader));
-		world.AddComponent(cameraEntity, new CameraShaders3d(pulseShader, globalCoordsShader, textureShader, font3dShader, skyboxShader));
-		world.AddComponent(cameraEntity, new PulsatingShader(pulseShader));
-		world.AddComponent(cameraEntity, new CameraResizer(window, perspective, size));
-		
 		FirstPersonCamera firstPerson = new(){ MouseSensitivity = 0.5f, MovementSpeed = 1.5f };
 		world.AddComponent(cameraEntity, firstPerson);
 		world.AddComponent(cameraEntity, new InputGroup(
@@ -231,6 +218,24 @@ public static class Program
 			world.AddComponent(entity, new MeshRenderer(mesh, shader, texture));
 			world.AddComponent(entity, new Transform{ LocalPosition = position, LocalRotation = Quaternion.FromEulerAngles(rotation), LocalScale = scale });
 			world.AddComponent(entity, new Spinner(rotation, Quaternion.RadiansToDegrees(rotation.Length)));
+		}
+		
+		Shader Add2dShader(string vertexSource, string fragmentSource)
+		{
+			Entity entity = new();
+			Shader shader = new(vertexSource, fragmentSource);
+			world.AddComponent(entity, shader);
+			world.AddComponent(entity, new Scene2dObject(guiScene));
+			return shader;
+		}
+		
+		Shader Add3dShader(string vertexSource, string fragmentSource)
+		{
+			Entity entity = new();
+			Shader shader = new(vertexSource, fragmentSource);
+			world.AddComponent(entity, shader);
+			world.AddComponent(entity, new Scene3dObject(scene));
+			return shader;
 		}
 		
 		void Add2dText(string text, Vector3 position, Vector3 rotation)

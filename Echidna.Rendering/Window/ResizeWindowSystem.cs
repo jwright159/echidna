@@ -1,18 +1,19 @@
 ﻿using Echidna.Core;
+using Echidna.Rendering.Shader;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Echidna.Rendering.Window;
 
-public class ResizeWindowSystem : System<CameraResizer>
+public class ResizeWindowSystem : System<CameraSize, Perspective>
 {
-	protected override void OnDrawEach(CameraResizer resizer)
+	protected override void OnDrawEach(CameraSize size, Perspective perspective)
 	{
-		Vector2i size = resizer.Window.GameWindow.Size;
-		if (size == resizer.Size) return;
+		Vector2i newSize = size.Window.GameWindow.Size;
+		if (newSize == size.Size) return;
 		
-		resizer.Size = size;
-		GL.Viewport(0, 0, size.X, size.Y);
-		resizer.Perspective.AspectRatio = (float)size.X / size.Y;
+		size.Size = newSize;
+		GL.Viewport(0, 0, newSize.X, newSize.Y);
+		perspective.AspectRatio = (float)newSize.X / newSize.Y;
 	}
 }
