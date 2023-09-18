@@ -53,7 +53,7 @@ public class World
 		}
 	}
 	
-	public void AddSingletonComponent<T>(T component) where T : Component => AddComponent(globalEntity, component);
+	public void AddWorldComponent<T>(T component) where T : WorldComponent => AddComponent(globalEntity, component);
 	
 	public void Initialize()
 	{

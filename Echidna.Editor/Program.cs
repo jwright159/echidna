@@ -68,7 +68,7 @@ public static class Program
 		gameWindow.CursorState = CursorState.Grabbed;
 		
 		Window window = new(gameWindow);
-		world.AddSingletonComponent(window);
+		world.AddWorldComponent(window);
 		
 		Entity cameraEntity = new();
 		world.AddComponent(cameraEntity, new Transform{ LocalPosition = (0, -5, 0) });
@@ -191,10 +191,10 @@ public static class Program
 		Add2dText("bepis2", (0, 0, 0), (0, 0, 0));
 		
 		WorldSimulation simulation = new();
-		world.AddSingletonComponent(simulation);
+		world.AddWorldComponent(simulation);
 		
 		GravitationalFields gravitationalFields = new();
-		world.AddSingletonComponent(gravitationalFields);
+		world.AddWorldComponent(gravitationalFields);
 		
 		AddPlanet((0, 0, -10_005), 10_000);
 		AddBox((-2, 0, 5), (0, 30, 0));
