@@ -3,7 +3,7 @@ using Echidna.Rendering.Window;
 
 namespace Echidna.Rendering.Shader;
 
-public class Scene2d : Component
+public class Scene2d : InstanceComponent
 {
 	public CameraSize CameraSize;
 	

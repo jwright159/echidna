@@ -4,7 +4,7 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering.Window;
 
-public class CameraSize : Component
+public class CameraSize : EntityComponent
 {
 	public readonly Window Window;
 	public Vector2i Size;

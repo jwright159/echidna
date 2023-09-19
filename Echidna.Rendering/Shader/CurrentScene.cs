@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Shader;
 
-public class CurrentScene : Component, WorldComponent
+public class CurrentScene : WorldComponent
 {
 	public Scene2d Scene2d;
 	public Scene3d Scene3d;

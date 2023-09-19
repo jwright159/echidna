@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Texture;
 
-public class SkyboxRenderer : Component
+public class SkyboxRenderer : WorldComponent
 {
 	public readonly Mesh.Mesh Mesh;
 	public readonly Shader.Shader Shader;

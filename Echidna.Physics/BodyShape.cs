@@ -3,7 +3,7 @@ using Echidna.Core;
 
 namespace Echidna.Physics;
 
-public abstract class BodyShape : Component
+public abstract class BodyShape : EntityComponent
 {
 	public abstract TypedIndex AddToShapes(Shapes shapes);
 	

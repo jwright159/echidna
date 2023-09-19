@@ -3,7 +3,7 @@ using Echidna.Core;
 
 namespace Echidna.Rendering.Font;
 
-public class FontRenderer : Component
+public class FontRenderer : EntityComponent
 {
 	public readonly string Text;
 	public readonly Font Font;

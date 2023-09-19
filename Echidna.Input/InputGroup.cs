@@ -2,7 +2,7 @@
 
 namespace Echidna.Input;
 
-public class InputGroup : Component
+public class InputGroup : InstanceComponent
 {
 	private Dictionary<object, InputAction[]> actions;
 	

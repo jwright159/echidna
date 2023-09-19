@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Mesh;
 
-public class MeshRenderer : Component
+public class MeshRenderer : EntityComponent
 {
 	public readonly Mesh Mesh;
 	public readonly Shader.Shader Shader;

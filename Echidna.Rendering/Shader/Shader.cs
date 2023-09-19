@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Shader;
 
-public class Shader : Component
+public class Shader : InstanceComponent
 {
 	internal int Handle;
 	

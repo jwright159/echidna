@@ -1,3 +1,3 @@
 ﻿namespace Echidna.Core;
 
-public interface WorldComponent { }
+public abstract class WorldComponent : Component { }

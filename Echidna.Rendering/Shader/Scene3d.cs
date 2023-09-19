@@ -3,7 +3,7 @@ using Echidna.Hierarchy;
 
 namespace Echidna.Rendering.Shader;
 
-public class Scene3d : Component
+public class Scene3d : InstanceComponent
 {
 	public Transform CameraTransform;
 	public Perspective CameraPerspective;

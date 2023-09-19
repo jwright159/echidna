@@ -4,7 +4,7 @@ using Matrix4 = OpenTK.Mathematics.Matrix4;
 
 namespace Echidna.Hierarchy;
 
-public class Transform : Component
+public class Transform : EntityComponent
 {
 	private Vector3 localPosition = Vector3.Zero;
 	public Vector3 LocalPosition

@@ -3,7 +3,7 @@ using Echidna.Core;
 
 namespace Echidna.Physics;
 
-public class SimulationTarget : Component
+public class SimulationTarget : EntityComponent
 {
 	internal readonly WorldSimulation WorldSimulation;
 	

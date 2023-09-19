@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Mesh;
 
-public class Mesh : Component
+public class Mesh : InstanceComponent
 {
 	internal const int Dims = 3;
 	

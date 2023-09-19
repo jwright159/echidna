@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Texture;
 
-public class CubeMap : Component
+public class CubeMap : InstanceComponent
 {
 	internal int Handle;
 	

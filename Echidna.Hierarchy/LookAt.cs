@@ -2,7 +2,7 @@
 
 namespace Echidna.Hierarchy;
 
-public class LookAt : Component
+public class LookAt : EntityComponent
 {
 	public readonly Transform Target;
 	

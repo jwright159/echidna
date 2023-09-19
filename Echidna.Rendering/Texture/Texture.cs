@@ -2,7 +2,7 @@
 
 namespace Echidna.Rendering.Texture;
 
-public class Texture : Component
+public class Texture : EntityComponent
 {
 	internal int Handle;
 	

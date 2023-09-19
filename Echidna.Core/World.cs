@@ -33,27 +33,46 @@ public class World
 		systemsDependingOn = systemsDepending.ToDictionary(pair => pair.Key, pair => pair.Value.ToArray());
 	}
 	
-	public void AddComponent<T>(Entity entity, T component) where T : Component
+	private void AddAbstractComponent(Entity entity, Component component, Type type)
 	{
 		if (component.Entity != null)
 			throw new ArgumentException($"Component {component} already added to entity {entity}", nameof(component));
-		Type addedComponentType = typeof(T);
-		if (entity.HasComponentType(addedComponentType))
+		if (entity.HasComponentType(type))
 			throw new ArgumentException($"Entity {entity} already has a component of type {component}", nameof(entity));
 		
 		entity.AddComponent(component);
 		
-		if (!systemsDependingOn.ContainsKey(addedComponentType))
+		if (!systemsDependingOn.TryGetValue(type, out ISystem[]? dependentSystems))
 			//throw new ArgumentException($"World {this} does not have a system depending on component type {addedComponentType}", nameof(world));
 			return;
-		foreach (ISystem system in systemsDependingOn[addedComponentType])
+		foreach (ISystem system in dependentSystems)
 		{
 			if (system.IsApplicableTo(entity))
 				system.AddEntity(entity);
 		}
 	}
 	
-	public void AddWorldComponent<T>(T component) where T : Component, WorldComponent => AddComponent(globalEntity, component);
+	private T AddAbstractComponent<T>(Entity entity, T component) where T : Component
+	{
+		AddAbstractComponent(entity, component, typeof(T));
+		return component;
+	}
+	
+	public void AddComponents(Entity entity, params EntityComponent[] components)
+	{
+		foreach (EntityComponent component in components)
+			AddAbstractComponent(entity, component, component.GetType());
+	}
+	
+	public void AddComponentsInstance(params EntityComponent[] components)
+	{
+		foreach (EntityComponent component in components)
+			AddAbstractComponent(new Entity(), component, component.GetType());
+	}
+	
+	public T AddComponent<T>(Entity entity, T component) where T : EntityComponent => AddAbstractComponent(entity, component);
+	public T AddComponentInstance<T>(T component) where T : InstanceComponent => AddAbstractComponent(new Entity(), component);
+	public T AddWorldComponent<T>(T component) where T : WorldComponent => AddAbstractComponent(globalEntity, component);
 	
 	public void Initialize()
 	{

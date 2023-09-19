@@ -3,7 +3,7 @@ using Echidna.Mathematics;
 
 namespace Echidna.Editor;
 
-public class FirstPersonCamera : Component
+public class FirstPersonCamera : EntityComponent
 {
 	private float pitch;
 	public float Pitch

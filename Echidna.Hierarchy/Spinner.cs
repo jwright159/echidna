@@ -3,7 +3,7 @@ using Echidna.Mathematics;
 
 namespace Echidna.Hierarchy;
 
-public class Spinner : Component
+public class Spinner : EntityComponent
 {
 	internal Vector3 Axis;
 	internal float Speed;

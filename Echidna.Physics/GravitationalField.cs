@@ -4,16 +4,15 @@ using Echidna.Mathematics;
 
 namespace Echidna.Physics;
 
-public class GravitationalField : Component
+public class GravitationalField : EntityComponent
 {
 	public float GravityConstant;
-	internal Transform CenterTransform;
+	[Self] private Transform CenterTransform;
 	public Vector3 Center => CenterTransform.LocalPosition;
 	
-	public GravitationalField(float gravityConstant, Transform center, GravitationalFields fields)
+	public GravitationalField(float gravityConstant, GravitationalFields fields)
 	{
 		GravityConstant = gravityConstant;
-		CenterTransform = center;
 		fields.Gravities.Add(this);
 	}
 }

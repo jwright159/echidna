@@ -3,7 +3,7 @@ using StbSharp.MonoGame.Test;
 
 namespace Echidna.Rendering.Font;
 
-public class Font : Component
+public class Font : InstanceComponent
 {
 	internal const int TextureSize = 1024;
 	

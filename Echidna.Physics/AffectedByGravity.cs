@@ -2,7 +2,7 @@
 
 namespace Echidna.Physics;
 
-public class AffectedByGravity : Component
+public class AffectedByGravity : EntityComponent
 {
 	public GravitationalFields Fields;
 	internal List<GravitationalField> Blacklist;

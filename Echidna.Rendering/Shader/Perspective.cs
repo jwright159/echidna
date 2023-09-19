@@ -3,7 +3,7 @@ using OpenTK.Mathematics;
 
 namespace Echidna.Rendering.Shader;
 
-public class Perspective : Component
+public class Perspective : EntityComponent
 {
 	private float fov = 90f;
 	public float Fov

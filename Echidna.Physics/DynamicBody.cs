@@ -3,7 +3,7 @@ using Echidna.Core;
 
 namespace Echidna.Physics;
 
-public class DynamicBody : Component
+public class DynamicBody : EntityComponent
 {
 	internal readonly BodyInertia Inertia;
 	internal BodyHandle Handle;
