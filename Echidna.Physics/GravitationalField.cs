@@ -7,7 +7,7 @@ namespace Echidna.Physics;
 public class GravitationalField : EntityComponent
 {
 	public float GravityConstant;
-	[Self] private Transform CenterTransform;
+	[Self] public Transform CenterTransform;
 	public Vector3 Center => CenterTransform.LocalPosition;
 	
 	public GravitationalField(float gravityConstant, GravitationalFields fields)

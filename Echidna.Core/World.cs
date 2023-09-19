@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using System.Reflection;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Echidna.Core;
@@ -42,6 +43,8 @@ public class World
 		
 		entity.AddComponent(component);
 		
+		AttachReflectedComponents(entity, component);
+		
 		if (!systemsDependingOn.TryGetValue(type, out ISystem[]? dependentSystems))
 			//throw new ArgumentException($"World {this} does not have a system depending on component type {addedComponentType}", nameof(world));
 			return;
@@ -73,6 +76,24 @@ public class World
 	public T AddComponent<T>(Entity entity, T component) where T : EntityComponent => AddAbstractComponent(entity, component);
 	public T AddComponentInstance<T>(T component) where T : InstanceComponent => AddAbstractComponent(new Entity(), component);
 	public T AddWorldComponent<T>(T component) where T : WorldComponent => AddAbstractComponent(globalEntity, component);
+	
+	private static void AttachReflectedComponents(Entity entity, Component component)
+	{
+		Type? classToInspect = component.GetType();
+		do
+		{
+			foreach (FieldInfo field in classToInspect.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance))
+			foreach (Attribute attribute in Attribute.GetCustomAttributes(field))
+				if (attribute is ReflectedComponentAttribute componentAttribute)
+				{
+					field.SetValue(component, componentAttribute.GetComponent(entity, field.FieldType));
+					break;
+				}
+			
+			classToInspect = classToInspect.BaseType;
+		}
+		while (classToInspect != null);
+	}
 	
 	public void Initialize()
 	{
